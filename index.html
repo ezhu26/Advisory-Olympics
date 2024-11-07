@@ -7,6 +7,10 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <button onclick="signInWithRedirect(auth, Google)">sign in with google</button>
+    <script type ="module">
+        import{signInWithRedirect} from "/script.js";
+        window.signInWithRedirect = signInWithRedirect;
+    </script>
 </body>
-</html>
+</html> 
