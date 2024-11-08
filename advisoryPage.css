@@ -1,0 +1,175 @@
+body{
+    background-color: rgb(248, 248, 244);
+    /*font-size: 20px;*/
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: rgba(97,39,52,255);
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    margin-top: 0;
+    padding-top: 1vw;
+}
+
+.header h1{
+    font-size: 4vw;
+    font-family: "DM Serif Display", serif;
+    font-weight: 500;
+    font-style: bold;
+    color: rgb(248, 248, 244);
+    letter-spacing: 2px;
+}
+
+/* line for the navigation bar */
+.navbar ul{
+    list-style-type: none;
+    background-color:rgba(97,39,52,255);
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+
+/* text per each individual block */
+.navbar a{
+    color: rgb(248, 248, 244);
+    text-decoration: none;
+    padding: 15px;
+    display: block;
+    text-align: center;
+    font-size: 2vw;
+}
+
+.navbar a:hover{
+    background-color: rgb(248, 248, 244);
+    color:rgba(97,39,52,255);
+}
+
+/* each block if moved to the right of the page */
+.navbar li{
+    float: right;
+}
+
+.leftPanel, .rightPanel {
+    margin: 0; 
+    padding: 0;
+    display: inline-block; /*Sits the two panels side by side*/
+    vertical-align: top; /* have the same height from the header */
+}
+
+/* left side containing Advisor and Roster */
+.leftPanel{
+    flex-wrap: wrap;
+    width: 46%;
+    align-items: center; 
+    gap: 10px;
+    margin-left: 30px;
+    margin-right: 0px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+/* right side containing about game and schedule */
+.rightPanel{
+    flex-wrap: wrap;
+    width: 46%;
+    align-items: center;
+    gap: 10px; 
+    margin-right: 30px;
+    margin-left:0px;
+    margin-top: 10px;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+.advisor, .roster {
+    align-items: center; /* Align items vertically in the center */
+    gap: 10px; /* Optional: space between elements */
+    background-color: rgb(219, 219, 219);
+    padding: 10px;
+  }
+
+  .advisor h1, .advisor img{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .advisor h1 {
+    margin: 0; 
+    font-size: 5vw;
+  }
+  .advisor h2 {
+    margin: 0; 
+    font-size: 4vw;
+  }
+
+.advisor .contact h2{
+    font-size: 3vw;
+    margin:0;
+}
+  
+.advisor .advisorImage {
+    height: 8vw; /* Keep image proportions */
+    width: 8vw;
+    border-radius: 50%; /* Optional: make image circular */
+  }
+
+  /* line containing the email */
+.contact{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+  }
+
+.advisor p{
+    flex-wrap: wrap;
+    font-size: 2.1vw;
+    margin:1vw;
+  }
+
+  .roster{
+    align-items: center; /* Align items vertically in the center */
+    gap: 10px; /* Optional: space between elements */
+    background-color: rgb(219, 219, 219);
+    margin-right: 10px;
+    margin-top: 20px;
+    border-radius: 10px;
+    padding: 10px;
+    flex-wrap: wrap;
+  }
+
+  .aboutGame, .schedule{
+    flex-wrap: wrap;
+    align-items: center; /* Align items vertically in the center */
+    gap: 10px; /* Optional: space between elements */
+    background-color: rgb(219, 219, 219);
+    /* margin-left: 10px;
+    margin-right: 0px;
+    margin-top: 20px; */
+    border-radius: 20px;
+    padding: 10px;
+    }
+  
+  .schedule {
+    margin-top: 20px;
+  }
+  .aboutGame p{
+    flex-wrap: wrap;
+    font-size: 2.1vw;
+    margin:1vw;
+  }
+
+  /* changes size of listed things */
+  ul{
+    font-size: 2.7vw;
+  }
+
+  .roster ul li, .schedule ul li {
+    margin-bottom: 10px; /* Adds 10px space below each list item */
+}
+
+
+  
