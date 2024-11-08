@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="standings.css" rel="stylesheet" type="text/css" />
+    <script src="script.js" defer></script>
+    <title>Standings</title>
+
+</head>
+<body>
+    <script type="module" src="standings.js"></script>
+    <script type="module">
+      import {addItem, showItems} from './standings.js';
+      window.addItem = addItem;
+      window.showItems = showItems;
+    </script>
+    <h1>Current Advisory Olympic Standings</h1>
+    <h2>Click Button to See Current Rankings: <p><button class = "button" onclick="sortTableRank()">Rank</button></p></h2>
+
+    <div class="standingsPage"></div>
+        <table id="table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Advisory</th>
+                    <th>Points</th>
+                    <th>Record</th>
+                </tr>
+            </thead>
+            <tbody id="body">
+            </tbody>
+        </table>
+        <script>
+          //for some reason, I cannot get it to work without using a button, so 
+          //this is something I need to fix
+          function sortTableRank() {
+          var table, rows, switching, i, x, y, shouldSwitch;
+          //access the table
+          table = document.getElementById("body");
+          switching = true;
+          while (switching) {
+            //start by saying that no switching has been done
+            switching = false;
+            //loop through all the rows
+            rows = table.rows;
+            for (i = 0; i < (rows.length - 1); i++) {
+              //start by saying there should be no switching
+              shouldSwitch = false;
+              //get the two elements you want to compare
+              x = rows[i].getElementsByTagName("td")[0];
+              y = rows[i + 1].getElementsByTagName("td")[0];
+              //check if the two rows should switch place:
+              if (Number(x.innerHTML) > Number(y.innerHTML)) {
+                //if so, mark as a switch and break the loop:
+                shouldSwitch = true;
+                break;
+              }
+            }
+            if (shouldSwitch) {
+              //if a switch has been marked, make the switch
+              //and mark that a switch has been done:
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+            }
+          }
+        }
+
+          </script>
+    </div>
+</body>
+</html>
