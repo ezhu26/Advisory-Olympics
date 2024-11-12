@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebas
 // TODO: import libraries for Cloud Firestore Database
 // https://firebase.google.com/docs/firestore
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+import { getAuth, signInWithRedirect, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyA48UmI50QVSpCJF6voYVudbChpVkFkU6g",
@@ -20,7 +20,7 @@ const auth = getAuth(app);
 
 
 export const login = async function(){
-signInWithPopup(auth, provider)
+signInWithRedirect(auth, provider)
   .then((result) => {
     console.log("logging in")
     // This gives you a Google Access Token. You can use it to access the Google API.
