@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<header>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet" type="text/css" />
     <title>Document</title>
-</head>
+    <br> <div>
+    Advisory Olympics
+</div>
+    <button onclick="login()">sign in with google</button> 
+    <br> <br> <br>
+</header>
+
 <body>
-    <button onclick="signInWithRedirect(auth, Google)">sign in with google</button>
     <script type ="module">
-        import{signInWithRedirect} from "/script.js";
-        window.signInWithRedirect = signInWithRedirect;
+        import{login} from "/script.js";
+        window.login = login;
     </script>
 </body>
 </html> 
