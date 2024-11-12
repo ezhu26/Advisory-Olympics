@@ -1,12 +1,27 @@
+header{
+    background-color: #7a3333;
+    height: 130px;
+    font-size:25px;
+    color: white;
+    text-align:center;
+
+}
 button{
-    padding: 30px;
-    background-color: greenyellow;
+    padding: 15px;
+    margin-right: 10px;
+    background-color: lightgray;
     cursor: pointer;
+    justify-content: center;
+    float:right
     
 }
-button.hover{
-    grow
+button:hover{
+    background-color: gray;
+    color:white;
+    transform: scale(1.1);
+    cursor:pointer
 }
 body{
-    background-color: #ee8;
+    background-color: #ffffff;
+    
 }
