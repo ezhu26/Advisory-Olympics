@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="schedule.css" rel="stylesheet" type="text/css" />
+    <script src="schedule.js" defer></script>
+    <title>Schedule</title>
+
+</head>
+<body>
+    <script type="module" src="schedule.js"></script>
+    <script type="module">
+      import {addItem, showItems, updateTeamRecord} from './schedule.js';
+      window.addItem = addItem;
+      window.showItems = showItems;
+    </script>
+    <h1>Advisory Olympic Schedule 2024</h1>
+  
+
+    <div class="schedulePage"></div>
+    <table>
+        <caption>Weekly Matchups</caption>
+        <thead>
+            <tr>
+                <th>Week</th>
+                <th>Matchups</th>
+            </tr>
+        </thead>
+        <tbody id="schedule">
+            <!-- Schedule will be populated here by JavaScript -->
+        </tbody>
+    </table>
+    <select>
+        <option value = "1">Week 1</option>
+        <option value = "2">Week 2</option>
+        <option value = "3">Week 3</option>
+        <option value = "4">Week 4</option>
+        <option value = "5">Week 5</option>
+        <option value = "6">Week 6</option>
+        <option value = "7">Week 7</option>
+        <option value = "8">Week 8</option>
+        <option value = "9">Week 9</option>
+        <option value = "10">Week 10</option>
+        <option value = "11">Week 11</option>
+        <option value = "12">Week 12</option>
+        <option value = "13">Week 13</option>
+        <option value = "14">Week 14</option>
+        <option value = "15">Week 15</option>
+        <option value = "16">Week 16</option>
+    </select>
+    </div>
+    <script>
+function generateSchedule(advisories) {
+    const schedule = [];
+    const numAdvisories = advisories.length;
+
+    // Ensure even number of advisories by adding a "Bye" if needed
+    if (numAdvisories % 2 !== 0) {
+        advisories.push("Bye");
+    }
+
+    const totalWeeks = advisories.length - 1; // Each advisory plays all others once
+    const halfSize = advisories.length / 2;
+
+    // Generate schedule using round-robin algorithm
+    for (let week = 0; week < totalWeeks; week++) {
+        const weekMatchups = [];
+
+        for (let i = 0; i < halfSize; i++) {
+            const home = advisories[i];
+            const away = advisories[advisories.length - 1 - i];
+            if (home !== "Bye" && away !== "Bye") {
+                weekMatchups.push(`${home} vs ${away}`);
+            }
+        }
+
+        schedule.push(weekMatchups);
+
+        // Rotate the array for the next week (except the first element)
+        advisories.splice(1, 0, advisories.pop());
+    }
+
+    return schedule;
+}
+
+// Render schedule in the table
+function renderSchedule(schedule) {
+    const scheduleTable = document.getElementById("schedule");
+
+    schedule.forEach((weekMatchups, index) => {
+        const row = document.createElement("tr");
+
+        // Week column
+        const weekCell = document.createElement("td");
+        weekCell.textContent = `Week ${index + 1}`;
+        row.appendChild(weekCell);
+
+        // Matchups column
+        const matchupCell = document.createElement("td");
+        matchupCell.innerHTML = weekMatchups.join("<br>");
+        row.appendChild(matchupCell);
+
+        scheduleTable.appendChild(row);
+    });
+}
+
+// Fetch advisories from Firebase and generate schedule
+async function fetchAdvisoriesAndGenerateSchedule() {
+    const advisories = [];
+
+    try {
+        const querySnapshot = await db.collection('advisory-olympics').get();
+        querySnapshot.forEach(doc => {
+            advisories.push(doc.data().name); // Assuming each document has a "name" field
+        });
+        const schedule = generateSchedule(advisories);
+        renderSchedule(schedule);
+    } catch (error) {
+        console.error("Error fetching advisories:", error);
+    }
+}
+
+// Execute on page load
+fetchAdvisoriesAndGenerateSchedule();
+    </script>
+</body>
+</html>

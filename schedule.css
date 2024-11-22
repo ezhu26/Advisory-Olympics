@@ -1,0 +1,82 @@
+body{
+    margin: 0px;
+}
+
+@font-face {
+    font-family: "San Francisco Bold";
+    font-weight: 700;
+    src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff");
+  }
+
+.standingsPage{
+    background-color: white;
+    /*align-items: center;*/
+    /*justify-content: center;*/
+}
+
+button{
+    position: relative;
+    padding: 1vw;
+    transition: width 0.4s ease-in-out;
+    background-color: rgb(227, 227, 227);
+    box-sizing: border-box;
+    border: none;
+    border-radius: 1vh;
+    font-family: "San Francisco Bold"; 
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
+
+}
+
+button:hover{
+    transition: width 0.4s ease-in-out;
+    background-color: rgb(247, 4, 4);
+    color: white;
+    transform: scale(1.1);
+    cursor: pointer;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 1vh;
+}
+
+h1{
+    font-family: "San Francisco Bold"; 
+    text-align: center;
+    background-color: #7A3333;
+    padding: 7vh;
+    width: 90.3vw;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    color: white;
+}
+
+h2{
+    font-family: "San Francisco Bold"; 
+    text-align: center;
+    font-style: italic;
+}
+
+/* this affects the table as a whole */
+table{
+    width: 98vw;
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    margin: 1vw;
+}
+/* this effects each cell */
+td, th {
+    border: 1px solid #000000;
+    text-align: left;
+    padding: 8px;
+  }
+
+  /* this affects each of the rows */
+tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+
+
+
+
+
+
+
