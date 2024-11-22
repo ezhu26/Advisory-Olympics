@@ -4,6 +4,12 @@ body{
     margin: 0;
     padding: 0;
 }
+.mainContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch; /* Ensure panels have equal height */
+  margin: 10px;
+}
 
 .header {
     background-color: rgba(97,39,52,255);
@@ -83,11 +89,12 @@ body{
     padding: 10px;
   }
 
-.advisor, .roster {
+.advisor,  .aboutGame {
     align-items: center; /* Align items vertically in the center */
     gap: 10px; /* Optional: space between elements */
     background-color: rgb(219, 219, 219);
     padding: 10px;
+    border-radius: 10px;
   }
 
   .advisor h1, .advisor img{
@@ -113,7 +120,7 @@ body{
 .advisor .advisorImage {
     height: 8vw; /* Keep image proportions */
     width: 8vw;
-    border-radius: 50%; /* Optional: make image circular */
+    border-radius: 50%; /* make image circular */
   }
 
   /* line containing the email */
@@ -132,24 +139,21 @@ body{
 
   .roster{
     align-items: center; /* Align items vertically in the center */
-    gap: 10px; /* Optional: space between elements */
+    gap: 10px; /* space between elements */
     background-color: rgb(219, 219, 219);
-    margin-right: 10px;
     margin-top: 20px;
     border-radius: 10px;
     padding: 10px;
     flex-wrap: wrap;
   }
 
-  .aboutGame, .schedule{
+ .schedule, .history{
     flex-wrap: wrap;
     align-items: center; /* Align items vertically in the center */
-    gap: 10px; /* Optional: space between elements */
-    background-color: rgb(219, 219, 219);
-    /* margin-left: 10px;
-    margin-right: 0px;
-    margin-top: 20px; */
-    border-radius: 20px;
+    gap: 10px; /*space between elements */
+    background-color: rgb(219, 219, 219); 
+    margin-top: 20px;
+    border-radius: 10px;
     padding: 10px;
     }
   
@@ -170,6 +174,7 @@ body{
   .roster ul li, .schedule ul li {
     margin-bottom: 10px; /* Adds 10px space below each list item */
 }
+
 
 
   
