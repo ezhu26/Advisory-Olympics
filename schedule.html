@@ -27,10 +27,11 @@
                 <th>Matchups</th>
             </tr>
         </thead>
+        <!--the table has an id called schedule that is called in the javascript-->
         <tbody id="schedule">
-            <!-- Schedule will be populated here by JavaScript -->
         </tbody>
     </table>
+    <!--this is something that I want to work on in the future, where each dropdown shows the new week-->
     <select>
         <option value = "1">Week 1</option>
         <option value = "2">Week 2</option>
@@ -50,79 +51,5 @@
         <option value = "16">Week 16</option>
     </select>
     </div>
-    <script>
-function generateSchedule(advisories) {
-    const schedule = [];
-    const numAdvisories = advisories.length;
-
-    // Ensure even number of advisories by adding a "Bye" if needed
-    if (numAdvisories % 2 !== 0) {
-        advisories.push("Bye");
-    }
-
-    const totalWeeks = advisories.length - 1; // Each advisory plays all others once
-    const halfSize = advisories.length / 2;
-
-    // Generate schedule using round-robin algorithm
-    for (let week = 0; week < totalWeeks; week++) {
-        const weekMatchups = [];
-
-        for (let i = 0; i < halfSize; i++) {
-            const home = advisories[i];
-            const away = advisories[advisories.length - 1 - i];
-            if (home !== "Bye" && away !== "Bye") {
-                weekMatchups.push(`${home} vs ${away}`);
-            }
-        }
-
-        schedule.push(weekMatchups);
-
-        // Rotate the array for the next week (except the first element)
-        advisories.splice(1, 0, advisories.pop());
-    }
-
-    return schedule;
-}
-
-// Render schedule in the table
-function renderSchedule(schedule) {
-    const scheduleTable = document.getElementById("schedule");
-
-    schedule.forEach((weekMatchups, index) => {
-        const row = document.createElement("tr");
-
-        // Week column
-        const weekCell = document.createElement("td");
-        weekCell.textContent = `Week ${index + 1}`;
-        row.appendChild(weekCell);
-
-        // Matchups column
-        const matchupCell = document.createElement("td");
-        matchupCell.innerHTML = weekMatchups.join("<br>");
-        row.appendChild(matchupCell);
-
-        scheduleTable.appendChild(row);
-    });
-}
-
-// Fetch advisories from Firebase and generate schedule
-async function fetchAdvisoriesAndGenerateSchedule() {
-    const advisories = [];
-
-    try {
-        const querySnapshot = await db.collection('advisory-olympics').get();
-        querySnapshot.forEach(doc => {
-            advisories.push(doc.data().name); // Assuming each document has a "name" field
-        });
-        const schedule = generateSchedule(advisories);
-        renderSchedule(schedule);
-    } catch (error) {
-        console.error("Error fetching advisories:", error);
-    }
-}
-
-// Execute on page load
-fetchAdvisoriesAndGenerateSchedule();
-    </script>
 </body>
 </html>
