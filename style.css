@@ -1,6 +1,6 @@
 header{
     background-color: #7a3333;
-    height: 130px;
+    height: 160px;
     font-size:25px;
     color: white;
     text-align:center;
@@ -12,7 +12,8 @@ button{
     background-color: lightgray;
     cursor: pointer;
     justify-content: center;
-    float:right
+    float:right;
+    border-radius: 20px;
     
 }
 button:hover{
@@ -20,8 +21,10 @@ button:hover{
     color:white;
     transform: scale(1.1);
     cursor:pointer
-}
-body{
-    background-color: #ffffff;
+
     
+}
+.buttons.button{
+    padding:10px;
+    font-size: 300px;
 }
