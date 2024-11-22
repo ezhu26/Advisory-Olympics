@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="makePage.css" rel="stylesheet" type="text/css" />
+    
+    <title>Advisory Page</title>
+</head>
+<body>
+    <script type="module" src="makePage.js"></script>
+    <script type="module">
+      import {buildAdvisoryPage} from './makePage.js';
+      window.buildAdvisoryPage = buildAdvisoryPage;
+    //   when this page is loaded the buildAdvisoryPage() function is called
+      buildAdvisoryPage();
+    </script>
+<!-- need to import java script -->
+<!-- ids allow to connect with javascript -->
+    <!-- header bar -->
+    <div class="header">
+        <div class = "headerBar">
+            <h1>Advisory</h1>
+        </div>
+<!-- navigation bar -->
+        <nav class = "navbar">
+            <ul>
+                <li><a href = "standings.html">Standings</a></li>
+                <li><a href = "projects.html"><b>Advisory</b></a></li>
+                <li><a href = "contact.html">Bracket</a></li>
+                <li><a href = "index.html">Home</a></li>
+
+            </ul>
+        </nav>
+    </div>
+    <!-- left side of the page -->
+    <div class = "mainContainer">
+    <div class = "leftPanel">
+        <div class = "advisor">
+            <h1>Advisor: <img src="Brodie.png" alt="Advisor Image" class = "advisorImage" id = "advisorPic"></h1>
+
+            <h2 id = "advisorName"></h2>
+            <div class = "contact">
+                <h2 >email:</h2>
+                <p id = "email"></p>
+            </div>
+            <p id = "advisorBio">
+               
+            </p>
+        </div>
+
+        <div class = "roster">
+            <h1>Roster</h1>
+                <ul id = "roster">
+
+                </ul>
+        </div>
+    </div>
+<!-- right side of the page -->
+    <div class = "rightPanel">
+        <div class = "aboutGame">
+            <h1>About Game</h1>
+            <h2 id = "gameName"></h2>
+            <p  id = "gameDesc">
+            </p>
+        </div>
+
+        <div class = "schedule">
+            <h1>Schedule</h1>
+                <ul id ="schedule">
+
+                </ul>
+        </div>
+
+        <div class = "history">
+            <h1>History</h1>
+            <p id = "history">
+            </p>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
