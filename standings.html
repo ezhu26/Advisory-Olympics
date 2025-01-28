@@ -3,47 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="standings.css" rel="stylesheet" type="text/css" />
-    <script src="script.js" defer></script>
-    <title>Standings</title>
+    <link href="schedule.css" rel="stylesheet" type="text/css" />
+    <script src="schedule.js" defer></script>
+    <title>Schedule</title>
 
 </head>
 <body>
-    <script type="module" src="standings.js"></script>
+    <script type="module" src="schedule.js"></script>
     <script type="module">
-      import {addItem, showItems, updateTeamRecord} from './standings.js';
+      import {addItem, showItems, updateTeamRecord} from './schedule.js';
       window.addItem = addItem;
       window.showItems = showItems;
-      window.updateTeamRecord = updateTeamRecord;
     </script>
-    <h1>Current Advisory Olympic Standings</h1>
-    <h2>Update Team Record</h2>
+    <h1>Advisory Olympic Schedule 2024</h1>
   
-<!--add a label and a text box-->
-  <label for="teamName">Enter Team Name:</label>
-  <input type="text" id="teamName" />
+    <label for="weekDropdown">Select Week:</label>
+    <select id="weekDropdown" onchange="displayWeekMatchups()">
+        <option value="" selected>Select a week</option>
+    </select>
 
-<!--add another label and text box-->
-  <label for="newRecord">New Record:</label>
-  <!--placeholder puts the gray text in-->
-  <input type="text" id="newRecord" placeholder="wins-losses-ties" />
-  <!--add a button that calls the update team record function-->
-  <button onclick="updateTeamRecord()">Update Record</button>
-   
-
-    <div class="standingsPage"></div>
-        <table id="table">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Advisory</th>
-                    <th>Points</th>
-                    <th>Record</th>
-                </tr>
-            </thead>
-            <tbody id="body">
-            </tbody>
-        </table>
+    <div id="matchupDisplay">
+        <h2>Matchups</h2>
+        <div id="matchups"></div>
     </div>
+    
+    <div class="schedulePage"></div>
+    <table>
+        <caption>Full Schedule</caption>
+        <thead>
+            <tr>
+                <th>Week</th>
+                <th>Matchups</th>
+            </tr>
+        </thead>
+       <!--the table has an id called schedule that is called in the javascript-->
+        <tbody id="schedule">
+        </tbody>
+    </table>
+    <!--this is something that I want to work on in the future, where each dropdown shows the new week-->
+    </div> 
 </body>
 </html>
