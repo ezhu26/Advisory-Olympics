@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<header>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet" type="text/css" />
     <title>Document</title>
+    </head>
+    <header>
     <br> <div>
         <p>Advisory Olympics</p>
         
     <button onclick="location.href = 'standings.html'" id="Standings">Standings</button>
        <!-- this makes a button that goes to standings page -->
-        <button onclick="location.href = 'advisories.html'">Advisories</button>
+        <button onclick="">Advisories</button>
         
-        <button onclick="">Bracket</button>
+        <button onclick="location.href = 'bracket.html'">Bracket</button>
         <button onclick="location.href = 'schedule.html'">Schedule</button>
     
 </div>
@@ -30,9 +32,9 @@
         </div>
        
         </div>
-     <script type="module" src="script.js"></script>
+        <script type="module"></script>
     <script type ="module">
-        import{login} from "/script.js";
+        import {login} from "./script.js";
         window.login = login;
     </script>
 </body>
