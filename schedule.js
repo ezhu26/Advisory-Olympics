@@ -15,10 +15,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+let schedule = [];
 //this function generates the schedule by taking a list, advisories
 function generateSchedule(advisories) {
-    //create a empty list where the schedule will be
-    const schedule = [];
     //create a value for the number of adisories
     const numAdvisories = advisories.length;
 
@@ -43,10 +42,13 @@ function generateSchedule(advisories) {
             //the away team is the one on the backend of the alphabetical list for week 1
             const away = advisories[advisories.length - 1 - i];
             //as long as a Bye isn't in the matchup, add it to the list
-            if (home !== "Bye" && away !== "Bye") {
-                //add the text content to the list
+            if (home === "Bye") {
+                weekMatchups.push(`${away} is on a Bye`);
+            } else if (away === "Bye") {
+                weekMatchups.push(`${home} is on a Bye`);
+            } else {
                 weekMatchups.push(`${home} vs ${away}`);
-            }
+            } 
         }
         //add week matchups to the schedule
         schedule.push(weekMatchups);
@@ -58,10 +60,12 @@ function generateSchedule(advisories) {
     return schedule;
 }
 
+
 //render schedule in the table
 function renderSchedule(schedule) {
     //access the table in HTML called schedule
     const scheduleTable = document.getElementById("schedule");
+    const weekDropdown = document.getElementById("weekDropdown");
 
     //for each week, create a row in the table
     schedule.forEach((weekMatchups, index) => {
@@ -86,7 +90,66 @@ function renderSchedule(schedule) {
 
         //add the row to the table
         scheduleTable.appendChild(row);
+
+        const option = document.createElement("option");
+        option.value = index; 
+        option.textContent = `Week ${index + 1}`;
+        weekDropdown.appendChild(option);
     });
+}
+//this function displays the current week matchups through the dropdown menu
+function displayWeekMatchups() {
+    //access the dropdown from the html
+    const weekDropdown = document.getElementById("weekDropdown");
+    //depending on what week is selected in the dropdown, make that the selected week
+    const selectedWeek = weekDropdown.value; 
+    //this is for displaying the matchups once it is selected
+    const matchupDisplay = document.getElementById("matchups");
+    //if the week that is selected exists
+    if (selectedWeek !== "") {
+        //access the global variable schedule with the selected week
+        const matchups = schedule[selectedWeek];
+        //clear the previous display
+        matchupDisplay.innerHTML = ""; 
+        //create a container for the matchups
+        const matchupContainer = document.createElement("div");
+        //create a class called matchup container
+        matchupContainer.className = "matchup-container";
+        //add each matchup as a card
+        matchups.forEach(matchup => {
+            if (matchup.toLowerCase().indexOf("bye") === -1){
+            //create a new card for each matchup
+            const card = document.createElement("div");
+            //add each card to a class called matchup-card
+            card.className = "matchup-card";
+            //create "teams" that are split with a versus sign
+            const teams = matchup.split(" vs ");
+            //in each card, add the home team, a "vs.", and the away team
+            card.innerHTML = `
+                <div class="team home-team">${teams[0]}</div>
+                <div class="versus">vs</div>
+                <div class="team away-team">${teams[1]}</div>
+            `;
+            //add the card to the overall matchup container
+            matchupContainer.appendChild(card);
+            } else {
+                const card = document.createElement("div");
+                //add each card to a class called matchup-card
+                card.className = "matchup-card";
+                const teams = matchup.split(" is on a ");
+                card.innerHTML = `
+                    <div class="team home-team">${teams[0]}</div>
+                    <div class="is-on-a">is on a<div/>
+                    <div class="team bye">Bye</div>
+                    `;
+                    matchupContainer.appendChild(card);
+            }
+        });
+        //add the container to the display
+        matchupDisplay.appendChild(matchupContainer);
+    } else {
+        matchupDisplay.innerHTML = "No week selected.";
+    }
 }
 
 //this gets the advisories from firebase and adds them to a list
@@ -114,3 +177,4 @@ async function getAdvisories() {
 }
 //call the fetch function
 getAdvisories();
+window.displayWeekMatchups = displayWeekMatchups;
