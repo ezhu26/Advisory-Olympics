@@ -20,11 +20,12 @@ let schedule = [];
 function generateSchedule(advisories) {
     //create a value for the number of adisories
     const numAdvisories = advisories.length;
+    console.log("hi");
 
     //ensure even number of advisories by adding a "Bye" if needed
     if (numAdvisories % 2 !== 0) {
         //add a bye to the end of the list
-        advisories.push("Bye");
+        advisories.push({ id: null, name: "Bye" });
     }
     //get a total weeks to make sure each advisory plays the other ones just once
     const totalWeeks = advisories.length - 1; 
@@ -43,24 +44,109 @@ function generateSchedule(advisories) {
             const away = advisories[advisories.length - 1 - i];
             //as long as a Bye isn't in the matchup, add it to the list
             if (home === "Bye") {
-                weekMatchups.push(`${away} is on a Bye`);
+                weekMatchups.push(`${away.name} is on a Bye`);
+                updateSchedule(away.id, week, "Bye")
             } else if (away === "Bye") {
-                weekMatchups.push(`${home} is on a Bye`);
+                weekMatchups.push(`${home.name} is on a Bye`);
+                updateSchedule(home.id, week, "Bye")
             } else {
-                weekMatchups.push(`${home} vs ${away}`);
+                weekMatchups.push(`${home.name} vs ${away.name}`);
+                updateSchedule(home.id, week, away.name)
+                updateSchedule(away.id, week, home.name)
             } 
         }
         //add week matchups to the schedule
         schedule.push(weekMatchups);
 
+        
         //rotate the array for the next week (except the first element)
-        advisories.splice(1, 0, advisories.pop());
+        const last = advisories.pop();
+        advisories.splice(1, 0, last);
     }
     //return the schedule list, which has the week matchups
     return schedule;
 }
 
+//if schedule already exists, this is used to pull from firebase
+function getFirebaseSchedule(advisories) {
+    //make an empty list for adding matchups
+    let firebaseSchedule = []
+    //create a value for the number of adisories
+    const numAdvisories = advisories.length;
 
+    //get a total weeks to make sure each advisory plays the other ones just once
+    const totalWeeks = advisories.length - 1; 
+    //generate schedule using round-robin algorithm
+    for (let week = 0; week < totalWeeks; week++) {
+        //empty list for each weeks matchups
+        let weekMatchups = [];
+        //for each advisory
+        advisories.forEach(advisory => {
+            //pull the opponent from the matchup that week that is already loaded into firebase
+            const opponent = advisory[`week${week + 1}`];
+            //if an opponent exists and the matchup does not already exist in the list
+            if (opponent && !weekMatchups.includes(`${opponent} vs ${advisory.name}`) 
+                && !weekMatchups.includes(`${advisory.name} vs ${opponent}`)) {
+                //if the opponent is a bye, add that it is on a bye
+                if (opponent === "Bye") {
+                    weekMatchups.push(`${advisory.name} is on a Bye`);
+                //otherwise, add the matchup to the week matchups list
+                } else {
+                    weekMatchups.push(`${advisory.name} vs ${opponent}`);
+                }
+            }
+        });
+        //add the week to the entire schedule
+        firebaseSchedule.push(weekMatchups);
+    }
+    //return the fetched schedule
+    return firebaseSchedule;
+}
+
+//called from getSchedule and updates in firebase
+//not used if it is fetching from firebase already
+async function updateSchedule(teamId, week, otherteam) {
+    //if team doesn't exist
+    if (!teamId) return;
+    //attempt to update doc
+    try {
+        //doc1 is the advisory that is attempting to be updated
+        const doc1 = doc(db, "advisory-olympics", teamId)
+        //update the doc by adding the week and opponent
+        //week+1 is because it starts at week 0
+        await updateDoc(doc1,  {[`week${week + 1}`]: otherteam },);
+        //print the update
+        console.log(`Updated ${teamId} for week ${week + 1}: Opponent is ${otherteam}`);
+        //if error, print
+    } catch (error) {
+        console.error(`Error updating document for ${teamId}:`, error);
+    }
+}
+
+//if a new schedule needs to be generated, this is called in getAdvisories
+function generateNewSchedule() {
+    //clear schedule list
+    document.getElementById("schedule").innerHTML = "";
+    //clear weekDropdown
+    document.getElementById("weekDropdown").innerHTML = "<option value=''>Select Week</option>";
+    //pull the advisory olympics collection from firebase
+    document.getElementById("matchups").innerHTML = "";
+    //then make a list 
+    getDocs(collection(db, "advisory-olympics")).then((list) => {
+        //make an array called advisories
+        const advisories = [];
+        //add each doc from firebase into advisories
+        //attach the id from the doc to the data
+        list.forEach(doc => advisories.push({ id: doc.id, ...doc.data() }));
+        //generate the new schedule with the list of advisories
+        schedule = generateSchedule(advisories);
+        //render the schedule on the table
+        renderSchedule(schedule);
+    });
+}
+
+//add event listener to the generate button
+document.getElementById("generateButton").addEventListener("click", generateNewSchedule);
 //render schedule in the table
 function renderSchedule(schedule) {
     //access the table in HTML called schedule
@@ -161,18 +247,32 @@ async function getAdvisories() {
     try {
         //add the docs from firebase to a list
         const list = await getDocs(collection(db, "advisory-olympics"));
+        let scheduleExists = false;
+
         //for each doc in the list
         list.forEach(doc => {
             //add the name of each advisory to the advisories list
-            advisories.push(doc.data().name); 
-        });
-        //generate a schedule with the list of advisory names
-        const schedule = generateSchedule(advisories);
+            advisories.push({ id: doc.id, ...doc.data() }); 
+
+        for (let i = 1; i <= advisories.length - 1; i++) {
+            if (doc.data()[`week${i+1}`]) {
+                scheduleExists = true;
+            }
+        }
+        console.log("hi")
+    });
+    if (scheduleExists == true) {
+        console.log("Schedule already exists");
+        schedule = getFirebaseSchedule(advisories);
+    } else {
+        console.log("Making new schedule");
+        schedule = generateSchedule(advisories); 
+    }
         //render the newly created schedule onto the table
         renderSchedule(schedule);
     //if the firebase fetching doesn't work, print an error
     } catch (error) {
-        console.error("Error fetching advisories:");
+        console.error("Error getting advisories:");
     }
 }
 //call the fetch function
