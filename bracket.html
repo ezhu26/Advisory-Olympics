@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bracket.css" rel="stylesheet" type="text/css" />
+    <script src="script.js" defer></script>
+    <title>Standings</title>
+
+</head>
+<h1>
+Bracket
+<button style = "float:right" onclick="location.href = 'index.html'">Home page</button>
+</h1>
+<center>
+<label for="round">Select a round</label>
+<select name="round" id="round">
+    <option id = "16">Round of 16</option>
+    <option id = "8">Round of 8</option>
+    <option id = "4">Final 4</option>
+    <option id = "2">Championship</option>
+</center>
+</select>
+<body>
+    <div class = "bracket">
+    <div class = "left_side">
+        <div class = "card" style = "float:right">
+            <p id="1seed">Team 1</p> 
+            vs
+            <br> Team 16
+        </div>
+        <div class = "card">
+            Team 8 <br>
+            vs
+            <br> Team 9
+        </div>
+        <div class = "card">
+            Team 4 <br>
+            vs
+            <br> Team 13
+        </div>
+        <div class = "card">
+            Team 5 <br>
+            vs
+            <br> Team 12
+        </div>
+    </div>
+    <div class = "right_side">
+        <div class = "card">
+            Team 2 <br>
+            vs
+            <br> Team 15
+        </div>
+        <div class = "card">
+            Team 7 <br>
+            vs
+            <br> Team 10
+        </div>
+        <div class = "card">
+            Team 3 <br>
+            vs
+            <br> Team 14
+        </div>
+        <div class = "card">
+            Team 6 <br>
+            vs
+            <br> Team 11
+        </div>
+    </div>
+}
+    </div>
+    
+</body>
+</html>
