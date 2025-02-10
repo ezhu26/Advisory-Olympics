@@ -11,18 +11,27 @@
 <body>
     <script type="module" src="schedule.js"></script>
     <script type="module">
-      import {addItem, showItems, updateTeamRecord} from './schedule.js';
+      import {addItem, showItems, updateTeamRecord, displayWeekMatchups} from './schedule.js';
       window.addItem = addItem;
       window.showItems = showItems;
+      window.displayWeekMatchups = displayWeekMatchups;
     </script>
     <h1>Advisory Olympic Schedule 2024</h1>
-  
+    <!--this is the dropdown-->
     <label for="weekDropdown">Select Week:</label>
+    <!--when an option is clicked, display the weekly matchups-->
     <select id="weekDropdown" onchange="displayWeekMatchups()">
         <option value="" selected>Select a week</option>
     </select>
-
+    <!--generate a new schedule with this button-->
     <button id="generateButton">Generate New Schedule</button>
+
+    <h3> 
+        <!--I couldn't get the style to work in the css for some reason so I put it here-->
+        <!--this displays the true date of today-->
+        Today’s Date: <div id="date-display" style="margin-left: 10px;"></div>
+    </h3>
+    <!--this is the container for the cards of matchup display-->
     <div id="matchupDisplay">
         <h2>Matchups</h2>
         <div id="matchups"></div>
