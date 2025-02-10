@@ -15,12 +15,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-let schedule = [];
+let scheduleWithDates = [];
 //this function generates the schedule by taking a list, advisories
 function generateSchedule(advisories) {
     //create a value for the number of adisories
     const numAdvisories = advisories.length;
     console.log("hi");
+    //create array with dates
+    const scheduleWithDates = [];
+    //create the start date for the year
+    let startDate = new Date(); 
+    //set the date
+    startDate.setDate(startDate.getDate() + (1 - startDate.getDay()));
 
     //ensure even number of advisories by adding a "Bye" if needed
     if (numAdvisories % 2 !== 0) {
@@ -37,6 +43,9 @@ function generateSchedule(advisories) {
         //empty list for each weeks matchups
         const weekMatchups = [];
         //for each week, make matchups
+        const weekDate = new Date(startDate); 
+        //get the date as the locale date 
+        const formattedDate = weekDate.toLocaleDateString();
         for (let i = 0; i < halfSize; i++) {
             //the home team
             const home = advisories[i];
@@ -45,26 +54,28 @@ function generateSchedule(advisories) {
             //as long as a Bye isn't in the matchup, add it to the list
             if (home === "Bye") {
                 weekMatchups.push(`${away.name} is on a Bye`);
-                updateSchedule(away.id, week, "Bye")
+                updateSchedule(away.id, week, "Bye", formattedDate)
             } else if (away === "Bye") {
                 weekMatchups.push(`${home.name} is on a Bye`);
-                updateSchedule(home.id, week, "Bye")
+                updateSchedule(home.id, week, "Bye", formattedDate)
             } else {
                 weekMatchups.push(`${home.name} vs ${away.name}`);
-                updateSchedule(home.id, week, away.name)
-                updateSchedule(away.id, week, home.name)
+                updateSchedule(home.id, week, away.name, formattedDate)
+                updateSchedule(away.id, week, home.name, formattedDate)
             } 
         }
         //add week matchups to the schedule
-        schedule.push(weekMatchups);
+        scheduleWithDates.push({ matchups: weekMatchups, date: formattedDate });
 
         
         //rotate the array for the next week (except the first element)
         const last = advisories.pop();
         advisories.splice(1, 0, last);
+        //add a week to the date
+        startDate.setDate(startDate.getDate() + 7);
     }
     //return the schedule list, which has the week matchups
-    return schedule;
+    return scheduleWithDates;
 }
 
 //if schedule already exists, this is used to pull from firebase
@@ -73,7 +84,6 @@ function getFirebaseSchedule(advisories) {
     let firebaseSchedule = []
     //create a value for the number of adisories
     const numAdvisories = advisories.length;
-
     //get a total weeks to make sure each advisory plays the other ones just once
     const totalWeeks = advisories.length - 1; 
     //generate schedule using round-robin algorithm
@@ -83,7 +93,7 @@ function getFirebaseSchedule(advisories) {
         //for each advisory
         advisories.forEach(advisory => {
             //pull the opponent from the matchup that week that is already loaded into firebase
-            const opponent = advisory[`week${week + 1}`];
+            const opponent = advisory[`week${week + 1}`]?.opponent;
             //if an opponent exists and the matchup does not already exist in the list
             if (opponent && !weekMatchups.includes(`${opponent} vs ${advisory.name}`) 
                 && !weekMatchups.includes(`${advisory.name} vs ${opponent}`)) {
@@ -105,7 +115,7 @@ function getFirebaseSchedule(advisories) {
 
 //called from getSchedule and updates in firebase
 //not used if it is fetching from firebase already
-async function updateSchedule(teamId, week, otherteam) {
+async function updateSchedule(teamId, week, otherteam, date1) {
     //if team doesn't exist
     if (!teamId) return;
     //attempt to update doc
@@ -114,9 +124,17 @@ async function updateSchedule(teamId, week, otherteam) {
         const doc1 = doc(db, "advisory-olympics", teamId)
         //update the doc by adding the week and opponent
         //week+1 is because it starts at week 0
-        await updateDoc(doc1,  {[`week${week + 1}`]: otherteam },);
+        await updateDoc(doc1, {
+            //create a map type thing with the week as the head
+            [`week${week + 1}`]: {
+                //add opponent
+                //and date
+                opponent: otherteam,
+                date: date1  
+            },
+        });
         //print the update
-        console.log(`Updated ${teamId} for week ${week + 1}: Opponent is ${otherteam}`);
+        console.log(`Updated ${teamId} for week ${week + 1}: Opponent is ${otherteam} on ${date1}`);
         //if error, print
     } catch (error) {
         console.error(`Error updating document for ${teamId}:`, error);
@@ -148,13 +166,13 @@ function generateNewSchedule() {
 //add event listener to the generate button
 document.getElementById("generateButton").addEventListener("click", generateNewSchedule);
 //render schedule in the table
-function renderSchedule(schedule) {
+function renderSchedule(scheduleWithDates) {
     //access the table in HTML called schedule
     const scheduleTable = document.getElementById("schedule");
     const weekDropdown = document.getElementById("weekDropdown");
 
     //for each week, create a row in the table
-    schedule.forEach((weekMatchups, index) => {
+    scheduleWithDates.forEach((weekData, index) => {
         //add a row
         const row = document.createElement("tr");
 
@@ -162,7 +180,7 @@ function renderSchedule(schedule) {
         //add a cell 
         const weekCell = document.createElement("td");
         //week + the text content of the index + 1 so the weeks keep adding up
-        weekCell.textContent = `Week ${index + 1}`;
+        weekCell.textContent = `Week ${index + 1} - ${weekData.date}`;
         //add the week cell to the row
         row.appendChild(weekCell);
 
@@ -170,7 +188,7 @@ function renderSchedule(schedule) {
         //add a cell
         const matchupCell = document.createElement("td");
         //add the matchups from the list
-        matchupCell.innerHTML = weekMatchups.join("<br>");
+        matchupCell.innerHTML = weekData.join("<br>");
         //add the cell to the row
         row.appendChild(matchupCell);
 
@@ -194,7 +212,7 @@ function displayWeekMatchups() {
     //if the week that is selected exists
     if (selectedWeek !== "") {
         //access the global variable schedule with the selected week
-        const matchups = schedule[selectedWeek];
+        const matchups = scheduleWithDates[selectedWeek];
         //clear the previous display
         matchupDisplay.innerHTML = ""; 
         //create a container for the matchups
@@ -222,6 +240,7 @@ function displayWeekMatchups() {
                 const card = document.createElement("div");
                 //add each card to a class called matchup-card
                 card.className = "matchup-card";
+                //split the bye by the words is on a 
                 const teams = matchup.split(" is on a ");
                 card.innerHTML = `
                     <div class="team home-team">${teams[0]}</div>
@@ -237,44 +256,55 @@ function displayWeekMatchups() {
         matchupDisplay.innerHTML = "No week selected.";
     }
 }
+window.displayWeekMatchups = displayWeekMatchups;
 
 //this gets the advisories from firebase and adds them to a list
 async function getAdvisories() {
     //create an empty list of the advisories
     const advisories = [];
-
+    
     //this attempts to get the advisories from firebase
     try {
         //add the docs from firebase to a list
         const list = await getDocs(collection(db, "advisory-olympics"));
-        let scheduleExists = false;
-
-        //for each doc in the list
+        //for each item in the list
         list.forEach(doc => {
-            //add the name of each advisory to the advisories list
-            advisories.push({ id: doc.id, ...doc.data() }); 
-
-        for (let i = 1; i <= advisories.length - 1; i++) {
-            if (doc.data()[`week${i+1}`]) {
-                scheduleExists = true;
+            //add the id, not the name, and then the data to the list of advisoires
+            //it is called by the id so it is easier to update the schedule in firebase
+            advisories.push({ id: doc.id, ...doc.data() });
+        });
+        //determine if the schedule exists based on the for loop
+        let scheduleExists = advisories.some(advisory => {
+            for (let i = 1; i <= advisories.length - 1; i++) {
+                //if an advisory has weeks in it return true
+                if (advisory[`week${i}`]) {
+                    return true;
+                }
             }
+            //otherwise return false
+            return false;
+        });
+        //if it exists, call the schedule from firebase
+        if (scheduleExists) {
+            console.log("Schedule already exists");
+            //call this here
+            scheduleWithDates = getFirebaseSchedule(advisories);
+            //if the schedule doesn't exist, generate a new schedule
+        } else {
+            console.log("Making new schedule");
+            scheduleWithDates = generateSchedule(advisories);
         }
-        console.log("hi")
-    });
-    if (scheduleExists == true) {
-        console.log("Schedule already exists");
-        schedule = getFirebaseSchedule(advisories);
-    } else {
-        console.log("Making new schedule");
-        schedule = generateSchedule(advisories); 
-    }
         //render the newly created schedule onto the table
-        renderSchedule(schedule);
+        renderSchedule(scheduleWithDates);
     //if the firebase fetching doesn't work, print an error
     } catch (error) {
         console.error("Error getting advisories:");
     }
 }
+
+const currentDate = new Date();
+const formattedDate = currentDate.toLocaleDateString();
+//display the date in the div
+document.getElementById("date-display").innerHTML = formattedDate;
 //call the fetch function
 getAdvisories();
-window.displayWeekMatchups = displayWeekMatchups;
