@@ -22,7 +22,7 @@ function generateSchedule(advisories) {
     const numAdvisories = advisories.length;
     console.log("hi");
     //create array with dates
-    const scheduleWithDates = [];
+
     //create the start date for the year
     let startDate = new Date(); 
     //set the date
@@ -296,10 +296,35 @@ async function getAdvisories() {
         }
         //render the newly created schedule onto the table
         renderSchedule(scheduleWithDates);
+
+        selectCurrentWeek();
     //if the firebase fetching doesn't work, print an error
     } catch (error) {
         console.error("Error getting advisories:");
     }
+}
+
+function selectCurrentWeek() {
+    const currentDate = new Date();
+    let closestWeekIndex = 0;
+    let minDiff = Infinity;
+
+    scheduleWithDates.forEach((weekData, index) => {
+        const weekDate = new Date(weekData.date);
+        const diff = Math.abs(currentDate - weekDate);
+
+        if (diff < minDiff) {
+            minDiff = diff;
+            closestWeekIndex = index;
+        }
+    });
+
+    // Set the dropdown to the closest week
+    const weekDropdown = document.getElementById("weekDropdown");
+    weekDropdown.value = closestWeekIndex;
+    
+    // Trigger the display function
+    displayWeekMatchups();
 }
 
 const currentDate = new Date();
