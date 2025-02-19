@@ -19,6 +19,7 @@ let scheduleWithDates = [];
 //this function generates the schedule by taking a list, advisories
 function generateSchedule(advisories) {
     //create a value for the number of adisories
+    
     const numAdvisories = advisories.length;
     console.log("hi");
     //create array with dates
@@ -41,12 +42,16 @@ function generateSchedule(advisories) {
     //generate schedule using round-robin algorithm
     for (let week = 0; week < totalWeeks; week++) {
         //empty list for each weeks matchups
+        shuffleArray(advisories);
         const weekMatchups = [];
         //for each week, make matchups
         const weekDate = new Date(startDate); 
         //get the date as the locale date 
-        const formattedDate = weekDate.toLocaleDateString();
+        const formattedDate = weekDate.toISOString();
         for (let i = 0; i < halfSize; i++) {
+
+            let homeBoolean = Math.random() > 0.5;  // Randomize home vs away
+            let awayBoolean = !homeBoolean;
             //the home team
             const home = advisories[i];
             //the away team is the one on the backend of the alphabetical list for week 1
@@ -54,18 +59,19 @@ function generateSchedule(advisories) {
             //as long as a Bye isn't in the matchup, add it to the list
             if (home === "Bye") {
                 weekMatchups.push(`${away.name} is on a Bye`);
-                updateSchedule(away.id, week, "Bye", formattedDate)
+                updateSchedule(away.id, week, "Bye", formattedDate, homeBoolean, awayBoolean)
             } else if (away === "Bye") {
                 weekMatchups.push(`${home.name} is on a Bye`);
-                updateSchedule(home.id, week, "Bye", formattedDate)
+                updateSchedule(home.id, week, "Bye", formattedDate, homeBoolean, awayBoolean)
             } else {
                 weekMatchups.push(`${home.name} vs ${away.name}`);
-                updateSchedule(home.id, week, away.name, formattedDate)
-                updateSchedule(away.id, week, home.name, formattedDate)
+                updateSchedule(home.id, week, away.name, formattedDate, homeBoolean, awayBoolean)
+                updateSchedule(away.id, week, home.name, formattedDate, homeBoolean, awayBoolean)
             } 
         }
         //add week matchups to the schedule
-        scheduleWithDates.push({ matchups: weekMatchups, date: formattedDate });
+        shuffleArray(weekMatchups)
+        scheduleWithDates.push({date: formattedDate, matchups: weekMatchups});
 
         
         //rotate the array for the next week (except the first element)
@@ -76,6 +82,13 @@ function generateSchedule(advisories) {
     }
     //return the schedule list, which has the week matchups
     return scheduleWithDates;
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    }
 }
 
 //if schedule already exists, this is used to pull from firebase
@@ -115,7 +128,7 @@ function getFirebaseSchedule(advisories) {
 
 //called from getSchedule and updates in firebase
 //not used if it is fetching from firebase already
-async function updateSchedule(teamId, week, otherteam, date1) {
+async function updateSchedule(teamId, week, otherteam, date1, home, away) {
     //if team doesn't exist
     if (!teamId) return;
     //attempt to update doc
@@ -130,7 +143,9 @@ async function updateSchedule(teamId, week, otherteam, date1) {
                 //add opponent
                 //and date
                 opponent: otherteam,
-                date: date1  
+                date: date1 , 
+                home: home,
+                away: away
             },
         });
         //print the update
@@ -157,9 +172,9 @@ function generateNewSchedule() {
         //attach the id from the doc to the data
         list.forEach(doc => advisories.push({ id: doc.id, ...doc.data() }));
         //generate the new schedule with the list of advisories
-        schedule = generateSchedule(advisories);
+        scheduleWithDates = generateSchedule(advisories);
         //render the schedule on the table
-        renderSchedule(schedule);
+        renderSchedule(scheduleWithDates);
     });
 }
 
@@ -294,37 +309,48 @@ async function getAdvisories() {
             console.log("Making new schedule");
             scheduleWithDates = generateSchedule(advisories);
         }
+        console.log("Schedule with Dates:", JSON.stringify(scheduleWithDates, null, 2));
+
         //render the newly created schedule onto the table
         renderSchedule(scheduleWithDates);
 
-        selectCurrentWeek();
+        selectCurrentWeek(scheduleWithDates);
     //if the firebase fetching doesn't work, print an error
     } catch (error) {
         console.error("Error getting advisories:");
     }
 }
 
-function selectCurrentWeek() {
+function selectCurrentWeek(scheduleWithDates) {
     const currentDate = new Date();
-    let closestWeekIndex = 0;
-    let minDiff = Infinity;
+    let selectedWeekIndex = 0;
 
-    scheduleWithDates.forEach((weekData, index) => {
-        const weekDate = new Date(weekData.date);
-        const diff = Math.abs(currentDate - weekDate);
+    console.log("scheduleWithDates:", scheduleWithDates); // Debugging
 
-        if (diff < minDiff) {
-            minDiff = diff;
-            closestWeekIndex = index;
+    for (let i = 0; i < scheduleWithDates.length; i++) {
+        const weekDate = new Date(scheduleWithDates[i].date).getTime(); // Using getTime for comparison
+        const currentDateTime = currentDate.getTime();
+
+        console.log(`Week ${i + 1} Date:`, weekDate, "Current Date:", currentDateTime); // Debugging output
+
+        if (weekDate > currentDateTime) {
+            selectedWeekIndex = i;
+            break;
+        } else {
+            selectedWeekIndex = i;
         }
-    });
+    }
 
-    // Set the dropdown to the closest week
-    const weekDropdown = document.getElementById("weekDropdown");
-    weekDropdown.value = closestWeekIndex;
-    
-    // Trigger the display function
-    displayWeekMatchups();
+    // Ensure valid index
+    if (selectedWeekIndex >= 0 && selectedWeekIndex < scheduleWithDates.length) {
+        const weekDropdown = document.getElementById("weekDropdown");
+        weekDropdown.value = selectedWeekIndex;
+        displayWeekMatchups();
+    } else {
+        console.error("Invalid selected week index");
+    }
+
+    document.getElementById("current-week").innerHTML = selectedWeekIndex + 1;
 }
 
 const currentDate = new Date();
@@ -333,3 +359,9 @@ const formattedDate = currentDate.toLocaleDateString();
 document.getElementById("date-display").innerHTML = formattedDate;
 //call the fetch function
 getAdvisories();
+
+
+//TO DO:
+//Fix current week and date
+//Make schedule algorithm making more random
+//Add home/away boolean to each advisory each week
