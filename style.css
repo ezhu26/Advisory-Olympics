@@ -1,30 +1,204 @@
-header{
-    background-color: #7a3333;
-    height: 160px;
+body{
+  background-color: rgb(255, 255, 255);
+  /*font-size: 20px;*/
+  margin: 0;
+  padding: 0;
+}
+h1{
+  background-color: rgba(97,39,52,255);
+  font-size: 4vw;
+  font-family: "DM Serif Display", serif;
+  font-weight: 500;
+  font-style: bold;
+  color: rgb(248, 248, 244);
+  letter-spacing: 2px;
+}
+.header{
+    background-color: rgba(97,39,52,255);
+    /* height: 160px; */
     font-size:25px;
     color: white;
     text-align:center;
-
+    margin-bottom: none;
+    padding-top: 10px;
 }
 button{
+    background-color: rgba(97,39,52,255);
+    color: rgb(248, 248, 244);
     padding: 15px;
-    margin-right: 10px;
-    background-color: lightgray;
-    cursor: pointer;
-    justify-content: center;
-    float:right;
-    border-radius: 20px;
-    
+    display: block;
+    text-align: center;
+    font-size: 2vw;
+    border: none;
 }
 button:hover{
-    background-color: gray;
-    color:white;
-    transform: scale(1.1);
+    background-color: rgb(248, 248, 244);
+    color:rgba(97,39,52,255);
     cursor:pointer
-
-    
 }
-.buttons.button{
+/* .buttons.button{
     padding:10px;
     font-size: 300px;
+} */
+
+/* line for the navigation bar */
+.navbar ul{
+    list-style-type: none;
+    background-color:rgba(97,39,52,255);
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
 }
+
+/* text per each individual block */
+.navbar a{
+    color: rgb(248, 248, 244);
+    text-decoration: none;
+    padding: 15px;
+    display: block;
+    text-align: center;
+    font-size: 2vw;
+    transition: 0.2s;
+}
+
+/* Float "left" li to the left */
+#left {
+    float: left;
+}
+
+/* Float all other list items to the right */
+.navbar ul > li:not(#left) {
+    float: right;
+}
+
+.navbar a:hover{
+    background-color: rgb(248, 248, 244);
+    color:rgba(97,39,52,255);
+}
+
+.mainContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; 
+    margin: 10px;
+  }
+
+.locations, .standings {
+    align-items: center; /* Align items vertically in the center */
+    /* gap: 10px; Optional: space between elements  */
+    background-color: rgb(247, 247, 247); 
+    padding: 10px; 
+    border-radius: 10px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+     
+ }
+
+.locations {
+  flex-wrap: wrap;
+  width: 46%;
+  align-items: center; 
+  gap: 10px;
+  margin-left: 30px;
+  margin-right: 0px;
+  margin-top: 10px;
+  padding: 10px;
+  /* background-color: rgb(232, 232, 232); */
+
+}
+
+.standings {
+    flex-wrap: wrap;
+    width: 46%;
+    align-items: center;
+    gap: 10px; 
+    margin-right: 30px;
+    margin-left:0px;
+    margin-top: 10px;
+    border-radius: 10px;
+    padding: 10px;    
+    /* background-color: rgb(219, 219, 219); */
+    overflow: auto;
+  }
+
+
+/* this affects the table as a whole */
+table{
+    width: 100%;
+    table-layout: auto;
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    margin: 1vw;
+    
+}
+/* this effects each cell */
+td, th {
+    border: 1px solid #000000;
+    text-align: left;
+    padding: 8px;
+  }
+
+  /* this affects each of the rows */
+tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+
+
+  /* Dropdown Button */
+/* .dropbtn {
+    background-color: #3498DB;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  } */
+  
+  /* Dropdown button on hover & focus */
+  /* .dropbtn:hover, .dropbtn:focus {
+    background-color: #2980B9;
+  } */
+  
+  /* The container <div> - needed to position the dropdown content */
+
+  .advisory{
+    width: 100%;
+  }
+
+  .dropdown {
+    position: absolute;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 205px; /* Distance from top */
+    right: 50px; /* Distance from left */
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  @media (max-width: 1200px) {
+    .dropdown-content {
+      top: 95px;
+      right: 30px;
+    }
+  }
+  
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {background-color: #ddd;}
+  
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .show {display:block;}
