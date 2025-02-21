@@ -10,25 +10,42 @@
 <body>
     <script type="module" src="makePage.js"></script>
     <script type="module">
-      import {buildAdvisoryPage} from './makePage.js';
+      import {buildAdvisoryPage, allowEdit, openDropdown, editRoster,} from './makePage.js';
+      
+      import{login} from "/script.js";
       window.buildAdvisoryPage = buildAdvisoryPage;
+      //defines it locally for this page
+      window.allowEdit = allowEdit;
+      window.openDropdown = openDropdown;
+      window.editRoster = editRoster;
     //   when this page is loaded the buildAdvisoryPage() function is called
       buildAdvisoryPage();
+
     </script>
 <!-- need to import java script -->
 <!-- ids allow to connect with javascript -->
     <!-- header bar -->
     <div class="header">
         <div class = "headerBar">
-            <h1>Advisory</h1>
+            <h1 id = "advisoryName"></h1>
         </div>
-<!-- navigation bar -->
-        <nav class = "navbar">
+           <!-- navigation bar -->
+           <nav class = "navbar">
             <ul>
                 <li><a href = "standings.html">Standings</a></li>
-                <li><a href = "projects.html"><b>Advisory</b></a></li>
+                    <li>
+                        <button  id = "dropdown" >Advisories</button>
+                            <div id="myDropdown" class="dropdown-content">
+                            </div>
+                    </li>
+                
                 <li><a href = "contact.html">Bracket</a></li>
+                <li><a href = "schedule.html">Schedule</a></li>
                 <li><a href = "index.html">Home</a></li>
+
+                <li id = "left" ><button onclick="login()">Log In with Google</button></li>
+                <li id = "left" ><button onclick="allowEdit('advisorSection'); allowEdit('gameSection'); editRoster()">Advisor</button></li>
+
 
             </ul>
         </nav>
@@ -36,20 +53,20 @@
     <!-- left side of the page -->
     <div class = "mainContainer">
     <div class = "leftPanel">
-        <div class = "advisor">
-            <h1>Advisor: <img src="Brodie.png" alt="Advisor Image" class = "advisorImage" id = "advisorPic"></h1>
+        <div class = "advisor" id = "advisorSection">
+            <h1>Advisor: <img src="" alt="Advisor Image" class = "advisorImage" id = "advisorPic"></h1>
 
             <h2 id = "advisorName"></h2>
             <div class = "contact">
-                <h2 >email:</h2>
+                <h2>email:</h2>
                 <p id = "email"></p>
             </div>
-            <p id = "advisorBio">
-               
-            </p>
+            <p id = "advisorBio"></p>
+            <div class = "buttons" id = "buttons"></div>
+
         </div>
 
-        <div class = "roster">
+        <div class="roster" id="rosterContainer">
             <h1>Roster</h1>
                 <ul id = "roster">
 
@@ -58,7 +75,7 @@
     </div>
 <!-- right side of the page -->
     <div class = "rightPanel">
-        <div class = "aboutGame">
+        <div class = "aboutGame" id = "gameSection">
             <h1>About Game</h1>
             <h2 id = "gameName"></h2>
             <p  id = "gameDesc">
@@ -79,6 +96,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 </body>
