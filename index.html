@@ -5,37 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet" type="text/css" />
     <title>Document</title>
-    </head>
-    <header>
-    <br> <div>
-        <p>Advisory Olympics</p>
+</head>
         
-    <button onclick="location.href = 'standings.html'" id="Standings">Standings</button>
-       <!-- this makes a button that goes to standings page -->
-        <button onclick="">Advisories</button>
-        
-        <button onclick="location.href = 'bracket.html'">Bracket</button>
-        <button onclick="location.href = 'schedule.html'">Schedule</button>
-    
-</div>
-    <button onclick="login()" style="float: left">sign in with google</button> 
-    <!-- this logs you in with google -->
-    <br> <br> <br>
-</header>
-
 <body>
-    <br>
-    <div class="buttons">
-        <div class="image">
-            <img src="IMG_9971.jpeg" height="300">
-            <!-- image -->
-        </div>
-       
-        </div>
-        <script type="module"></script>
+    <script type="module" src="script.js"></script>
     <script type ="module">
-        import {login} from "./script.js";
+        import{login} from "/script.js";
+        import {showItems} from './standings.js';
+        import {openDropdown, advisoryList} from './makePage.js';
+        // import {openDropdown, advisoryList} from './makePage.js';
+
+
         window.login = login;
     </script>
+
+<div class = "header">
+<h1>Advisory Olympics</h1>
+            <!-- navigation bar -->
+            <nav class = "navbar">
+                <ul>
+                    <li><a href = "standings.html">Standings</a></li>
+                    <!-- <div class = "dropdownContainer"> -->
+                    <li>
+                        <button  id = "dropdown" >Advisories</button>
+                            <div id="myDropdown" class="dropdown-content">
+                            </div>
+                    </li>
+                <!-- </div> -->
+                    <li><a href = "contact.html" > Bracket</a></li>
+                    <li><a href = "schedule.html">Schedule</a></li>
+                    <li><a><b>Home</b></a></li>
+
+                    <li id = "left" ><button onclick="login()">Log In with Google</button></li>
+
+                </ul>
+            </nav>
+        </div>
+
+
+
+<div class = "mainContainer">
+    <div class = "locations"> 
+        <h2>Game Locations</h2>
+        <p> hello</p>
+    </div>
+
+
+    <div class = "standings"> 
+        <h2>Standings</h2>
+        <table id="table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Advisory</th>
+                    <th>Points</th>
+                    <th>Record</th>
+                </tr>
+            </thead>
+            <tbody id="body">
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
 </body>
 </html> 
