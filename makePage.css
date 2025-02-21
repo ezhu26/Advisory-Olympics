@@ -35,6 +35,7 @@ body{
     padding: 0px;
     margin: 0px;
     overflow: hidden;
+
 }
 
 /* text per each individual block */
@@ -45,6 +46,7 @@ body{
     display: block;
     text-align: center;
     font-size: 2vw;
+    transition: 0.2s;
 }
 
 .navbar a:hover{
@@ -55,6 +57,36 @@ body{
 /* each block if moved to the right of the page */
 .navbar li{
     float: right;
+}
+
+button{
+  background-color: rgba(97,39,52,255);
+  color: rgb(248, 248, 244);
+  padding: 15px;
+  display: block;
+  text-align: center;
+  font-size: 2vw;
+  border: none;
+}
+button:hover{
+  background-color: rgb(248, 248, 244);
+  color:rgba(97,39,52,255);
+  cursor:pointer
+}
+
+/* Float "left" li to the left */
+#left {
+  float: left;
+}
+
+/* Float all other list items to the right */
+.navbar ul > li:not(#left) {
+  float: right;
+}
+
+.navbar a:hover{
+  background-color: rgb(248, 248, 244);
+  color:rgba(97,39,52,255);
 }
 
 .leftPanel, .rightPanel {
@@ -92,9 +124,10 @@ body{
 .advisor,  .aboutGame {
     align-items: center; /* Align items vertically in the center */
     gap: 10px; /* Optional: space between elements */
-    background-color: rgb(219, 219, 219);
+    background-color: rgb(231, 231, 231);
     padding: 10px;
     border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   }
 
   .advisor h1, .advisor img{
@@ -140,21 +173,24 @@ body{
   .roster{
     align-items: center; /* Align items vertically in the center */
     gap: 10px; /* space between elements */
-    background-color: rgb(219, 219, 219);
+    background-color: rgb(231, 231, 231);
     margin-top: 20px;
     border-radius: 10px;
     padding: 10px;
     flex-wrap: wrap;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   }
+
 
  .schedule, .history{
     flex-wrap: wrap;
     align-items: center; /* Align items vertically in the center */
     gap: 10px; /*space between elements */
-    background-color: rgb(219, 219, 219); 
+    background-color: rgb(231, 231, 231); 
     margin-top: 20px;
     border-radius: 10px;
     padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
   
   .schedule {
@@ -174,6 +210,78 @@ body{
   .roster ul li, .schedule ul li {
     margin-bottom: 10px; /* Adds 10px space below each list item */
 }
+
+
+
+/* The container <div> - needed to position the dropdown content */
+/* .dropdown {
+  position: relative;
+  display: inline-block;
+} */
+
+.advisory{
+  width: 100%;
+}
+
+.dropdown {
+  position: absolute;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 225px; /* Distance from top */
+  right: 50px; /* Distance from left */
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+@media (max-width: 1200px) {
+  .dropdown-content {
+    top: 95px;
+    right: 30px;
+  }
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {
+  display:block;
+}
+
+button2{
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+button3{
+  background-color: white;
+  color: black;
+  border-radius: 2px;
+  padding: 2px;
+  cursor: pointer;
+}
+
 
 
 
