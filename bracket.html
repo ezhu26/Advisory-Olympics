@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="bracket.css" rel="stylesheet" type="text/css" />
-    <script src="script.js" defer></script>
+    
+
     <title>Standings</title>
 
 </head>
@@ -22,53 +23,85 @@ Bracket
 </center>
 </select>
 <body>
+    
+ 
+    <button id = "print" >button</button>
     <div class = "bracket">
     <div class = "left_side">
         <div class = "card" style = "float:right">
-            <p id="1seed">Team 1</p> 
+            <p id="1seed"></p> 
             vs
-            <br> Team 16
+            <p id = "16seed"> Team 16</p>
         </div>
         <div class = "card">
-            Team 8 <br>
+            <p id="8seed">Team 8</p> 
             vs
-            <br> Team 9
+            <p id = "9seed"> Team 9</p>
         </div>
         <div class = "card">
-            Team 4 <br>
+            <p id="4seed">Team 4</p> 
             vs
-            <br> Team 13
+            <p id = "13seed"> Team 13</p>
         </div>
         <div class = "card">
-            Team 5 <br>
+            <p id="5seed">Team 5</p> 
             vs
-            <br> Team 12
+            <p id = "12seed"> Team 12</p>
         </div>
     </div>
     <div class = "right_side">
         <div class = "card">
-            Team 2 <br>
+            <p id="2seed">Team 2</p> 
             vs
-            <br> Team 15
+            <p id = "15seed"> Team 15</p>
         </div>
         <div class = "card">
-            Team 7 <br>
+            <p id="7seed">Team 7</p> 
             vs
-            <br> Team 10
+            <p id = "10seed"> Team 10</p>
         </div>
         <div class = "card">
-            Team 3 <br>
+            <p id="3seed">Team 3</p> 
             vs
-            <br> Team 14
+            <p id = "14seed"> Team 14</p>
         </div>
         <div class = "card">
-            Team 6 <br>
+            <p id="6seed">Team 6</p> 
             vs
-            <br> Team 11
+            <p id = "11seed"> Team 11</p>
         </div>
     </div>
-}
+
     </div>
-    
+    <script>
+        export async function getAdvOrder() {
+            advOrder = [];
+          
+            console.log("help");
+              const q = query(collection(db, "advisory-olympics"), where("rank", "<=", 16));
+              const advisorySnapshot = await getDocs(q);
+          
+              advisorySnapshot.forEach((item) => {
+                advOrder.push( { name: item.data().name, rank: item.data().rank} );
+              });
+              console.log(advOrder);
+          }
+          document.getElementById("print").addEventListener("click", printList);
+          
+          
+          
+    getAdvOrder(); 
+    var selectedItem = advOrder[0];
+    console.log("help me");
+    document.getElementById("1seed").innerHTML = selectedItem;
+    </script>
+
+    <script type="module" src="bracket.js" ></script>
+    <script type="module" >
+        import{getAdvOrder} from "./bracket.js";
+        window.getAdvOrder = getAdvOrder;
+        getAdvOrder();
+    </script>
+
 </body>
 </html>
