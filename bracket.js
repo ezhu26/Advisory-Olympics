@@ -30,4 +30,89 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 const auth = getAuth(app);
+var advOrder = [];
+//advOrder[0].name
+//advOrder[0].rank
+export async function getAdvOrder() {
+  advOrder = [];
 
+  console.log("help");
+    const q = query(collection(db, "advisory-olympics"), where("rank", "<=", 16));
+    const advisorySnapshot = await getDocs(q);
+
+    advisorySnapshot.forEach((item) => {
+      advOrder.push( { name: item.data().name, rank: item.data().rank} );
+    });
+    console.log(advOrder);
+    setTeams()
+}
+document.getElementById("print").addEventListener("click", printList);
+
+export function printList() {
+  const printList = document.getElementById("print");
+
+  // Create an unordered list
+  const ul = document.createElement("ul");
+
+  // Loop through the array and create list items
+  advOrder.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;  // Set the text of the list item
+      ul.appendChild(li);     // Add the list item to the list
+  });
+
+  // Append the unordered list to the container
+  listContainer.appendChild(ul);
+}
+
+export function setTeams(){
+  var selectedItem = advOrder[0].name;
+    document.getElementById("1seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[2].name;
+  document.getElementById("2seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[3].name;
+  document.getElementById("3seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[4].name;
+  document.getElementById("4seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[5].name;
+  document.getElementById("5seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[6].name;
+  document.getElementById("6seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[7].name;
+  document.getElementById("7seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[8].name;
+  document.getElementById("8seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[9].name;
+  document.getElementById("9seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[10].name;
+  document.getElementById("10seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[11].name;
+  document.getElementById("11seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[12].name;
+  document.getElementById("12seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[13].name;
+  document.getElementById("13seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[14].name;
+  document.getElementById("14seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[15].name;
+  document.getElementById("15seed").innerHTML = selectedItem;
+
+  selectedItem = advOrder[16].name;
+  document.getElementById("16seed").innerHTML = selectedItem;
+}
+// Call the function to print the list
+// printList();
