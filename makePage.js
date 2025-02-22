@@ -54,7 +54,7 @@ export async function buildAdvisoryPage(){
                 var newLi = document.createElement("li");
                 newLi.innerHTML = student;
                 // newDiv.appendChild(newLi)
-                newLi.id = student + "1";
+                newLi.id = student;
                 
                 rosterList.appendChild(newLi);
             });
@@ -131,13 +131,15 @@ export async function openDropdown() {
     document.getElementById("myDropdown").classList.toggle("show");
   }
 
+
+
 //makes whatever its called on editable
 export async function allowEdit (id){
+
     let parentDiv = document.getElementById(id);
     //children is a list of all of the children "P", "H1", etc. of the parent div
     let children = parentDiv.children;
-    // console.log(children);
-    //let buttonLine = document.getElementById("buttons");
+
     //Creates a button, sets the innerHTML, ad appends it to the parent div
     var editButton = document.createElement("button");
     editButton.id = "editButton";
@@ -152,14 +154,12 @@ export async function allowEdit (id){
             var submitButton = document.createElement("button");
             submitButton.innerHTML = "submit";
             submitButton.id = "submitButton";
-            // document.getElementById(id).appendChild(submitButton);
-            // }
-        editButton.replaceWith(submitButton);
 
+            editButton.replaceWith(submitButton);
 
+        //Checks if a text area already exists so it won't make another one
         if(children.tagName !== "TEXTAREA"){
             for (let child of children) {
-                //console.log(child.tagName);
                 if (child.tagName == "P"){
             //any element with p as its tag will be se as oldElement
             let oldElement = document.getElementById(child.id);
@@ -169,21 +169,17 @@ export async function allowEdit (id){
             newElement.id = oldElement.id;
             //sets the content of the oldElement into the new one
             newElement.innerHTML = oldElement.innerHTML;
-
+            //reaplces old element with new one
             oldElement.replaceWith(newElement);
             }
         }
-
     }
-        //after the edit button is clicked it creates a submit button
 
-
-        // console.log("end of edit button on click");
         
 //when the submit button is clicked, update fire base, reload the page, and remove the buttons
     submitButton.onclick = async function(){
-        console.log("submitButton clicked");
 
+        //checks the id to see which section to update and updates the doc on firebase
         if (id == "advisorSection"){
             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
                 advisorBio: document.getElementById("advisorBio").value
@@ -193,20 +189,16 @@ export async function allowEdit (id){
                gameDesc: document.getElementById("gameDesc").value
             });
         }
-            //updates the doc to whatever the user changed it to
-
-            
+            //reverts the text areas back into "p"'s
             let parentDiv = document.getElementById(id);
-            // console.log()
             //children is a list of all of the children "P", "H1", etc. of the parent div
             let children = parentDiv.children;
             for (let child of children) {
-                // console.log(child.tagName);
+
                 //checks if the element is a text area
                 if (child.tagName == "TEXTAREA"){
             //any element with text area as its tag will be se as oldElement
             let oldElement = document.getElementById(child.id);
-            //console.log(oldElement.innerHTML);
             //create a new element with p as its tag
             let newElement = document.createElement("p");
             //sets the content of the oldElement into the new one
@@ -217,7 +209,6 @@ export async function allowEdit (id){
             }
             //removes the buttons
             document.getElementById("submitButton").remove();
-            // document.getElementById("editButton").remove();
             //reloads the page
             location.reload()
         }
@@ -271,9 +262,10 @@ export async function editRoster(){
     //gets the documents from this query(if a field matches a given criteria)
     //waits until the q variable is equal to a document in the database
     const docSnap = await getDoc(docRef);
+    //list of the roster list from firebase
     var roster = docSnap.data().roster;
 
-//loops through each li and sets the background color and adds a delete button to each one
+//loops through each li and adds a delete button to each one
     rosterList.forEach((student) => {
         console.log(student.id);
         let deleteButton = document.createElement("button3");
@@ -282,40 +274,44 @@ export async function editRoster(){
 
         let li = document.getElementById(student.id);
         li.appendChild(deleteButton);
-        // li.style.backgroundColor = "yellow";
-        //when the delete button is clicked, remove it from firebase
+        
 
-        //NEED TO FIX
+        //removes the person from firebase and deletes the li element
         deleteButton.onclick = async function() {
-            console.log(student.id);
-            for(let person in roster){
-                if(person == student.id){
+
+                //removes the student name from the roster
+                    roster = roster.filter(item => item !== student.id);
+                    // console.log("roster list filtered");
+                    // console.log(roster);
+
+                    // Update the modified roster back to Firebase
                     await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-                        roster: arrayRemove(person)
+                        roster: roster
                     });
-                }
-            }
-            console.log(`${student} removed`);
+                //removes the li             
             document.getElementById(student.id).remove();
+            
         }
     });
 
-    //creates add button and submit button
+    //creates add button
     let addButton = document.createElement("button2");
-    console.log("button created");
     addButton.id = "addPerson";
     addButton.innerHTML = "Add Student";
 
+    //creates a submit button
     let submitButton = document.createElement("button2");
     submitButton.id = "submitButton2";
     submitButton.innerHTML = "Submit";
         
+    //add both of the elements
     document.getElementById("rosterContainer").appendChild(addButton);
     document.getElementById("rosterContainer").appendChild(submitButton);
     
     
     //when the add button is clicked
     addButton.onclick = function(){
+
         //checks to see if the textbox is already there so it won't add another one
         if(!document.getElementById("textBox")){
 
@@ -328,7 +324,6 @@ export async function editRoster(){
         document.getElementById("rosterContainer").appendChild(textBox);
         
         document.getElementById("rosterContainer").appendChild(submitButton);
-        console.log(document.getElementById("textBox").value);
         }
     }
 
@@ -338,9 +333,12 @@ export async function editRoster(){
             if (document.getElementById("errorMessage")){
                 document.getElementById("errorMessage").remove();
             }
-            console.log("submit button clicked");
-            //checks to see if the text box is empty so it can't enter a student without a name
-            if (document.getElementById("textBox").value == ""){
+            //if there is no text box element in the div, reload the page
+            if (!document.getElementById("textBox")){
+                console.log("there is no text box");
+                location.reload();
+            //checks to see if the text area is empty so it won't add a student without a name
+            } else if (document.getElementById("textBox").value == ""){
                 textBox.style.borderColor = "red";
                 var errorMessage = document.createElement("P");
                 errorMessage.id = "errorMessage";
@@ -358,27 +356,21 @@ export async function editRoster(){
                 errorMessage.style.color = "red";
                 submitButton.insertAdjacentElement("beforebegin", errorMessage);
 
-
-
-            } else if (!document.getElementById("textBox")){
-                console.log("there is no text box");
-                location.reload();
-                                //actually creates a new student and adds it to firebase
-
-            }              else if(document.getElementById("textBox").value !== ""){
-
+            //if it passes all of those conditions, adds the student to firebase
+            } else if(document.getElementById("textBox").value !== ""){
                 await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+                    //adds into firebase
                     roster: arrayUnion(document.getElementById("textBox").value)
                 });
-                console.log(`${document.getElementById("textBox").value} added to roster!`);
+
+                //removes the submitbutton and text box
                 document.getElementById("submitButton2").remove();
                 document.getElementById("textBox").remove();
                 location.reload();
+            } else {
+                location.reload();
             }
         }
-
-    
-
 }
 
 
