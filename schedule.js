@@ -320,36 +320,43 @@ async function getAdvisories() {
         console.error("Error getting advisories:");
     }
 }
-
+//this function selects the current week and displays those matchups
 function selectCurrentWeek(scheduleWithDates) {
+    //the current date
     const currentDate = new Date();
+    //create an index for comparing
     let selectedWeekIndex = 0;
 
-    console.log("scheduleWithDates:", scheduleWithDates); // Debugging
-
+    console.log("scheduleWithDates:", scheduleWithDates); 
+    //for each week in schedule with dates
     for (let i = 0; i < scheduleWithDates.length; i++) {
-        const weekDate = new Date(scheduleWithDates[i].date).getTime(); // Using getTime for comparison
+        //pull the date from the week
+        const weekDate = new Date(scheduleWithDates[i].date).getTime();
+        //get the time for specificity 
         const currentDateTime = currentDate.getTime();
 
-        console.log(`Week ${i + 1} Date:`, weekDate, "Current Date:", currentDateTime); // Debugging output
-
+        console.log(`Week ${i + 1} Date:`, weekDate, "Current Date:", currentDateTime); 
+        //if the date of the week is past the current one, display that
         if (weekDate > currentDateTime) {
             selectedWeekIndex = i;
+            //end the loop
             break;
+            //otherwise, keep going
         } else {
             selectedWeekIndex = i;
         }
     }
-
-    // Ensure valid index
+    //if the selected week index exists and it is less than the length
     if (selectedWeekIndex >= 0 && selectedWeekIndex < scheduleWithDates.length) {
+        //display these matchups using the value
         const weekDropdown = document.getElementById("weekDropdown");
         weekDropdown.value = selectedWeekIndex;
         displayWeekMatchups();
     } else {
+        //otherwise, error
         console.error("Invalid selected week index");
     }
-
+    //add the current week
     document.getElementById("current-week").innerHTML = selectedWeekIndex + 1;
 }
 
