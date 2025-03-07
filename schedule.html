@@ -16,8 +16,19 @@
       window.showItems = showItems;
       window.displayWeekMatchups = displayWeekMatchups;
     </script>
+
+
     <h1>Advisory Olympic Schedule 2024</h1>
     <!--this is the dropdown-->
+    <label for="totalWeeks">Enter total weeks:</label>
+    <input type="number" id="totalWeeks" min="1" max="52" >
+    <button onclick="setTotalWeeks()">Set Weeks</button>
+    <button onclick="saveManualDates()">Save Dates</button>
+    <button onclick="loadSavedDates()">Load Saved Dates</button>        
+
+    <div id="weekDatesContainer"></div>
+
+
     <label for="weekDropdown">Select Week:</label>
     <!--when an option is clicked, display the weekly matchups-->
     <select id="weekDropdown" onchange="displayWeekMatchups()">
@@ -36,7 +47,6 @@
         Current Week and Date: <div id="current-week" style="margin-left: 10px;" ></div>
     </h3>
 
-    <h3>Maroon Team is HOME</h3>
     <!--this is the container for the cards of matchup display-->
     <div id="matchupDisplay">
         <h2>Matchups</h2>
