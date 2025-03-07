@@ -10,9 +10,10 @@
 <body>
     <script type="module" src="script.js"></script>
     <script type ="module">
-        import{login} from "/script.js";
+        import{login} from "./script.js";
         import {showItems} from './standings.js';
         import {openDropdown, advisoryList} from './makePage.js';
+        window.login = login()
         // import {openDropdown, advisoryList} from './makePage.js';
 
 
