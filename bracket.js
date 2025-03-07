@@ -43,11 +43,15 @@ export async function getAdvOrder() {
     advisorySnapshot.forEach((item) => {
       advOrder.push( { name: item.data().name, rank: item.data().rank} );
     });
-    console.log(advOrder);
+    // console.log(advOrder);
     setTeams()
 }
-document.getElementById("print").addEventListener("click", printList);
+document.getElementById("round").addEventListener("click", printList);
 
+
+export function changeRound() {
+  console.log('changeRound');
+}
 export function printList() {
   const printList = document.getElementById("print");
 
@@ -114,5 +118,25 @@ export function setTeams(){
   selectedItem = advOrder[16].name;
   document.getElementById("16seed").innerHTML = selectedItem;
 }
+
 // Call the function to print the list
 // printList();
+export async function advanceTeam(round, team, nextLevel, nextTeam){
+  
+  const docRef = doc(db, "bracket", round, team);
+  const docRef2 = doc(db, "bracket", nextLevel, nextTeam);
+  const docSnap = await getDocs(docRef);
+  console.log(docSnap.data().advisor);
+  const docSnap2 = await getDocs(docRef2);
+  
+  var teamToAdvance = docSnap.data().team
+  console.log(teamToAdvance);
+  await setDoc(doc(db, "bracket", round), {
+      docRef2: docRef
+  });
+
+  
+  document.getElementById("QT1").innerHTML = document.getElementById("1seed").innerHTML;
+  //set r2Matchups > 
+
+}
