@@ -47,7 +47,11 @@
 <div class = "mainContainer">
     <div class = "locations"> 
         <h2>Game Locations</h2>
-        <p> hello</p>
+        <label for="weekDropdown">Select Week:</label>
+        <!--when an option is clicked, display the weekly matchups-->
+        <select id="weekDropdown" onchange="displayWeekMatchups()">
+            <option value="" selected>Select a week</option>
+        </select>
     </div>
 
 
@@ -65,8 +69,14 @@
             <tbody id="body">
             </tbody>
         </table>
+
+        
     </div>
 
+</div>
+<div id="matchupDisplay">
+    <h2>Matchups</h2>
+    <div id="matchups"></div>
 </div>
 
 </body>
