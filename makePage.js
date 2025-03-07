@@ -44,40 +44,71 @@ export async function buildAdvisoryPage(){
         var rosterList = document.getElementById("roster");
              //loops through each variable in the roster field
             roster.forEach((student) => {
-
-
                 //creates a new line in the list and sets the 
                 //information to the variable, and adds it to the list
-                // let newDiv = document.createElement("div");
-                // newDiv.className = student;
-                // newDiv.id = student;
                 var newLi = document.createElement("li");
                 newLi.innerHTML = student;
                 // newDiv.appendChild(newLi)
                 newLi.id = student;
-                
                 rosterList.appendChild(newLi);
             });
         document.getElementById("gameName").innerHTML = docSnap.data().gameName;
         document.getElementById("gameDesc").innerHTML = docSnap.data().gameDesc;
         document.getElementById("advisorName").innerHTML = docSnap.data().advisorName;
+        document.getElementById("score").innerHTML = docSnap.data().record;
 
 
 
         // var schedule = docSnap.data().schedule;
         const schedule = await getSchedule();
+        // console.log(schedule);
         // console.log("getSchedule called on")
         // console.log(schedule.opponent)
         var scheduleList = document.getElementById("schedule");
         // console.log(scheduleList);
-            schedule.forEach((week) => {
+            schedule.forEach((game) => {
+                // console.log(game.week)
+                // console.log(week.outcome);
                 // console.log(docSnap.data())
+                let newDiv = document.createElement("div");
                 var newLi = document.createElement("li");
-                // console.log(week.data().opponent)
-                
+                newLi.id = game.id;
+                if(game.home){
+                    newLi.innerHTML = `Week ${game.week}: Home ${game.opponent} (Date: ${game.date})`;
+                } else {
+                    newLi.innerHTML = `Week ${game.week}: Away ${game.opponent} (Date: ${game.date})`;
+
+                }
                 // console.log(`${week}: ${schedule[week].opponent} (Date: ${schedule[week].date})`);
-                newLi.innerHTML = `${week.name}: ${week.opponent} (Date: ${week.date})`;
+                // console.log(newLi.innerHTML);
                 scheduleList.appendChild(newLi);
+
+                if (!game.outcome) {  // Covers "", null, and undefined
+                    let outcome = document.createElement("P");
+                    outcome.id = "outcome";
+                    outcome.innerHTML = "Game not completed";
+                    outcome.style.color = "grey";
+                    newLi.appendChild(outcome);
+                } else if (game.outcome === "win") {
+                    let outcome = document.createElement("P");
+                    outcome.id = "outcome";
+                    outcome.innerHTML = "Win";
+                    outcome.style.color = "green";
+                    newLi.appendChild(outcome);
+                } else if (game.outcome === "loss") {
+                    let outcome = document.createElement("P");
+                    outcome.id = "outcome";
+                    outcome.innerHTML = "Loss";
+                    outcome.style.color = "red";
+                    newLi.appendChild(outcome);
+                } else if (game.outcome === "tie") {
+                    let outcome = document.createElement("P");
+                    outcome.id = "outcome";
+                    outcome.innerHTML = "Tie";
+                    outcome.style.color = "yellow";
+                    newLi.appendChild(outcome);
+                }
+                
         });
         document.getElementById("history").innerHTML = docSnap.data().history;
 
@@ -91,6 +122,7 @@ export async function buildAdvisoryPage(){
     // console.log("starts advisoryList function");
     // gets the documents from this query(if a field matches a given criteria)
     const advisories = await getDocs(collection(db, "advisory-olympics"));    
+    console.log(advisories)
     //loops through each advisory    
     advisories.forEach((advisory) => {
         // console.log("advisory")
@@ -218,36 +250,23 @@ export async function allowEdit (id){
 //organizes each field containing "schedule" and sorts them by week
 async function getSchedule(){
     // console.log("getSchedule is running")
-    const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
-    const docSnap = await getDoc(docRef);
-    const data = docSnap.data() ; // Get all fields in the document
-        // 🔍 Example: Search for a specific field
-    //makes a list of fields
-    let weekList = [];
-    for (let field in data){
-        if (field.includes("week")){
-            // console.log(field);
-            // console.log("Data:", data[field]);
-            // console.log({ opponent: docSnap.data()[field]['opponent'], date: docSnap.data()[field]['date'] });
-            // weekList.push({ opponent: field['opponent'], date: field['date'] });
-            weekList.push({
-                name: field,
-                opponent: docSnap.data()[field]['opponent'],
-                date: docSnap.data()[field]['date']
-            })
-            // weekList.push(field);
-            // console.log(field);
-        } else {
-        // console.log("does not contain 'field'");
+    const collectionRef = collection(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule");
+    //references the subcollection
+    const scheduleSnapShot = await getDocs(collectionRef);
+
+
+    let schedule = [];
+    scheduleSnapShot.forEach((doc) => {
+        if(doc.id.includes("week")){
+            // schedule.push(doc.data())
+        schedule.push({ id: doc.id, ...doc.data() }); // Store each document's data
         }
-    }
-    // console.log(weekList)
+    });
+    schedule.sort((a, b) => a.week - b.week);
 
-
-
-    weekList.sort((a, b) => new Date(a.date) - new Date(b.date));
-    // console.log(weekList);
-    return weekList;
+    // console.log(schedule); 
+    
+    return schedule
 }
 
 
@@ -257,6 +276,7 @@ async function getSchedule(){
 export async function editRoster(){
 //puts all the li from the roster into a list
     var rosterList = document.querySelectorAll("#roster li");
+    // console.log(rosterList);
 
     const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
     //gets the documents from this query(if a field matches a given criteria)
@@ -267,7 +287,7 @@ export async function editRoster(){
 
 //loops through each li and adds a delete button to each one
     rosterList.forEach((student) => {
-        console.log(student.id);
+        // console.log(student.id);
         let deleteButton = document.createElement("button3");
         deleteButton.innerHTML = "Delete";
         deleteButton.className = "deleteButton";
@@ -372,6 +392,283 @@ export async function editRoster(){
             }
         }
 }
+
+export async function setScore(){
+    const schedule = await getSchedule();
+    // let scheduleList = document.querySelectorAll("#schedule li");
+    console.log(schedule)
+    console.log("setScore function starting");
+
+    const collectionRef = collection(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule");
+    //references the subcollection
+    const scheduleSnapShot = await getDocs(collectionRef);
+
+    const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
+    //gets the documents from this query(if a field matches a given criteria)
+    //waits until the q variable is equal to a document in the database
+    const docSnap = await getDoc(docRef);
+
+    // let children = document.getElementById("schedule").children;
+    // for (let child of children){
+    //     if (child.tagName == "P"){
+    //         console.log("removing P's");
+    //         child.remove();
+    //     }
+    // }
+
+    for (let game in schedule) {
+        let gameLi = document.getElementById(game.id);
+        document.getElementById("outcome").remove();
+        console.log("removing the outcomes");
+
+        let selectOutcome = document.createElement("SELECT");
+        selectOutcome.id = game.id + "dropdown";
+        selectOutcome.textContent = game.outcome
+
+        option1 = document.createElement("option");
+        option1.value = "win";
+        option1.textContent = "Win";
+        selectOutcome.appendChild(option1);
+
+
+
+        gameLi.appendChild(selectOutcome);
+    }
+}
+
+// export async function setScore(){
+//     const schedule = await getSchedule();
+//     let scheduleList = document.querySelectorAll("#schedule li");
+//     // console.log(scheduleList)
+//     console.log("setScore function starting");
+
+//     const docRef = collection(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
+//     //gets the documents from this query(if a field matches a given criteria)
+//     //waits until the q variable is equal to a document in the database
+//     const docSnap = await getDoc(docRef);
+
+//     schedule.forEach((game) => {
+//         // console.log(game.week)
+//         //gets the gameLi so you can add buttons later on
+//         let gameLi = document.getElementById(game.id);
+//         document.getElementById("outcome").remove();
+
+//         // console.log(game.name);
+//         // console.log(game.outcome);
+//         // let gameName = game.name
+//         // console.log(game.opponent);
+//         let winButton = document.createElement("button2");
+//         winButton.style.backgroundColor = localStorage.getItem("WinButtonColor" + game.name)
+//         winButton.innerHTML = "Win"
+
+//         winButton.onclick = async function(){
+//             if (!game.outcome){
+//                 let currentScore = docSnap.data().record
+//                 let newScore = addWin(currentScore);
+//                 await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+//                     //adds into firebase
+//                     record: newScore,
+//                 });
+
+//                 await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule", game.id), {    
+//                     //adds into firebase
+//                     outcome: "win",
+//                 });
+//                 // console.log(gameName.outcome);
+//                 winButton.style.backgroundColor = "green";
+//                 localStorage.setItem("WinButtonColor" + game.week, "green");
+//             } else if (game.outcome == "loss"){
+//                 let currentScore = docSnap.data().record
+//                 let newScore = addWinWithLoss(currentScore);
+//                 await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+//                     //adds into firebase
+//                     record: newScore,
+
+//                 });
+//                 // console.log(gameName.outcome);
+//                 winButton.style.backgroundColor = "green";
+//                 localStorage.setItem("LossButtonColor"+game.week, "white");
+//                 localStorage.setItem("WinButtonColor" + game.week, "green");
+//             } else if (game.outcome = "tie"){
+//                 let currentScore = docSnap.data().record
+//                 let newScore = addWinWithTie(currentScore);
+//                 await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+//                     //adds into firebase
+//                     record: newScore,
+
+//                 });
+//                 // console.log(gameName.outcome);
+//                 winButton.style.backgroundColor = "green";
+//                 localStorage.setItem("TieButtonColor"+game.week, "white");
+//                 localStorage.setItem("WinButtonColor" + game.week, "green");
+//             }
+//         }
+
+//         let lossButton = document.createElement("button2");
+//         lossButton.innerHTML = "Loss"
+//         lossButton.style.backgroundColor = localStorage.getItem("LossButtonColor" + game.name)
+
+//         lossButton.onclick = async function(){
+//             if(!game.outcome){
+//             let currentScore = docSnap.data().record
+//             let newScore = addLoss(currentScore);
+//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+//                 //adds into firebase
+//                 record: newScore
+//             });
+//             lossButton.style.backgroundColor = "red";
+//             localStorage.setItem("LossButtonColor" + game.week, "red");
+//             } else if (game.outcome = "Win"){
+//             let currentScore = docSnap.data().record
+//             let newScore = addLossWithWin(currentScore);
+//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+//                 //adds into firebase
+//                 record: newScore
+//             });
+//             lossButton.style.backgroundColor = "red";
+//             localStorage.setItem("WinButtonColor" + game.week, "white");
+//             localStorage.setItem("LossButtonColor" + game.week, "red");
+//         } else if (game.outcome == "tie"){
+//             let currentScore = docSnap.data().record
+//             let newScore = addLossWithTie(currentScore);
+//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+//                 //adds into firebase
+//                 record: newScore
+//             });
+//             lossButton.style.backgroundColor = "red";
+//             localStorage.setItem("TieButtonColor" + game.week, "white");
+//             localStorage.setItem("LossButtonColor" + game.week, "red");
+//         }
+//     }
+
+//         let tieButton = document.createElement("button2");
+//         tieButton.innerHTML = "tie"
+//         tieButton.style.backgroundColor = localStorage.getItem("TieButtonColor" + game.name)
+
+//         tieButton.onclick = async function(){
+//         if(!game.outcome){
+
+//             let currentScore = docSnap.data().record
+//             let newScore = addTie(currentScore);
+//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+//                 //adds into firebase
+//                 record: newScore
+//             });
+//             tieButton.style.backgroundColor = "yellow";
+//             localStorage.setItem("TieButtonColor" + game.week, "yellow");
+        
+//     } else if (game.outcome = "win"){
+//         let currentScore = docSnap.data().record
+//             let newScore = addTieWithWin(currentScore);
+//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+//                 //adds into firebase
+//                 record: newScore
+//             });
+//             tieButton.style.backgroundColor = "yellow";
+//             localStorage.setItem("WinButtonColor" + game.name, "white");
+//             localStorage.setItem("TieButtonColor" + game.name, "yellow");
+//     } else if (docSnap.data().outcome = "Loss"){
+//         let currentScore = docSnap.data().record
+//             let newScore = addTieWithLoss(currentScore);
+//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+//                 //adds into firebase
+//                 record: newScore
+//             });
+//             tieButton.style.backgroundColor = "yellow";
+//             localStorage.setItem("LossButtonColor" + game.name, "white");
+//             localStorage.setItem("TieButtonColor" + game.name, "yellow");
+//     }
+// }
+//         gameLi.appendChild(winButton);
+//         gameLi.appendChild(lossButton);
+//         gameLi.appendChild(tieButton);
+//     });
+//     let submitButton = document.createElement("button");
+//     submitButton.innerHTML = "Submit"
+//     submitButton.onclick = function(){
+//         location.reload();
+//     }
+
+//     document.getElementById("schedule").appendChild(submitButton);
+
+// }
+// localStorage.setItem("LossButtonColor" + "week1", white);
+
+
+function addWin(score) {
+    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
+    scores[0] += 1; // Increment the wins (first number)
+    return scores.join("-"); // Convert back to string
+}
+
+function addWinWithLoss(score) {
+    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
+    scores[0] += 1; // Increment the wins (first number)
+    score[2] -= 1; //decrease the loss (second number)
+    return scores.join("-"); // Convert back to string
+}
+
+function addWinWithTie(score) {
+    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
+    scores[0] += 1; // Increment the wins (first number)
+    score[1] -= 1; //decrease the tie (second number)
+    return scores.join("-"); // Convert back to string
+}
+
+function addLoss(score) {
+    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
+    scores[2] += 1; // Increment the Loss (third number)
+    return scores.join("-"); // Convert back to string
+}
+function addLossWithWin(score) {
+    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
+    scores[2] += 1; // Increment the Loss (third number)
+    scores[0] -= 1;
+    return scores.join("-"); // Convert back to string
+}
+function addLossWithTie(score) {
+    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
+    scores[2] += 1; // Increment the Loss (third number)
+    scores[1] -= 1;
+    return scores.join("-"); // Convert back to string
+}
+
+function addTie(score) {
+    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
+    scores[1] += 1; // Increment the ties (second number)
+    return scores.join("-"); // Convert back to string
+}
+function addTieWithWin(score) {
+    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
+    scores[1] += 1; // Increment the ties (second number)
+    score[0] -= 1;
+    return scores.join("-"); // Convert back to string
+}
+function addTieWithLoss(score) {
+    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
+    scores[1] += 1; // Increment the ties (second number)
+    score[2] -= 1;
+    return scores.join("-"); // Convert back to string
+}
+
+
+//     async function addOutcome() {
+//         const schedule = getSchedule();
+//         const collectionRef = collection(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule");
+//         const scheduleSnapShot = await getDocs(collectionRef); // Fetch all docs in the subcollection
+    
+//         schedule.forEach(async (gameDoc) => { // Loop through each document
+//             const gameData = gameDoc.data(); // Get document data
+//             const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule", gameDoc.id);
+    
+//             if (!gameData.hasOwnProperty("outcome")) { // Check if "outcome" field is missing
+//                 await updateDoc(docRef, { outcome: "" }); // Add an empty "outcome" field
+//             }
+//         });
+//     }
+
+    
+// addOutcome();
 
 
 
