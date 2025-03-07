@@ -9,99 +9,148 @@
     <title>Standings</title>
 
 </head>
-<h1>
-Bracket
-<button style = "float:right" onclick="location.href = 'index.html'">Home page</button>
-</h1>
-<center>
-<label for="round">Select a round</label>
-<select name="round" id="round">
-    <option id = "16">Round of 16</option>
-    <option id = "8">Round of 8</option>
-    <option id = "4">Final 4</option>
-    <option id = "2">Championship</option>
-</center>
-</select>
+
 <body>
-    
+    <header> 
+        Bracket
+        <button style = "float:right" onclick="location.href = 'index.html'">Home page</button>
+
+    </header>
+
+        <center>
+        <label for="round">Select a round</label>
+        <select name="round" id="round">
+            <option id = "16">Round of 16</option>
+            <option id = "8">Round of 8</option>
+            <option id = "4">Final 4</option>
+            <option id = "2">Championship</option>
+        </center>
+        </select>
  
     <button id = "print" >button</button>
     <div class = "bracket">
-    <div class = "left_side">
-        <div class = "card" style = "float:right">
-            <p id="1seed"></p> 
-            vs
-            <p id = "16seed"> Team 16</p>
+        <div class = "r1m1" id = 'r1m1'>
+            <br><label id="1seed"></label> <label onclick="advanceTeam('r1matchups', 'seed1', 'r2matchups')" class="advance"> ></label> <br><br>
+            vs<br><br>
+            <label id = "16seed"> </label><label onclick="advanceTeam(2)" class="advance">></label>
         </div>
-        <div class = "card">
-            <p id="8seed">Team 8</p> 
-            vs
-            <p id = "9seed"> Team 9</p>
+        <div class = "r1m2" id = 'r1m2'>
+            <br><label id="8seed"></label><label onclick="advanceTeam(3)" class="advance">></label> <br><br>
+            vs<br><br>
+            <label id = "9seed"></label><label onclick="advanceTeam(4)" class="advance">></label>
         </div>
-        <div class = "card">
-            <p id="4seed">Team 4</p> 
-            vs
-            <p id = "13seed"> Team 13</p>
+        <div class = "r1m3" id = 'r1m3'>
+            <br><label id="4seed"></label><label onclick="advanceTeam(5)" class="advance">></label> <br><br>
+            vs<br><br>
+            <label id = "13seed"></label><label onclick="advanceTeam(6)" class="advance">></label>
         </div>
-        <div class = "card">
-            <p id="5seed">Team 5</p> 
-            vs
-            <p id = "12seed"> Team 12</p>
+        <div class = "r1m4" id = 'r1m4'>
+             <br><label id="5seed"></label><label onclick="advanceTeam(7)" class="advance">></label> <br><br>
+            vs<br><br>
+            <label id = "12seed"></label><label onclick="advanceTeam(8)" class="advance">></label>
         </div>
-    </div>
-    <div class = "right_side">
-        <div class = "card">
-            <p id="2seed">Team 2</p> 
-            vs
-            <p id = "15seed"> Team 15</p>
+        <div class = "r1m5" id = 'r1m5'>
+            <br><label id="2seed"></label><label onclick="advanceTeam(9)" class="advance">></label> <br><br>
+            vs<br><br>
+            <label id = "15seed"></label><label onclick="advanceTeam(10)" class="advance">></label>
         </div>
-        <div class = "card">
-            <p id="7seed">Team 7</p> 
-            vs
-            <p id = "10seed"> Team 10</p>
+        <div class = "r1m6" id = 'r1m6'>
+            <br><label id="7seed"></label><label onclick="advanceTeam(11)" class="advance">></label> <br><br>
+            vs<br><br>
+            <label id = "10seed"></label><label onclick="advanceTeam(12)" class="advance">></label>
         </div>
-        <div class = "card">
-            <p id="3seed">Team 3</p> 
-            vs
-            <p id = "14seed"> Team 14</p>
+        <div class = "r1m7" id = 'r1m7'>
+            <br><label id="3seed"></label><label onclick="advanceTeam(13)" class="advance">></label> <br><br>
+            vs<br><br>
+            <label id = "14seed"></label><label onclick="advanceTeam(14)" class="advance">></label>
         </div>
-        <div class = "card">
-            <p id="6seed">Team 6</p> 
-            vs
-            <p id = "11seed"> Team 11</p>
+        <div class = "r1m8" id = 'r1m8'>
+            <br><label id="6seed"></label><label onclick="advanceTeam(15)" class="advance">></label> <br><br>
+            vs<br><br>
+            <label id = "11seed"></label><label onclick="advanceTeam(16)" class="advance">></label>
         </div>
-    </div>
+        
+        
+        <div class = "r2m1" id = 'r2m1'>
+            <label id="QT1">Quarterfinals Team 1</label> 
+            vs
+            <label id = "QT2">Quarterfinals Team 2</label>
+        </div>
+        <div class = "r2m2" id = 'r2m2'>
+            <label id="QT3">Quarterfinals Team 3</label> 
+            vs
+            <label id = "QT4">Quarterfinals Team 4</label>
+        </div>
+        <div class = "r2m3" id = 'r2m3'>
+            <label id="QT5">Quarterfinals Team 5</label> 
+            vs
+            <label id = "QT6">Quarterfinals Team 6</label>
+        </div>
+        <div class = "r2m4" id = 'r2m4'>
+            <label id="QT7">Quarterfinals Team 7</label> 
+            vs
+            <label id = "QT8">Quarterfinals Team 8</label>
+        </div>
+
+
+        <div class = "r3m1" id = 'r3m1'>
+            <label id="ST1">Semifinals Team 1</label> 
+            vs
+            <label id = "ST2">Semifinals Team 2</label>
+        </div>
+        <div class = "r3m2" id = 'r3m2'>
+            <label id="ST3">Semifinals Team 3</label> 
+            vs
+            <label id = "ST4">Semifinals Team 4</label>
+        </div>
+
+        <div class = "r4m1" id = 'r4m1'>
+            <label id="CT1">Championship Team 1</label> 
+            vs
+            <label id = "CT2"> Championship Team 2</label>
+        </div>
+        
+        
+        <div class = "Champion" id = 'Champion'>
+            <label id="6seed">Champion</label> 
+        </div>
+    
 
     </div>
     <script>
-        export async function getAdvOrder() {
-            advOrder = [];
+
+        
+
+        // export async function getAdvOrder() {
+        //     advOrder = [];
           
-            console.log("help");
-              const q = query(collection(db, "advisory-olympics"), where("rank", "<=", 16));
-              const advisorySnapshot = await getDocs(q);
+        //     console.log("help");
+        //       const q = query(collection(db, "advisory-olympics"), where("rank", "<=", 16));
+        //       const advisorySnapshot = await getDocs(q);
           
-              advisorySnapshot.forEach((item) => {
-                advOrder.push( { name: item.data().name, rank: item.data().rank} );
-              });
-              console.log(advOrder);
-          }
-          document.getElementById("print").addEventListener("click", printList);
+        //       advisorySnapshot.forEach((item) => {
+        //         advOrder.push( { name: item.data().name, rank: item.data().rank} );
+        //       });
+        //       console.log(advOrder);
+        //   }
+        //   document.getElementById("print").addEventListener("click", printList);
           
+
           
-          
-    getAdvOrder(); 
-    var selectedItem = advOrder[0];
-    console.log("help me");
-    document.getElementById("1seed").innerHTML = selectedItem;
+    // getAdvOrder(); 
+    // var selectedItem = advOrder[0];
+    // console.log("help me");
+    // document.getElementById("1seed").innerHTML = selectedItem;
     </script>
 
     <script type="module" src="bracket.js" ></script>
     <script type="module" >
-        import{getAdvOrder} from "./bracket.js";
+        import{getAdvOrder, advanceTeam} from "./bracket.js";
         window.getAdvOrder = getAdvOrder;
+        window.advanceTeam = advanceTeam;
         getAdvOrder();
-    </script>
+        advanceTeam('r1matchups', 'seed1', 'r2matchups');
+        </script>
 
 </body>
 </html>
