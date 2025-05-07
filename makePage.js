@@ -64,15 +64,22 @@ export async function buildAdvisoryPage(){
         // console.log(schedule);
         // console.log("getSchedule called on")
         // console.log(schedule.opponent)
-        var scheduleList = document.getElementById("schedule");
+        let scheduleList = document.getElementById("schedule");
+        console.log(Array.isArray(schedule));
+        // scheduleList.id = "scheduleList";
         // console.log(scheduleList);
+
+        
             schedule.forEach((game) => {
                 // console.log(game.week)
                 // console.log(week.outcome);
                 // console.log(docSnap.data())
-                let newDiv = document.createElement("div");
+                var newDiv = document.createElement("div");
+                // newDiv.innerHTML =  "HELP me";
+                // console.log(newDiv);
                 var newLi = document.createElement("li");
-                newLi.id = game.id;
+                newDiv.id = game.id;
+                newDiv.className = "gameDiv";
                 if(game.home){
                     newLi.innerHTML = `Week ${game.week}: Home ${game.opponent} (Date: ${game.date})`;
                 } else {
@@ -81,42 +88,52 @@ export async function buildAdvisoryPage(){
                 }
                 // console.log(`${week}: ${schedule[week].opponent} (Date: ${schedule[week].date})`);
                 // console.log(newLi.innerHTML);
-                scheduleList.appendChild(newLi);
+                console.log(newLi.innerHTML);
 
-                if (!game.outcome) {  // Covers "", null, and undefined
+               newDiv.appendChild(newLi);
+                scheduleList.appendChild(newDiv);
+                console.log(newDiv);
+                
+                console.log(scheduleList);
+
+                if (!game.outcome || game.outcome == "not completed") {  // Covers "", null, and undefined
                     let outcome = document.createElement("P");
-                    outcome.id = "outcome";
+                    outcome.className = "outcome";
                     outcome.innerHTML = "Game not completed";
                     outcome.style.color = "grey";
-                    newLi.appendChild(outcome);
+                    newDiv.appendChild(outcome);
                 } else if (game.outcome === "win") {
                     let outcome = document.createElement("P");
-                    outcome.id = "outcome";
+                    outcome.className = "outcome";
                     outcome.innerHTML = "Win";
                     outcome.style.color = "green";
-                    newLi.appendChild(outcome);
-                } else if (game.outcome === "loss") {
+                    newDiv.appendChild(outcome);
+                } else if (game.outcome === "lose") {
                     let outcome = document.createElement("P");
-                    outcome.id = "outcome";
+                    outcome.className = "outcome";
                     outcome.innerHTML = "Loss";
                     outcome.style.color = "red";
-                    newLi.appendChild(outcome);
+                    newDiv.appendChild(outcome);
                 } else if (game.outcome === "tie") {
                     let outcome = document.createElement("P");
-                    outcome.id = "outcome";
+                    outcome.className = "outcome";
                     outcome.innerHTML = "Tie";
                     outcome.style.color = "yellow";
-                    newLi.appendChild(outcome);
+                    newDiv.appendChild(outcome);
                 }
-                
+                scheduleList.appendChild(newDiv);
         });
         document.getElementById("history").innerHTML = docSnap.data().history;
 
         //adds the string from firebase and sets it as the src for the advisor image
         document.getElementById("advisorPic").src = docSnap.data().image;
+        console.log(scheduleList);
         getSchedule();
 }
 
+function makeSchedule(){
+
+}
 //creates an advisory list and adds it to advisories.html
  export async function advisoryList(){
     // console.log("starts advisoryList function");
@@ -393,11 +410,10 @@ export async function editRoster(){
         }
 }
 
+//being able to put in the outcome of the game and get a score
 export async function setScore(){
+    //a list of the games in order by week
     const schedule = await getSchedule();
-    // let scheduleList = document.querySelectorAll("#schedule li");
-    console.log(schedule)
-    console.log("setScore function starting");
 
     const collectionRef = collection(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule");
     //references the subcollection
@@ -407,269 +423,122 @@ export async function setScore(){
     //gets the documents from this query(if a field matches a given criteria)
     //waits until the q variable is equal to a document in the database
     const docSnap = await getDoc(docRef);
+    let scheduleList = document.getElementById("schedule");
+    // let newScheduleList = Array.from(scheduleList.children); // converts to a real array
+    // console.log(newScheduleList);
 
-    // let children = document.getElementById("schedule").children;
-    // for (let child of children){
-    //     if (child.tagName == "P"){
-    //         console.log("removing P's");
-    //         child.remove();
-    //     }
-    // }
+    //removes all of the elements that have a class name of "outcome"
+    document.querySelectorAll(".outcome").forEach(el => el.remove());
+    //makes a list of all the divs that have a class name "gameDiv"
+    let gameDivList = document.querySelectorAll(".gameDiv");
+    
+    //runs through the gameDivList and the schedule list
+    for (let i = 0; i < gameDivList.length && i < schedule.length; i++){
 
-    for (let game in schedule) {
-        let gameLi = document.getElementById(game.id);
-        document.getElementById("outcome").remove();
-        console.log("removing the outcomes");
+        //create a select element 
+        let selectOutcome = document.createElement("select");
+        selectOutcome.className = "dropdown";
+        //makes the set one the outcome of the game
+        selectOutcome.textContent = schedule[i].outcome;
 
-        let selectOutcome = document.createElement("SELECT");
-        selectOutcome.id = game.id + "dropdown";
-        selectOutcome.textContent = game.outcome
-
-        option1 = document.createElement("option");
-        option1.value = "win";
-        option1.textContent = "Win";
+        //creates option 1
+        let option1 = document.createElement("option");
+        option1.value = "not completed";
+        option1.textContent = "Game Not Completed";
         selectOutcome.appendChild(option1);
 
+        //creates option 2
+        let option2 = document.createElement("option");
+        option2.value = "win";
+        option2.textContent = "Win";
+        selectOutcome.appendChild(option2);
 
+        //creates option 3
+        let option3 = document.createElement("option");
+        option3.value = "lose";
+        option3.textContent = "Lose";
+        selectOutcome.appendChild(option3);
 
-        gameLi.appendChild(selectOutcome);
+        //creates option 4
+        let option4 = document.createElement("option");
+        option4.value = "tie";
+        option4.textContent = "Tie";
+        selectOutcome.appendChild(option4);
+
+        //sets the value of the select option of the outcome, if there wasn't any selected automatically does it to "not completed"
+        selectOutcome.value = schedule[i].outcome || "not completed";
+
+        //append the dropdown to the div 
+        gameDivList[i].appendChild(selectOutcome);
     }
+
+    //creates a submit button
+    let submitButton = document.createElement("button");
+    submitButton.id = "submitButton";
+    submitButton.innerHTML = "Submit";
+    scheduleList.appendChild(submitButton);
+    //a list to store all the new values of the select options
+    let newOutcomeList = [];
+    submitButton.onclick = async function(){
+        //a list of all the dropdown values
+        let dropdowns = document.querySelectorAll(".dropdown");
+        for (let i = 0; i < gameDivList.length && i < schedule.length && i < dropdowns.length; i++){
+            newOutcomeList.push(dropdowns[i].value);
+            //updates the outcome of the firebase
+            const subDocRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule", schedule[i].id);
+            await updateDoc(subDocRef, {
+                outcome: dropdowns[i].value // or "lose", "tie", etc.
+            });
+        }
+
+        //calculates the new score based on the values in the new outcome list
+        let newScore = makeScore(newOutcomeList);
+
+        //updates that string into firebase
+        await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
+                record: newScore
+            });
+        //refreshes the screen
+        location.reload();
+    }
+
 }
 
-// export async function setScore(){
-//     const schedule = await getSchedule();
-//     let scheduleList = document.querySelectorAll("#schedule li");
-//     // console.log(scheduleList)
-//     console.log("setScore function starting");
-
-//     const docRef = collection(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
-//     //gets the documents from this query(if a field matches a given criteria)
-//     //waits until the q variable is equal to a document in the database
-//     const docSnap = await getDoc(docRef);
-
-//     schedule.forEach((game) => {
-//         // console.log(game.week)
-//         //gets the gameLi so you can add buttons later on
-//         let gameLi = document.getElementById(game.id);
-//         document.getElementById("outcome").remove();
-
-//         // console.log(game.name);
-//         // console.log(game.outcome);
-//         // let gameName = game.name
-//         // console.log(game.opponent);
-//         let winButton = document.createElement("button2");
-//         winButton.style.backgroundColor = localStorage.getItem("WinButtonColor" + game.name)
-//         winButton.innerHTML = "Win"
-
-//         winButton.onclick = async function(){
-//             if (!game.outcome){
-//                 let currentScore = docSnap.data().record
-//                 let newScore = addWin(currentScore);
-//                 await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-//                     //adds into firebase
-//                     record: newScore,
-//                 });
-
-//                 await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule", game.id), {    
-//                     //adds into firebase
-//                     outcome: "win",
-//                 });
-//                 // console.log(gameName.outcome);
-//                 winButton.style.backgroundColor = "green";
-//                 localStorage.setItem("WinButtonColor" + game.week, "green");
-//             } else if (game.outcome == "loss"){
-//                 let currentScore = docSnap.data().record
-//                 let newScore = addWinWithLoss(currentScore);
-//                 await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-//                     //adds into firebase
-//                     record: newScore,
-
-//                 });
-//                 // console.log(gameName.outcome);
-//                 winButton.style.backgroundColor = "green";
-//                 localStorage.setItem("LossButtonColor"+game.week, "white");
-//                 localStorage.setItem("WinButtonColor" + game.week, "green");
-//             } else if (game.outcome = "tie"){
-//                 let currentScore = docSnap.data().record
-//                 let newScore = addWinWithTie(currentScore);
-//                 await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-//                     //adds into firebase
-//                     record: newScore,
-
-//                 });
-//                 // console.log(gameName.outcome);
-//                 winButton.style.backgroundColor = "green";
-//                 localStorage.setItem("TieButtonColor"+game.week, "white");
-//                 localStorage.setItem("WinButtonColor" + game.week, "green");
-//             }
-//         }
-
-//         let lossButton = document.createElement("button2");
-//         lossButton.innerHTML = "Loss"
-//         lossButton.style.backgroundColor = localStorage.getItem("LossButtonColor" + game.name)
-
-//         lossButton.onclick = async function(){
-//             if(!game.outcome){
-//             let currentScore = docSnap.data().record
-//             let newScore = addLoss(currentScore);
-//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-//                 //adds into firebase
-//                 record: newScore
-//             });
-//             lossButton.style.backgroundColor = "red";
-//             localStorage.setItem("LossButtonColor" + game.week, "red");
-//             } else if (game.outcome = "Win"){
-//             let currentScore = docSnap.data().record
-//             let newScore = addLossWithWin(currentScore);
-//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-//                 //adds into firebase
-//                 record: newScore
-//             });
-//             lossButton.style.backgroundColor = "red";
-//             localStorage.setItem("WinButtonColor" + game.week, "white");
-//             localStorage.setItem("LossButtonColor" + game.week, "red");
-//         } else if (game.outcome == "tie"){
-//             let currentScore = docSnap.data().record
-//             let newScore = addLossWithTie(currentScore);
-//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-//                 //adds into firebase
-//                 record: newScore
-//             });
-//             lossButton.style.backgroundColor = "red";
-//             localStorage.setItem("TieButtonColor" + game.week, "white");
-//             localStorage.setItem("LossButtonColor" + game.week, "red");
-//         }
-//     }
-
-//         let tieButton = document.createElement("button2");
-//         tieButton.innerHTML = "tie"
-//         tieButton.style.backgroundColor = localStorage.getItem("TieButtonColor" + game.name)
-
-//         tieButton.onclick = async function(){
-//         if(!game.outcome){
-
-//             let currentScore = docSnap.data().record
-//             let newScore = addTie(currentScore);
-//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-//                 //adds into firebase
-//                 record: newScore
-//             });
-//             tieButton.style.backgroundColor = "yellow";
-//             localStorage.setItem("TieButtonColor" + game.week, "yellow");
-        
-//     } else if (game.outcome = "win"){
-//         let currentScore = docSnap.data().record
-//             let newScore = addTieWithWin(currentScore);
-//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-//                 //adds into firebase
-//                 record: newScore
-//             });
-//             tieButton.style.backgroundColor = "yellow";
-//             localStorage.setItem("WinButtonColor" + game.name, "white");
-//             localStorage.setItem("TieButtonColor" + game.name, "yellow");
-//     } else if (docSnap.data().outcome = "Loss"){
-//         let currentScore = docSnap.data().record
-//             let newScore = addTieWithLoss(currentScore);
-//             await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-//                 //adds into firebase
-//                 record: newScore
-//             });
-//             tieButton.style.backgroundColor = "yellow";
-//             localStorage.setItem("LossButtonColor" + game.name, "white");
-//             localStorage.setItem("TieButtonColor" + game.name, "yellow");
-//     }
-// }
-//         gameLi.appendChild(winButton);
-//         gameLi.appendChild(lossButton);
-//         gameLi.appendChild(tieButton);
-//     });
-//     let submitButton = document.createElement("button");
-//     submitButton.innerHTML = "Submit"
-//     submitButton.onclick = function(){
-//         location.reload();
-//     }
-
-//     document.getElementById("schedule").appendChild(submitButton);
-
-// }
-// localStorage.setItem("LossButtonColor" + "week1", white);
-
-
-function addWin(score) {
-    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
-    scores[0] += 1; // Increment the wins (first number)
-    return scores.join("-"); // Convert back to string
+//calculates the new score based on the new outcomes
+function makeScore(outcomeList){
+    let wins = 0;
+    let losses = 0;
+    let ties = 0;
+    //loops through the list and calculates the number of wins, ties, and losses
+    for (let i = 0; i < outcomeList.length; i++){
+        if(outcomeList[i]=="win"){
+            wins+=1;
+        } else if (outcomeList[i]=="lose"){
+            losses += 1
+        } else if (outcomeList[i] == "tie"){
+            ties+=1;
+        }
+    }
+    //puts the numbers into the correct string format
+    let newScore = wins + "-" + losses + "-" + ties;
+    return newScore;
 }
 
-function addWinWithLoss(score) {
-    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
-    scores[0] += 1; // Increment the wins (first number)
-    score[2] -= 1; //decrease the loss (second number)
-    return scores.join("-"); // Convert back to string
-}
-
-function addWinWithTie(score) {
-    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
-    scores[0] += 1; // Increment the wins (first number)
-    score[1] -= 1; //decrease the tie (second number)
-    return scores.join("-"); // Convert back to string
-}
-
-function addLoss(score) {
-    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
-    scores[2] += 1; // Increment the Loss (third number)
-    return scores.join("-"); // Convert back to string
-}
-function addLossWithWin(score) {
-    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
-    scores[2] += 1; // Increment the Loss (third number)
-    scores[0] -= 1;
-    return scores.join("-"); // Convert back to string
-}
-function addLossWithTie(score) {
-    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
-    scores[2] += 1; // Increment the Loss (third number)
-    scores[1] -= 1;
-    return scores.join("-"); // Convert back to string
-}
-
-function addTie(score) {
-    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
-    scores[1] += 1; // Increment the ties (second number)
-    return scores.join("-"); // Convert back to string
-}
-function addTieWithWin(score) {
-    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
-    scores[1] += 1; // Increment the ties (second number)
-    score[0] -= 1;
-    return scores.join("-"); // Convert back to string
-}
-function addTieWithLoss(score) {
-    let scores = score.split("-").map(Number); // Convert "5-0-2" into [5, 0, 2]
-    scores[1] += 1; // Increment the ties (second number)
-    score[2] -= 1;
-    return scores.join("-"); // Convert back to string
-}
-
-
-//     async function addOutcome() {
-//         const schedule = getSchedule();
-//         const collectionRef = collection(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule");
-//         const scheduleSnapShot = await getDocs(collectionRef); // Fetch all docs in the subcollection
-    
-//         schedule.forEach(async (gameDoc) => { // Loop through each document
-//             const gameData = gameDoc.data(); // Get document data
-//             const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"), "schedule", gameDoc.id);
-    
-//             if (!gameData.hasOwnProperty("outcome")) { // Check if "outcome" field is missing
-//                 await updateDoc(docRef, { outcome: "" }); // Add an empty "outcome" field
-//             }
-//         });
-//     }
-
-    
-// addOutcome();
-
+//makes it to make sure those functions don't run if the advisor button is clicked again
+export function handleAdvisorClick() {
+    // if (sessionStorage.getItem("advisorClicked") === "true") {
+    if (document.getElementById("submitButton")){
+      console.log("Already clicked – skipping function calls");
+    //   location.reload();
+    return
+    }
+    // sessionStorage.setItem("advisorClicked", "true");
+    console.log("Running advisor functions");
+    allowEdit('advisorSection');
+    allowEdit('gameSection');
+    editRoster();
+    setScore();
+  }
 
 
 
