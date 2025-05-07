@@ -32,7 +32,9 @@ export async function buildAdvisoryPage(){
         // console.log(docSnap.id, " => ", docSnap.data());
                 //doc.data().field name
         //sets the inner html as the data from fire base
-        document.getElementById("advisoryName").innerHTML = sessionStorage.getItem("displayAdvisory");
+        // document.getElementById("advisoryName").innerHTML = sessionStorage.getItem("displayAdvisory");
+        document.getElementById("advisoryName").innerHTML = docSnap.data().name;
+
         document.getElementById("advisorName").innerHTML = docSnap.data().advisorName;
         // if (doc.data().advisorName == undefined){
         // document.getElementById("advisorName").innerHTML = "please input";
@@ -131,9 +133,6 @@ export async function buildAdvisoryPage(){
         getSchedule();
 }
 
-function makeSchedule(){
-
-}
 //creates an advisory list and adds it to advisories.html
  export async function advisoryList(){
     // console.log("starts advisoryList function");
@@ -263,6 +262,60 @@ export async function allowEdit (id){
         }
     }
 }
+
+//makes whatever its called on editable
+export async function editAdvisoryName(id) {
+    let changeElement = document.getElementById(id);
+
+    // Create edit button
+    let editButton = document.createElement("button");
+    editButton.id = "editButton";
+    editButton.innerHTML = "edit";
+    changeElement.parentElement.appendChild(editButton); // safer append
+
+    editButton.onclick = function () {
+        console.log("creating submit button");
+
+        let submitButton = document.createElement("button");
+        submitButton.innerHTML = "submit";
+        submitButton.id = "submitButton";
+
+        editButton.replaceWith(submitButton);
+
+        if (changeElement.tagName !== "TEXTAREA") {
+            let oldElement = document.getElementById(id);
+            console.log("changing to text area");
+
+            let newElement = document.createElement("textarea");
+            newElement.id = oldElement.id;
+            newElement.value = oldElement.textContent;
+
+            oldElement.replaceWith(newElement);
+        }
+
+        submitButton.onclick = async function () {
+            let updatedText = document.getElementById(id).value;
+
+            await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {
+                name: updatedText
+            });
+
+            let oldElement = document.getElementById(id);
+            if (oldElement.tagName === "TEXTAREA") {
+                let newElement = document.createElement("h1");
+                newElement.id = oldElement.id;
+                newElement.textContent = oldElement.value;
+
+                oldElement.replaceWith(newElement);
+            }
+
+            submitButton.remove();
+            location.reload();
+        };
+    };
+}
+
+
 
 //organizes each field containing "schedule" and sorts them by week
 async function getSchedule(){
@@ -410,7 +463,7 @@ export async function editRoster(){
         }
 }
 
-//being able to put in the outcome of the game and get a score
+//being able to put in the outcome of the game and get a school
 export async function setScore(){
     //a list of the games in order by week
     const schedule = await getSchedule();
@@ -538,6 +591,7 @@ export function handleAdvisorClick() {
     allowEdit('gameSection');
     editRoster();
     setScore();
+    editAdvisoryName('advisoryName');
   }
 
 
