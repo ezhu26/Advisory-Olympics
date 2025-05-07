@@ -10,16 +10,19 @@
 <body>
     <script type="module" src="makePage.js"></script>
     <script type="module">
-      import {buildAdvisoryPage, allowEdit, openDropdown, editRoster,} from './makePage.js';
+      import {buildAdvisoryPage, allowEdit, openDropdown, editRoster, setScore, handleAdvisorClick} from './makePage.js';
       
       import{login} from "/script.js";
+      window.setScore = setScore;
       window.buildAdvisoryPage = buildAdvisoryPage;
       //defines it locally for this page
       window.allowEdit = allowEdit;
       window.openDropdown = openDropdown;
       window.editRoster = editRoster;
+      window.handleAdvisorClick = handleAdvisorClick;
     //   when this page is loaded the buildAdvisoryPage() function is called
       buildAdvisoryPage();
+
 
     </script>
 <!-- need to import java script -->
@@ -39,12 +42,12 @@
                             </div>
                     </li>
                 
-                <li><a href = "contact.html">Bracket</a></li>
+                <li><a href = "bracket.html">Bracket</a></li>
                 <li><a href = "schedule.html">Schedule</a></li>
                 <li><a href = "index.html">Home</a></li>
 
                 <li id = "left" ><button onclick="login()">Log In with Google</button></li>
-                <li id = "left" ><button onclick="allowEdit('advisorSection'); allowEdit('gameSection'); editRoster()">Advisor</button></li>
+                <li id = "left" ><button onclick="handleAdvisorClick()">Advisor</button></li>
 
 
             </ul>
@@ -84,6 +87,8 @@
 
         <div class = "schedule">
             <h1>Schedule</h1>
+            <label for="score">Score:</label>
+            <p id = "score"></p>
                 <ul id ="schedule">
 
                 </ul>
