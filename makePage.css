@@ -207,7 +207,7 @@ button:hover{
     font-size: 2.7vw;
   }
 
-  .roster ul li, .schedule ul li {
+  .roster ul li {
     margin-bottom: 10px; /* Adds 10px space below each list item */
 }
 
@@ -280,6 +280,9 @@ button3{
   border-radius: 2px;
   padding: 2px;
   cursor: pointer;
+}
+.gameDiv {
+  padding: 10px;
 }
 
 
