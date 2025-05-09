@@ -107,14 +107,7 @@ async function showItems() {
   
     //for each item in the array, if the points of this advisory is not equal to the points of the last advisory, the rank equals the amount of advisories that have been tested plus 1
     data.forEach((item, index) => {
-      if (item.points !== lastPoints) {
-        //add one to the index
-        rank = index + 1;
-      }
-      //assign the rank
-      item.rank = rank; 
-      //set the points that will be checked against to the points of the current item
-      lastPoints = item.points;
+      item.rank = index + 1;
     });
     //now, all of the attributes are correct, but we need to put them into the table
     //get the table 
