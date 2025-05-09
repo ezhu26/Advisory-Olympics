@@ -1,20 +1,8 @@
 
-
-
-//query for all teams with rank <= 16
-// import { collection, query, where, getDocs } from "firebase/firestore";
-
-// const q = query(collection(db, "cities"), where("capital", "==", true));
-
-// const querySnapshot = await getDocs(q);
-// querySnapshot.forEach((doc) => {
-//   // doc.data() is never undefined for query doc snapshots
-//   console.log(doc.id, " => ", doc.data());
-// });
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
 // TODO: import libraries for Cloud Firestore Database
 // https://firebase.google.com/docs/firestore
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 import { getAuth, signInWithRedirect, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -36,16 +24,43 @@ var advOrder = [];
 export async function getAdvOrder() {
   advOrder = [];
 
-  console.log("help");
-    const q = query(collection(db, "advisory-olympics"), where("rank", "<=", 16));
-    const advisorySnapshot = await getDocs(q);
+  try {
+      const q = query(
+          collection(db, "advisory-olympics"),
+          where("rank", "<=", 16),
+          orderBy("rank", "asc")
+      );
 
-    advisorySnapshot.forEach((item) => {
-      advOrder.push( { name: item.data().name, rank: item.data().rank} );
-    });
-    // console.log(advOrder);
-    setTeams()
+      const advisorySnapshot = await getDocs(q);
+
+      advisorySnapshot.forEach((item) => {
+          advOrder.push({ name: item.data().name, rank: item.data().rank });
+      });
+
+      // Sort the array by rank (just in case)
+      advOrder.sort((a, b) => a.rank - b.rank);
+      console.log(advOrder)
+      // Save to Firestore under "bracket" → "r1matchups"
+      const docRef = doc(db, "bracket", "r1matchups");
+      const dataToSave = {};
+      advOrder.forEach((item, index) => {
+          dataToSave[`seed${index + 1}`] = {
+              name: item.name,
+              rank: item.rank
+          };
+      });
+      console.log("\n" + JSON.stringify(dataToSave));
+
+      await setDoc(docRef, dataToSave);
+      console.log("Advisories saved to r1matchups!");
+
+      setTeams(); // Call to update the UI
+
+  } catch (error) {
+      console.error("Error fetching or saving advisories:", error);
+  }
 }
+
 document.getElementById("round").addEventListener("click", printList);
 
 
@@ -70,8 +85,13 @@ export function printList() {
 }
 
 export function setTeams(){
+  //sort list by rank (in wrong order)
   var selectedItem = advOrder[0].name;
+  if(advOrder[0].name != ""){
     document.getElementById("1seed").innerHTML = selectedItem;
+  } else {
+    document.getElementById("1seed").innerHTML = "Seed 1";
+  }
 
   selectedItem = advOrder[2].name;
   document.getElementById("2seed").innerHTML = selectedItem;
@@ -121,22 +141,36 @@ export function setTeams(){
 
 // Call the function to print the list
 // printList();
-export async function advanceTeam(round, team, nextLevel, nextTeam){
+export async function advanceTeam(round, team, nextLevel, nextTeam) {
+  console.log(round);
+  console.log("advanceTeam round:");
+  console.log(round);
+  console.log("advanceTeam team:", team);
+  console.log("advanceTeam nextLevel:", nextLevel);
+  console.log("advanceTeam nextTeam:", nextTeam);
   
-  const docRef = doc(db, "bracket", round, team);
-  const docRef2 = doc(db, "bracket", nextLevel, nextTeam);
-  const docSnap = await getDocs(docRef);
-  console.log(docSnap.data().advisor);
-  const docSnap2 = await getDocs(docRef2);
-  
-  var teamToAdvance = docSnap.data().team
-  console.log(teamToAdvance);
-  await setDoc(doc(db, "bracket", round), {
-      docRef2: docRef
-  });
 
-  
-  document.getElementById("QT1").innerHTML = document.getElementById("1seed").innerHTML;
-  //set r2Matchups > 
+  // Get document references
+  const docRef = doc(db, "bracket", round);//get doc with the name of the team to advance
+  console.log("2");
+  const docRef2 = doc(db, "bracket", nextLevel);//get the document for where to put the advancing team
+  console.log("3");
 
+  // Fetch document snapshots
+  const docSnap = await getDoc(docRef);
+  const docSnap2 = await getDoc(docRef2);
+
+  if (docSnap.exists()) {
+      const teamToAdvance = docSnap.data()[`${team}`];
+      console.log("Advancing team:");
+      console.log(teamToAdvance);
+
+      await updateDoc(docRef2, {
+        [`${nextTeam}`]: teamToAdvance
+      });
+
+      document.getElementById(nextTeam).innerHTML = teamToAdvance.name;
+  } else {
+      console.log("No such document to advance!");
+  }
 }
