@@ -10,6 +10,16 @@
 
 </head>
 
+
+<script type="module" src="bracket.js" ></script>
+    <script type="module" >
+        import{getAdvOrder, advanceTeam} from "./bracket.js";
+        window.getAdvOrder = getAdvOrder;
+        window.advanceTeam = advanceTeam;
+        getAdvOrder();
+        console.log(advOrder[1].rank);
+        // advanceTeam('r1matchups', 'seed1', 'r2matchups', 'QT1');
+        </script>
 <body>
     <header> 
         Bracket
@@ -30,66 +40,66 @@
     <button id = "print" >button</button>
     <div class = "bracket">
         <div class = "r1m1" id = 'r1m1'>
-            <br><label id="1seed"></label> <label onclick="advanceTeam('r1matchups', 'seed1', 'r2matchups')" class="advance"> ></label> <br><br>
+            <br><label id="1seed"></label> <label onclick="advanceTeam('r1matchups', 'seed1', 'r2matchups', '1v16w')" class="advance"> ></label> <br><br>
             vs<br><br>
-            <label id = "16seed"> </label><label onclick="advanceTeam(2)" class="advance">></label>
+            <label id = "16seed"> </label><label onclick="advanceTeam('r1matchups', 'seed16', 'r2matchups', '1v16w')" class="advance">></label>
         </div>
         <div class = "r1m2" id = 'r1m2'>
-            <br><label id="8seed"></label><label onclick="advanceTeam(3)" class="advance">></label> <br><br>
+            <br><label id="8seed"></label><label onclick="advanceTeam('r1matchups', 'seed8', 'r2matchups', '8v9w')" class="advance">></label> <br><br>
             vs<br><br>
-            <label id = "9seed"></label><label onclick="advanceTeam(4)" class="advance">></label>
+            <label id = "9seed"></label><label onclick="advanceTeam('r1matchups', 'seed9', 'r2matchups', '8v9w')" class="advance">></label>
         </div>
         <div class = "r1m3" id = 'r1m3'>
-            <br><label id="4seed"></label><label onclick="advanceTeam(5)" class="advance">></label> <br><br>
+            <br><label id="4seed"></label><label onclick="advanceTeam('r1matchups', 'seed4', 'r2matchups', '4v13w')" class="advance">></label> <br><br>
             vs<br><br>
-            <label id = "13seed"></label><label onclick="advanceTeam(6)" class="advance">></label>
+            <label id = "13seed"></label><label onclick="advanceTeam('r1matchups', 'seed13', 'r2matchups', '4v13w')" class="advance">></label>
         </div>
         <div class = "r1m4" id = 'r1m4'>
-             <br><label id="5seed"></label><label onclick="advanceTeam(7)" class="advance">></label> <br><br>
+             <br><label id="5seed"></label><label onclick="advanceTeam('r1matchups', 'seed5', 'r2matchups', '5v12w')" class="advance">></label> <br><br>
             vs<br><br>
-            <label id = "12seed"></label><label onclick="advanceTeam(8)" class="advance">></label>
+            <label id = "12seed"></label><label onclick="advanceTeam('r1matchups', 'seed12', 'r2matchups', '5v12w')" class="advance">></label>
         </div>
         <div class = "r1m5" id = 'r1m5'>
-            <br><label id="2seed"></label><label onclick="advanceTeam(9)" class="advance">></label> <br><br>
+            <br><label id="2seed"></label><label onclick="advanceTeam('r1matchups', 'seed2', 'r2matchups', '2v15w')" class="advance">></label> <br><br>
             vs<br><br>
-            <label id = "15seed"></label><label onclick="advanceTeam(10)" class="advance">></label>
+            <label id = "15seed"></label><label onclick="advanceTeam('r1matchups', 'seed15', 'r2matchups', '2v15w')" class="advance">></label>
         </div>
         <div class = "r1m6" id = 'r1m6'>
-            <br><label id="7seed"></label><label onclick="advanceTeam(11)" class="advance">></label> <br><br>
+            <br><label id="7seed"></label><label onclick="advanceTeam('r1matchups', 'seed7', 'r2matchups', '7v10w')" class="advance">></label> <br><br>
             vs<br><br>
-            <label id = "10seed"></label><label onclick="advanceTeam(12)" class="advance">></label>
+            <label id = "10seed"></label><label onclick="advanceTeam('r1matchups', 'seed10', 'r2matchups', '7v10w')" class="advance">></label>
         </div>
         <div class = "r1m7" id = 'r1m7'>
-            <br><label id="3seed"></label><label onclick="advanceTeam(13)" class="advance">></label> <br><br>
+            <br><label id="3seed"></label><label onclick="advanceTeam('r1matchups', 'seed3', 'r2matchups', '3v14w')" class="advance">></label> <br><br>
             vs<br><br>
-            <label id = "14seed"></label><label onclick="advanceTeam(14)" class="advance">></label>
+            <label id = "14seed"></label><label onclick="advanceTeam('r1matchups', 'seed14', 'r2matchups', '3v14w')" class="advance">></label>
         </div>
         <div class = "r1m8" id = 'r1m8'>
-            <br><label id="6seed"></label><label onclick="advanceTeam(15)" class="advance">></label> <br><br>
+            <br><label id="6seed"></label><label onclick="advanceTeam('r1matchups', 'seed6', 'r2matchups', '6v11w')" class="advance">></label> <br><br>
             vs<br><br>
-            <label id = "11seed"></label><label onclick="advanceTeam(16)" class="advance">></label>
+            <label id = "11seed"></label><label onclick="advanceTeam('r1matchups', 'seed11', 'r2matchups', '6v11w')" class="advance">></label>
         </div>
         
         
         <div class = "r2m1" id = 'r2m1'>
-            <label id="QT1">Quarterfinals Team 1</label> 
+            <label id="1v16w">Quarterfinals Team 1</label> <label onclick="advanceTeam('r2matchups', '1v16w', 'r3matchups', 'topleftw')" class="advance"> ></label>
             vs
-            <label id = "QT2">Quarterfinals Team 2</label>
+            <label id = "8v9w">Quarterfinals Team 2</label><label onclick="advanceTeam('r2matchups', '8v9w', 'r3matchups', 'topleftw')" class="advance"> ></label>
         </div>
         <div class = "r2m2" id = 'r2m2'>
-            <label id="QT3">Quarterfinals Team 3</label> 
+            <label id="4v13w">Quarterfinals Team 3</label> <label onclick="advanceTeam('r2matchups', '1v16w', 'r3matchups', 'bottomleftw')" class="advance"> ></label>
             vs
-            <label id = "QT4">Quarterfinals Team 4</label>
+            <label id = "5v12w">Quarterfinals Team 4</label>
         </div>
         <div class = "r2m3" id = 'r2m3'>
-            <label id="QT5">Quarterfinals Team 5</label> 
+            <label id="2v15w">Quarterfinals Team 5</label> 
             vs
-            <label id = "QT6">Quarterfinals Team 6</label>
+            <label id = "7v10w">Quarterfinals Team 6</label>
         </div>
         <div class = "r2m4" id = 'r2m4'>
-            <label id="QT7">Quarterfinals Team 7</label> 
+            <label id="3v14w">Quarterfinals Team 7</label> 
             vs
-            <label id = "QT8">Quarterfinals Team 8</label>
+            <label id = "6v11w">Quarterfinals Team 8</label>
         </div>
 
 
@@ -143,14 +153,7 @@
     // document.getElementById("1seed").innerHTML = selectedItem;
     </script>
 
-    <script type="module" src="bracket.js" ></script>
-    <script type="module" >
-        import{getAdvOrder, advanceTeam} from "./bracket.js";
-        window.getAdvOrder = getAdvOrder;
-        window.advanceTeam = advanceTeam;
-        getAdvOrder();
-        advanceTeam('r1matchups', 'seed1', 'r2matchups');
-        </script>
+    
 
 </body>
 </html>
