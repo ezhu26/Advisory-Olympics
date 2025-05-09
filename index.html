@@ -10,10 +10,9 @@
 <body>
     <script type="module" src="script.js"></script>
     <script type ="module">
-        import{login} from "./script.js";
+        import{login} from "/script.js";
         import {showItems} from './standings.js';
         import {openDropdown, advisoryList} from './makePage.js';
-        window.login = login()
         // import {openDropdown, advisoryList} from './makePage.js';
 
 
@@ -53,6 +52,10 @@
         <select id="weekDropdown" onchange="displayWeekMatchups()">
             <option value="" selected>Select a week</option>
         </select>
+        <div id="matchupDisplay">
+            <h2>Matchups</h2>
+            <div id="matchups"></div>
+        </div>
     </div>
 
 
@@ -75,10 +78,7 @@
     </div>
 
 </div>
-<div id="matchupDisplay">
-    <h2>Matchups</h2>
-    <div id="matchups"></div>
-</div>
+
 
 </body>
 </html> 
