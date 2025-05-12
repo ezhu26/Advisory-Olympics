@@ -233,7 +233,15 @@ async function fetchDataFromFirebase() {
     return advisoryData; 
   }
   
+  
   //called showItems, but it also assigns points and a rank based on the record
+
+  //calls showItems and populates the table
+  window.onload = function() {
+    showItems().then(() => {
+        console.log("Table loaded.");
+    });
+};
   async function showItems() {
     //get the data from the array from firebase 
     const data = await fetchDataFromFirebase();
@@ -346,11 +354,7 @@ async function fetchDataFromFirebase() {
     return ((wins * 3) + (losses * 0) + (ties * 1)); 
   }
           //
-          window.onload = function() {
-              showItems().then(() => {
-                  console.log("Table loaded.");
-              });
-          };
+
   /*const querySnapshot = await getDocs(collection(db, "advisory-olympics"));
   querySnapshot.forEach((doc) => {
       const advisory = doc.data();
