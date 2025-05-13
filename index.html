@@ -47,6 +47,11 @@
 <div class = "mainContainer">
     <div class = "locations"> 
         <h2>Game Locations</h2>
+        <div>
+            <label for="weekInput">Enter Week Number:</label>
+            <input type="number" id="weekInput" min="1">
+            <button onclick="goToWeek()">Go</button>
+        </div>
         <label for="weekDropdown">Select Week:</label>
         <!--when an option is clicked, display the weekly matchups-->
         <select id="weekDropdown" onchange="displayWeekMatchups()">
