@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
 // TODO: import libraries for Cloud Firestore Database
 // https://firebase.google.com/docs/firestore
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 import { getAuth, signInWithRedirect, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -50,38 +50,50 @@ let totalWeeks = 34;
 
 
 //if schedule already exists, this is used to pull from firebase
-function getFirebaseSchedule(advisories) {
-    //make an empty list for adding matchups
-    let firebaseSchedule = []
-    //create a value for the number of adisories
-    const numAdvisories = advisories.length;
-    //get a total weeks to make sure each advisory plays the other ones just once
-    const totalWeeks = advisories.length - 1; 
-    //generate schedule using round-robin algorithm
-    for (let week = 0; week < totalWeeks; week++) {
-        //empty list for each weeks matchups
-        let weekMatchups = [];
-        //for each advisory
-        advisories.forEach(advisory => {
-            //pull the opponent from the matchup that week that is already loaded into firebase
-            const opponent = advisory[`week${week + 1}`]?.opponent;
-            //if an opponent exists and the matchup does not already exist in the list
-            if (opponent && !weekMatchups.includes(`${opponent} vs ${advisory.name}`) 
-                && !weekMatchups.includes(`${advisory.name} vs ${opponent}`)) {
-                //if the opponent is a bye, add that it is on a bye
-                if (opponent === "Bye") {
-                    weekMatchups.push(`${advisory.name} is on a Bye`);
-                //otherwise, add the matchup to the week matchups list
-                } else {
-                    weekMatchups.push(`${advisory.name} vs ${opponent}`);
-                }
-            }
-        });
-        //add the week to the entire schedule
-        firebaseSchedule.push(weekMatchups);
-    }
-    //return the fetched schedule
-    return firebaseSchedule;
+async function getFirebaseSchedule(advisories) {
+  let firebaseSchedule = [];
+
+  try {
+      let weekMatchupsMap = {};
+
+      const schedulePromises = advisories.map(async (advisory) => {
+          const scheduleRef = collection(db, "advisory-olympics", advisory.id, "schedule");
+          const scheduleSnapshot = await getDocs(scheduleRef);
+
+          scheduleSnapshot.forEach((doc) => {
+              if (doc.id.startsWith("week_")) { 
+                  const data = doc.data();
+                  const weekNumber = parseInt(doc.id.split("_")[1]);  
+
+                  if (!weekMatchupsMap[weekNumber]) {
+                      weekMatchupsMap[weekNumber] = { date: data.date || "No date", matchups: new Set() };
+                  }
+
+                  if (data.opponent) {
+                     
+                      const matchupKey = [advisory.name, data.opponent].sort().join(" vs ");
+
+                      weekMatchupsMap[weekNumber].matchups.add(matchupKey);
+                  }
+              }
+          });
+      });
+
+      await Promise.all(schedulePromises);
+
+ 
+      firebaseSchedule = Object.keys(weekMatchupsMap)
+          .sort((a, b) => a - b) 
+          .map(week => ({
+              date: weekMatchupsMap[week].date,
+              matchups: Array.from(weekMatchupsMap[week].matchups) 
+          }));
+
+  } catch (error) {
+      console.error("Error fetching schedule from Firestore");
+  }
+
+  return firebaseSchedule;
 }
 
 //called from getSchedule and updates in firebase
@@ -101,95 +113,113 @@ function renderSchedule(scheduleWithDates) {
         weekDropdown.appendChild(option);
     });
 }
+
+export async function goToWeek() {
+  const input = document.getElementById("weekInput").value;
+  const weekNumber = parseInt(input);
+  const settingsRef = doc(db, "settings", "current");
+
+  if (!isNaN(weekNumber) && weekNumber >= 1 && weekNumber <= scheduleWithDates.length) {
+      const dropdown = document.getElementById("weekDropdown");
+      dropdown.value = weekNumber - 1; // dropdown values are 0-indexed
+      try {
+        await updateDoc(settingsRef, {
+          currentWeek: weekNumber - 1
+        });
+        console.log(`Successfully updated current week to ${weekNumber}`);
+      } catch (error) {
+        console.error("Error updating current week in Firestore:", error);
+        alert("There was a problem updating the week. Please try again.");
+      }
+      displayWeekMatchups();
+  } else {
+      alert("Please enter a valid week number between 1 and " + scheduleWithDates.length);
+  }
+}
+
+async function loadCurrentWeek() {
+  const settingsRef = doc(db, "settings", "current");
+  console.log("hi");
+  try {
+    console.log("hi2");
+      const docSnap = await getDoc(settingsRef);
+      if (docSnap.exists()) {
+        console.log("hi3");
+          const weekDropdown = document.getElementById("weekDropdown");
+          console.log("hi4");
+          weekDropdown.value = docSnap.data().currentWeek;
+          console.log("hi5");
+          displayWeekMatchups();
+          console.log("hi6");
+      } else {
+          console.log("No current week set.");
+      }
+  } catch (error) {
+      console.error("Error loading current week from Firebase:", error);
+  }
+}
+
+window.goToWeek = goToWeek;
 //this function displays the current week matchups through the dropdown menu
 function displayWeekMatchups() {
-    //access the dropdown from the html
-    const weekDropdown = document.getElementById("weekDropdown");
-    //depending on what week is selected in the dropdown, make that the selected week
-    const selectedWeek = weekDropdown.value; 
-    //this is for displaying the matchups once it is selected
-    const matchupDisplay = document.getElementById("matchups");
-    //if the week that is selected exists
-    if (selectedWeek !== "") {
-        //access the global variable schedule with the selected week
-        const matchups = scheduleWithDates[selectedWeek];
-        //clear the previous display
-        matchupDisplay.innerHTML = ""; 
-        //create a container for the matchups
-        const matchupContainer = document.createElement("div");
-        //create a class called matchup container
-        matchupContainer.className = "matchup-container";
-        //add each matchup as a card
-        matchups.forEach(matchup => {
-            if (matchup.toLowerCase().includes("bye")) {
-                // Bye week handling
-                const card = document.createElement("div");
-                card.className = "matchup-card";
-                const teams = matchup.split(" is on a ");
-                card.innerHTML = `
-                    <div class="team home-team">${teams[0]}</div>
-                    <div class="is-on-a">is on a</div>
-                    <div class="team bye">Bye</div>
-                `;
-                matchupContainer.appendChild(card);
-            } else {
-                const card = document.createElement("div");
-                card.className = "matchup-card";
-                const teams = matchup.split(" vs ");
-
-
-                const advisory1 = advisories.find(a => a.name === teams[0]);
-                const advisory2 = advisories.find(a => a.name === teams[1]);
-
-                const weekKey = `week${parseInt(selectedWeek) + 1}`;
-                let homeAdvisory = null;
-                let awayAdvisory = null;
-                let homeLocation = "";
-                
-                homeAdvisory = advisory1;
-                    awayAdvisory = advisory2;
-                    homeLocation = homeAdvisory.location || "";
-                    card.innerHTML = `
-                    <div class="team home-team">${teams[0]} ${homeAdvisory === advisory1 ? `(${homeLocation})` : ""}</div>
-                    <div class="versus">vs</div>
-                    <div class="team away-team">${teams[1]} </div>`
-
-                //if (advisory1?.[weekKey]?.home === true) {
-                 //   homeAdvisory = advisory1;
-                 //   awayAdvisory = advisory2;
-                //    homeLocation = homeAdvisory.location || "";
-                 //   card.innerHTML = `
-                //   <div class="team home-team">${teams[0]} ${homeAdvisory === advisory1 ? `(${homeLocation})` : ""}</div>
-                //    <div class="versus">vs</div>
-                //    <div class="team away-team">${teams[1]} </div>
-                //`;
-
-                //} else if (advisory2?.[weekKey]?.home === true) {
-                //    homeAdvisory = advisory2;
-                //    awayAdvisory = advisory1;
-                //    homeLocation = homeAdvisory.location || "";
-                //    card.innerHTML =`
-                //    <div class="team home-team"> ${teams[0]} </div>
-                //    <div class="versus">vs</div>
-                //    <div class="team away-team">${teams[1]} ${homeAdvisory === advisory2 ? `(${homeLocation})` : ""}</div>
-                //   `; 
-                //}
-
-                    
-
-                    
-                    matchupContainer.appendChild(card);
-    
-
-
-            }
-        });
-
-        matchupDisplay.appendChild(matchupContainer);
-    } else {
-        matchupDisplay.innerHTML = "No week selected.";
-    }
+  //access the dropdown from the html
+  const weekDropdown = document.getElementById("weekDropdown");
+  //depending on what week is selected in the dropdown, make that the selected week
+  const selectedWeek = weekDropdown.value; 
+  //this is for displaying the matchups once it is selected
+  const matchupDisplay = document.getElementById("matchups");
+  console.log(selectedWeek);
+  //if the week that is selected exists
+  if (selectedWeek !== "") {
+      //access the global variable schedule with the selected week
+      const matchups = scheduleWithDates[selectedWeek].matchups;
+      console.log(scheduleWithDates);
+      //clear the previous display
+      matchupDisplay.innerHTML = ""; 
+      //create a container for the matchups
+      const matchupContainer = document.createElement("div");
+      //create a class called matchup container
+      matchupContainer.className = "matchup-container";
+      console.log("checkpoint 11");
+      //add each matchup as a card
+      matchups.forEach(matchup => {
+          if (matchup.toLowerCase().indexOf("bye") === -1){
+          console.log("checkpoint 12");
+          //create a new card for each matchup
+          const card = document.createElement("div");
+          //add each card to a class called matchup-card
+          card.className = "matchup-card";
+          //create "teams" that are split with a versus sign
+          const teams = matchup.split(" vs ");
+          //in each card, add the home team, a "vs.", and the away team
+          card.innerHTML = `
+              <div class="team home-team">${teams[0]}</div>
+              <div class="versus">vs</div>
+              <div class="team away-team">${teams[1]}</div>
+          `;
+          //add the card to the overall matchup container
+          matchupContainer.appendChild(card);
+          } else {
+              const card = document.createElement("div");
+              //add each card to a class called matchup-card
+              card.className = "matchup-card";
+              //split the bye by the words is on a 
+              const teams = matchup.split(" is on a ");
+              card.innerHTML = `
+                  <div class="team home-team">${teams[0]}</div>
+                  <div class="is-on-a">is on a<div/>
+                  <div class="team bye">Bye</div>
+                  `;
+                  matchupContainer.appendChild(card);
+          }
+      });
+      //add the container to the display
+      matchupDisplay.appendChild(matchupContainer);
+  } else {
+      matchupDisplay.innerHTML = "No week selected";
+  }
 }
+
 window.displayWeekMatchups = displayWeekMatchups;
 
 //this gets the advisories from firebase and adds them to a list
@@ -203,7 +233,7 @@ async function getAdvisories() {
             advisories.push({ id: doc.id, ...doc.data() });
         });
 
-        scheduleWithDates = getFirebaseSchedule(advisories);
+        scheduleWithDates = await getFirebaseSchedule(advisories);
         renderSchedule(scheduleWithDates);
     } catch (error) {
         console.error("Error getting advisories:", error);
@@ -213,6 +243,8 @@ async function getAdvisories() {
 
 //call the fetch function
 getAdvisories();
+
+
 
 async function fetchDataFromFirebase() {
     //empty array where the advisory data will go
@@ -237,10 +269,11 @@ async function fetchDataFromFirebase() {
   //called showItems, but it also assigns points and a rank based on the record
 
   //calls showItems and populates the table
-  window.onload = function() {
-    showItems().then(() => {
-        console.log("Table loaded.");
+  window.onload = function () {
+    getAdvisories().then(() => {
+        loadCurrentWeek(); // Load week after advisories are ready
     });
+    showItems();
 };
   async function showItems() {
     //get the data from the array from firebase 
@@ -354,6 +387,7 @@ async function fetchDataFromFirebase() {
     return ((wins * 3) + (losses * 0) + (ties * 1)); 
   }
           //
+  
 
   /*const querySnapshot = await getDocs(collection(db, "advisory-olympics"));
   querySnapshot.forEach((doc) => {
