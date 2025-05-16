@@ -101,13 +101,23 @@ async function showItems() {
 
     //this next bit of code is about assigning a rank to each advisory based on their points relative to other advisories
     //because the advisory array is sorted already, we can give the first team rank 1
-    let rank = 1;
+    let rankO = 1;
     //this is used for seeing if the points of the last team is the same, to be able to assign teams the same rank
     let lastPoints = null;
   
     //for each item in the array, if the points of this advisory is not equal to the points of the last advisory, the rank equals the amount of advisories that have been tested plus 1
-    data.forEach((item, index) => {
-      item.rank = index + 1;
+    data.forEach(async (item, index) => {
+      const newRank = index + 1;
+      item.rank = newRank;
+      lastPoints = item.points;
+    
+      // Find the matching document in Firestore
+      advisories.forEach(docSnap => {
+        if (docSnap.data().name === item.name) {
+          const docRef = doc(db, "advisory-olympics", docSnap.id);
+          updateDoc(docRef, { rank: newRank }).catch(err => console.error("Rank update failed:", err));
+        }
+      });
     });
     //now, all of the attributes are correct, but we need to put them into the table
     //get the table 
@@ -133,6 +143,24 @@ async function showItems() {
   return Promise.resolve();
 }
 
+async function updateAdvisoryRank(advisoryName, newRank) {
+  const advisories = await getDocs(collection(db, "advisory-olympics"));
+  let advisoryDoc = null;
+
+  advisories.forEach(docSnap => {
+    if (docSnap.data().name === advisoryName) {
+      advisoryDoc = docSnap;
+    }
+  });
+
+  if (advisoryDoc) {
+    const docRef = doc(db, "advisory-olympics", advisoryDoc.id);
+    await updateDoc(docRef, { rank: newRank });
+    console.log(`Updated rank for ${advisoryName} to ${newRank}`);
+  } else {
+    console.error("Advisory not found");
+  }
+}
 //this function updates the team record when the button is pressed
 async function updateTeamRecord() {
   //get the team name from the first text box
@@ -180,7 +208,7 @@ async function updateTeamRecord() {
 }
 
 //function to calculate points based on record
-function calculatePoints(record) {
+export function calculatePoints(record) {
 //create a new object that is made up of the record split by dashes
 //extract the wins, losses, and ties
   const [wins, losses, ties] = record.split("-").map(Number);
