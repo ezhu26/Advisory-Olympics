@@ -314,16 +314,21 @@ async function fetchDataFromFirebase() {
       let lastPoints = null;
     
       //for each item in the array, if the points of this advisory is not equal to the points of the last advisory, the rank equals the amount of advisories that have been tested plus 1
-      data.forEach((item, index) => {
-        if (item.points !== lastPoints) {
-          //add one to the index
-          rankO = index + 1;
-        }
-        //assign the rank
-        item.rank = rankO; 
-        //set the points that will be checked against to the points of the current item
-        lastPoints = item.points;
-      });
+      const advisories = await getDocs(collection(db, "advisory-olympics"));
+
+data.forEach(async (item, index) => {
+  const newRank = index + 1;
+  item.rank = newRank;
+  lastPoints = item.points;
+
+  // Find the matching document in Firestore
+  advisories.forEach(docSnap => {
+    if (docSnap.data().name === item.name) {
+      const docRef = doc(db, "advisory-olympics", docSnap.id);
+      updateDoc(docRef, { rank: newRank }).catch(err => console.error("Rank update failed:", err));
+    }
+  });
+});
       //now, all of the attributes are correct, but we need to put them into the table
       //get the table 
       const tableBody = document.getElementById("body");
