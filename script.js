@@ -114,41 +114,58 @@ function renderSchedule(scheduleWithDates) {
     });
 }
 
+//this function translates the input in the box to update the week
 export async function goToWeek() {
+  //gets the input
   const input = document.getElementById("weekInput").value;
+  //the number in the input
   const weekNumber = parseInt(input);
+  //this accesses the firebase
   const settingsRef = doc(db, "settings", "current");
 
+  //if the week number exists and is less than the total schedule
   if (!isNaN(weekNumber) && weekNumber >= 1 && weekNumber <= scheduleWithDates.length) {
+    //access the dropdown
       const dropdown = document.getElementById("weekDropdown");
-      dropdown.value = weekNumber - 1; // dropdown values are 0-indexed
+      //dropdown values are 0-indexed
+      dropdown.value = weekNumber - 1; 
+      //try to update the firebase
       try {
         await updateDoc(settingsRef, {
           currentWeek: weekNumber - 1
         });
         console.log(`Successfully updated current week to ${weekNumber}`);
+        //if it doesn't work
       } catch (error) {
         console.error("Error updating current week in Firestore:", error);
         alert("There was a problem updating the week. Please try again.");
       }
+      //display the correct weeks
       displayWeekMatchups();
   } else {
       alert("Please enter a valid week number between 1 and " + scheduleWithDates.length);
   }
 }
 
+//this function pulls from the week in firebase and loads the current page
 async function loadCurrentWeek() {
+  //access the firebase
   const settingsRef = doc(db, "settings", "current");
   console.log("hi");
   try {
     console.log("hi2");
+    //pull from the current firebase
       const docSnap = await getDoc(settingsRef);
+      //if something exists in there
       if (docSnap.exists()) {
         console.log("hi3");
+        //access the week dropdown
           const weekDropdown = document.getElementById("weekDropdown");
           console.log("hi4");
+          //set the value of the dropdown to the current week
           weekDropdown.value = docSnap.data().currentWeek;
           console.log("hi5");
+          //display the matchups
           displayWeekMatchups();
           console.log("hi6");
       } else {
