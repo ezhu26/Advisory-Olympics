@@ -132,13 +132,25 @@ async function showItems() {
     //the $ means the attribute itself
       row.innerHTML = `
           <td>${item.rank}</td>
-          <td>${item.name}</td>
+          // <td>${item.name}</td>
+          <td><a href="#" class="advisory-link" data-id="${item.id}">${item.name}</a></td>
           <td>${item.points}</td> <!-- Display calculated points -->
           <td>${item.record}</td>
       `;
       //add this row to the table
     tableBody.appendChild(row);
-  });  
+    
+  });
+
+// ✅ THEN attach click handlers (outside the forEach!)
+document.querySelectorAll(".advisory-link").forEach(link => {
+  link.addEventListener("click", function(e) {
+    e.preventDefault();
+    const advisoryId = this.getAttribute("data-id");
+    sessionStorage.setItem("displayAdvisory", advisoryId);
+    window.location.href = "makePage.html";
+  });
+});
   //end the async function
   return Promise.resolve();
 }
@@ -156,13 +168,13 @@ async function updateAdvisoryRank(advisoryName, newRank) {
   if (advisoryDoc) {
     const docRef = doc(db, "advisory-olympics", advisoryDoc.id);
     await updateDoc(docRef, { rank: newRank });
-    console.log(`Updated rank for ${advisoryName} to ${newRank}`);
+    // console.log(`Updated rank for ${advisoryName} to ${newRank}`);
   } else {
-    console.error("Advisory not found");
+    // console.error("Advisory not found");
   }
 }
 //this function updates the team record when the button is pressed
-async function updateTeamRecord() {
+export async function updateTeamRecord() {
   //get the team name from the first text box
   const teamName = document.getElementById('teamName').value;
   //get the new record from the second text box
@@ -190,7 +202,7 @@ async function updateTeamRecord() {
       const teamDocRef = doc(db, "advisory-olympics", teamDoc.id);
       //
       await updateDoc(teamDocRef, updatedData);
-      console.log("Record updated successfully in Firebase");
+      // console.log("Record updated successfully in Firebase");
 
       //refetch the showItems page and reshow the table
       await showItems();
@@ -219,7 +231,7 @@ export function calculatePoints(record) {
         //
         window.onload = function() {
             showItems().then(() => {
-                console.log("Table loaded.");
+                // console.log("Table loaded.");
             });
         };
 /*const querySnapshot = await getDocs(collection(db, "advisory-olympics"));
