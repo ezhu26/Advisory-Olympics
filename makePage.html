@@ -8,39 +8,21 @@
     <title>Advisory Page</title>
 </head>
 <body>
-    <script type="module" src="makePage.js"></script>
-    <script type="module">
-      import {buildAdvisoryPage, allowEdit, openDropdown, editRoster, setScore, handleAdvisorClick} from './makePage.js';
-      
-      import{login} from "/script.js";
-      window.setScore = setScore;
-      window.buildAdvisoryPage = buildAdvisoryPage;
-      //defines it locally for this page
-      window.allowEdit = allowEdit;
-      window.openDropdown = openDropdown;
-      window.editRoster = editRoster;
-      window.handleAdvisorClick = handleAdvisorClick;
-    //   when this page is loaded the buildAdvisoryPage() function is called
-      buildAdvisoryPage();
 
-
-    </script>
 <!-- need to import java script -->
 <!-- ids allow to connect with javascript -->
     <!-- header bar -->
     <div class="header">
-        <div class = "headerBar">
             <h1 id = "advisoryName"></h1>
-        </div>
            <!-- navigation bar -->
            <nav class = "navbar">
             <ul>
                 <li><a href = "standings.html">Standings</a></li>
-                    <li>
-                        <button  id = "dropdown" >Advisories</button>
-                            <div id="myDropdown" class="dropdown-content">
-                            </div>
-                    </li>
+                <li id = dropdown-container>
+                    <button  id = "dropdown" >Advisories</button>
+                        <div id="myDropdown" class="dropdown-content">
+                        </div>
+                </li>
                 
                 <li><a href = "bracket.html">Bracket</a></li>
                 <li><a href = "schedule.html">Schedule</a></li>
@@ -57,7 +39,7 @@
     <div class = "mainContainer">
     <div class = "leftPanel">
         <div class = "advisor" id = "advisorSection">
-            <h1>Advisor: <img src="" alt="Advisor Image" class = "advisorImage" id = "advisorPic"></h1>
+            <h1>Advisor: </h1>
 
             <h2 id = "advisorName"></h2>
             <div class = "contact">
@@ -87,7 +69,7 @@
 
         <div class = "schedule">
             <h1>Schedule</h1>
-            <label for="score">Score:</label>
+            <label for="score">Record:</label>
             <p id = "score"></p>
                 <ul id ="schedule">
 
@@ -103,7 +85,25 @@
 </div>
 
 
+    <script type="module" src="makePage.js"></script>
+    <script type="module">
+      import {buildAdvisoryPage, allowEdit, editRoster, setScore, handleAdvisorClick, deleteAdvisory} from './makePage.js';
+      
+      import{login} from "/script.js";
+      window.setScore = setScore;
+      window.buildAdvisoryPage = buildAdvisoryPage;
+      //defines it locally for this page
+      window.allowEdit = allowEdit;
+    //   window.openDropdown = openDropdown;
+      window.editRoster = editRoster;
+      window.handleAdvisorClick = handleAdvisorClick;
+      window.deleteAdvisory = deleteAdvisory;
+    //   when this page is loaded the buildAdvisoryPage() function is called
+    // openDropdown();  
+    buildAdvisoryPage();
+       
 
+    </script>
 
 </body>
 </html>
