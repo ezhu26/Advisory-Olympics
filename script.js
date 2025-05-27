@@ -3,6 +3,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebas
 // https://firebase.google.com/docs/firestore
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 import { getAuth, signInWithRedirect, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+import {makeDropdown} from './makePage.js';
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyA48UmI50QVSpCJF6voYVudbChpVkFkU6g",
@@ -151,25 +153,25 @@ export async function goToWeek() {
 async function loadCurrentWeek() {
   //access the firebase
   const settingsRef = doc(db, "settings", "current");
-  console.log("hi");
+  // console.log("hi");
   try {
-    console.log("hi2");
+    // console.log("hi2");
     //pull from the current firebase
       const docSnap = await getDoc(settingsRef);
       //if something exists in there
       if (docSnap.exists()) {
-        console.log("hi3");
+        // console.log("hi3");
         //access the week dropdown
           const weekDropdown = document.getElementById("weekDropdown");
-          console.log("hi4");
+          // console.log("hi4");
           //set the value of the dropdown to the current week
           weekDropdown.value = docSnap.data().currentWeek;
-          console.log("hi5");
+          // console.log("hi5");
           //display the matchups
           displayWeekMatchups();
-          console.log("hi6");
+          // console.log("hi6");
       } else {
-          console.log("No current week set.");
+          // console.log("No current week set.");
       }
   } catch (error) {
       console.error("Error loading current week from Firebase:", error);
@@ -185,12 +187,12 @@ function displayWeekMatchups() {
   const selectedWeek = weekDropdown.value; 
   //this is for displaying the matchups once it is selected
   const matchupDisplay = document.getElementById("matchups");
-  console.log(selectedWeek);
+  // console.log(selectedWeek);
   //if the week that is selected exists
   if (selectedWeek !== "") {
       //access the global variable schedule with the selected week
       const matchups = scheduleWithDates[selectedWeek].matchups;
-      console.log(scheduleWithDates);
+      // console.log(scheduleWithDates);
       //clear the previous display
       matchupDisplay.innerHTML = ""; 
       //create a container for the matchups
@@ -342,13 +344,33 @@ data.forEach(async (item, index) => {
       //the $ means the attribute itself
         row.innerHTML = `
             <td>${item.rank}</td>
-            <td>${item.name}</td>
+          <td><a href="#" class="advisory-link" data-id="${item.name}">${item.name}</a></td>
             <td>${item.points}</td> <!-- Display calculated points -->
             <td>${item.record}</td>
         `;
         //add this row to the table
       tableBody.appendChild(row);
     });  
+    // ✅ THEN attach click handlers (outside the forEach!)
+  document.querySelectorAll(".advisory-link").forEach(link => {
+  link.addEventListener("click", async function(e) {
+    e.preventDefault();
+    
+    const advisoryName = this.getAttribute("data-id"); // assuming this is the name
+    console.log("Looking up ID for:" + advisoryName);
+
+    const newID = await findMatchAdvisory(advisoryName); // ✅ Await here
+    console.log("Found ID:" + newID);
+
+    if (newID) {
+      sessionStorage.setItem("displayAdvisory", newID);
+      console.log("Session storage set");
+      window.location.href = "makePage.html";
+    } else {
+      console.error("Advisory not found.");
+    }
+  });
+});
     //end the async function
     return Promise.resolve();
   }
@@ -408,7 +430,6 @@ data.forEach(async (item, index) => {
     //3 for a win, 1 for a tie, 0 for a loss
     return ((wins * 3) + (losses * 0) + (ties * 1)); 
   }
-          //
   
 
   /*const querySnapshot = await getDocs(collection(db, "advisory-olympics"));
@@ -434,3 +455,39 @@ data.forEach(async (item, index) => {
 // if (displayEditPage = true){
 
 // }
+
+async function findMatchAdvisory(advisoryName) {
+  console.log("findMatchAdvisory is running");
+  const snapshot = await getDocs(collection(db, "advisory-olympics"));
+  
+  for (const doc of snapshot.docs) {
+    if (doc.data().name == advisoryName) {
+      console.log(doc.data().name);
+      return doc.id;  // ✅ This is how you get the document ID
+    }
+  }
+
+  return null; // If no match is found
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById("dropdown");
+  const dropdown = document.getElementById("myDropdown");
+  const container = document.getElementById("dropdown-container");
+  // Show dropdown on hover
+  button.addEventListener("mouseover", () => {
+    console.log("user hover");
+    dropdown.classList.add("show");
+  });
+
+  // Keep it open when hovering over dropdown
+  dropdown.addEventListener("mouseover", () => {
+    dropdown.classList.add("show");
+  });
+
+  // Hide when mouse leaves the whole container
+  container.addEventListener("mouseleave", () => {
+    dropdown.classList.remove("show");
+  });
+});
+makeDropdown();
