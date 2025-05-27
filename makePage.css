@@ -285,6 +285,13 @@ button3{
   padding: 10px;
 }
 
+.deleteAdvisoryButton{
+  /* background-color: aliceblue; */
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
 
 
 
