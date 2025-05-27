@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebas
 // TODO: import libraries for Cloud Firestore Database
 // https://firebase.google.com/docs/firestore
 import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, updateDoc, arrayUnion, arrayRemove, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-import{calculatePoints} from "/standings.js";
+import{updateTeamRecord} from "./standings.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyA48UmI50QVSpCJF6voYVudbChpVkFkU6g",
@@ -41,7 +41,6 @@ export async function buildAdvisoryPage(){
         // document.getElementById("advisorName").innerHTML = "please input";
         // }
         document.getElementById("email").innerHTML = docSnap.data().email;
-        document.getElementById("advisorPic").src = docSnap.data().image;
         document.getElementById("advisorBio").innerHTML = docSnap.data().advisorBio;
         var roster = docSnap.data().roster;
         var rosterList = document.getElementById("roster");
@@ -95,9 +94,9 @@ export async function buildAdvisoryPage(){
 
                newDiv.appendChild(newLi);
                 scheduleList.appendChild(newDiv);
-                console.log(newDiv);
+                // console.log(newDiv);
                 
-                console.log(scheduleList);
+                // console.log(scheduleList);
 
                 if (!game.outcome || game.outcome == "not completed") {  // Covers "", null, and undefined
                     let outcome = document.createElement("P");
@@ -135,8 +134,8 @@ export async function buildAdvisoryPage(){
 }
 
 //creates an advisory list and adds it to advisories.html
- export async function advisoryList(){
-    // console.log("starts advisoryList function");
+export async function makeDropdown(){
+    console.log("starts advisoryList function");
     // gets the documents from this query(if a field matches a given criteria)
     const advisories = await getDocs(collection(db, "advisory-olympics"));    
     console.log(advisories)
@@ -163,22 +162,38 @@ export async function buildAdvisoryPage(){
             window.location.href="makePage.html";
         }
     });
+    // openDropdown()
 }
 
-
 //when the user hovers over the dropdown element, it calls these functions
-document.getElementById("dropdown").addEventListener("mouseover",  function() {
-    // console.log("advisories clicked");
-    // console.log("advisories opened");
-    openDropdown();
-    advisoryList();
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById("dropdown");
+  const dropdown = document.getElementById("myDropdown");
+  const container = document.getElementById("dropdown-container");
+  // Show dropdown on hover
+  button.addEventListener("mouseover", () => {
+    console.log("user hover");
+    dropdown.classList.add("show");
+  });
+
+  // Keep it open when hovering over dropdown
+  dropdown.addEventListener("mouseover", () => {
+    dropdown.classList.add("show");
+  });
+
+  // Hide when mouse leaves the whole container
+  container.addEventListener("mouseleave", () => {
+    dropdown.classList.remove("show");
+  });
 });
 
-//When openDropdown is called it shows the contents of the dropdown
-export async function openDropdown() {
-    // console.log("function openDropdown")
-    document.getElementById("myDropdown").classList.toggle("show");
-  }
+// //When openDropdown is called it shows the contents of the dropdown
+// export function openDropdown() {
+//     console.log("function openDropdown")
+//     // advisoryList();
+
+//     document.getElementById("myDropdown").classList.toggle("show");
+//   }
 
 
 
@@ -553,7 +568,8 @@ export async function setScore(){
                 record: newScore
             });
         //refreshes the screen
-        calculatePoints(newScore);
+        updateTeamRecord();
+        // calculatePoints(newScore);
         location.reload();
     }
 
@@ -594,8 +610,26 @@ export function handleAdvisorClick() {
     editRoster();
     setScore();
     editAdvisoryName('advisoryName');
+    deleteAdvisory();
   }
 
+export async function deleteAdvisory(){
+    console.log("deleteAdvisory function running");
+    let deleteAdvisoryButton = document.createElement("button");
+    deleteAdvisoryButton.innerHTML = "Delete Advisory";
+    deleteAdvisoryButton.className = "deleteAdvisoryButton";
+    document.body.appendChild(deleteAdvisoryButton);
+    deleteAdvisoryButton.onclick = async function(){
+    try {
+        await deleteDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")));
+        console.log("Document successfully deleted!");
+    } catch (e) {
+        console.error("Error deleting document: ", e);
+    }
+        window.location.href = "index.html";
+    }
+}
+makeDropdown();
 
 
 
