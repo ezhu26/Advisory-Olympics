@@ -9,15 +9,7 @@
         
 <body>
     <script type="module" src="script.js"></script>
-    <script type ="module">
-        import{login} from "/script.js";
-        import {showItems} from './standings.js';
-        import {openDropdown, advisoryList} from './makePage.js';
-        // import {openDropdown, advisoryList} from './makePage.js';
 
-
-        window.login = login;
-    </script>
 
 <div class = "header">
 <h1>Advisory Olympics</h1>
@@ -26,7 +18,7 @@
                 <ul>
                     <!--<li><a href = "standings.html">Standings</a></li> -->
                     <!-- <div class = "dropdownContainer"> -->
-                    <li>
+                    <li id="dropdown-container">
                         <button  id = "dropdown" >Advisories</button>
                             <div id="myDropdown" class="dropdown-content">
                             </div>
@@ -36,7 +28,11 @@
                     <li><a href = "schedule.html">Schedule</a></li>
                     <li><a><b>Home</b></a></li>
 
-                    <li id = "left" ><button onclick="login()">Log In with Google</button></li>
+                    <li id = "left" >
+                        <button onclick="login()">Log In with Google</button>
+                       <a href = "makeAdvisory.html">Make a New Advisory</a>
+                    </li>
+
 
                 </ul>
             </nav>
@@ -84,6 +80,15 @@
 
 </div>
 
+    <script type ="module">
+        import{login} from "./script.js";
+        // import {showItems} from './standings.js';
+        // import {makeDropdown} from './makePage.js';
+        // import {openDropdown, advisoryList} from './makePage.js';
 
+
+        window.login = login;
+
+    </script>
 </body>
 </html> 
