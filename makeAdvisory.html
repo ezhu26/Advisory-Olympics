@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="makeAdvisory.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <script type="module" src="makeAdvisory.js" defer></script>
+
+    <div class="form-container">
+        <h1>Advisory Form</h1>
+
+        <div id="advisorContainer">
+            Enter Advisory name: 
+            <textarea id="advisoryName" oninput="checkAdvisories()"></textarea>
+            <br>
+        </div>
+        <div id="advisorDiv">
+            Enter Advisor:
+            <textarea id="advisor"></textarea>
+            <br>
+        </div>
+        <div id="locationDiv">
+            Enter room location:
+            <textarea id="location"></textarea>
+            <br>
+        </div>
+        <div id="gameDiv">
+            Game Name:
+            <textarea id="game"></textarea>
+            <br>
+        </div>
+        <div id="gameDescDiv">
+            Give a brief Game description:
+            <textarea id="gameDesc"></textarea>
+            <br>
+        </div>
+        <div id="peopleDiv">
+            Enter people in advisory:
+            <textarea id="person"></textarea>
+            <button onclick="addPeople()">add person</button>
+            <ul id="people"></ul>
+            <br>
+        </div>
+
+        <button onclick="createAdvisory()">Create Advisory</button>
+        <button onclick="window.location.href='index.html'">Go Back to Home</button>
+    </div>
+
+    <script type="module">
+        import { addPeople, createAdvisory, checkAdvisories } from "./makeAdvisory.js";
+        window.addPeople = addPeople;
+        window.createAdvisory = createAdvisory;
+        window.checkAdvisories=checkAdvisories;
+    </script>
+</body>
+</html>
