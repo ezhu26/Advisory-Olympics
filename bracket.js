@@ -59,6 +59,7 @@ export async function getAdvOrder() {
   } catch (error) {
       console.error("Error fetching or saving advisories:", error);
   }
+  // console.log(advOrder);
 }
 
 document.getElementById("round").addEventListener("click", printList);
@@ -67,6 +68,8 @@ document.getElementById("round").addEventListener("click", printList);
 export function changeRound() {
   console.log('changeRound');
 }
+
+//idrk what this is doing
 export function printList() {
   const printList = document.getElementById("print");
 
@@ -84,7 +87,7 @@ export function printList() {
   listContainer.appendChild(ul);
 }
 
-export function setTeams(){
+export async function setTeams(){
   //sort list by rank (in wrong order)
   var selectedItem = advOrder[0].name;
   if(advOrder[0].name != ""){
@@ -93,50 +96,156 @@ export function setTeams(){
     document.getElementById("1seed").innerHTML = "Seed 1";
   }
 
-  selectedItem = advOrder[2].name;
+  selectedItem = advOrder[1].name;
   document.getElementById("2seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[3].name;
+  selectedItem = advOrder[2].name;
   document.getElementById("3seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[4].name;
+  selectedItem = advOrder[3].name;
   document.getElementById("4seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[5].name;
+  selectedItem = advOrder[4].name;
   document.getElementById("5seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[6].name;
+  selectedItem = advOrder[5].name;
   document.getElementById("6seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[7].name;
+  selectedItem = advOrder[6].name;
   document.getElementById("7seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[8].name;
+  selectedItem = advOrder[7].name;
   document.getElementById("8seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[9].name;
+  selectedItem = advOrder[8].name;
   document.getElementById("9seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[10].name;
+  selectedItem = advOrder[9].name;
   document.getElementById("10seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[11].name;
+  selectedItem = advOrder[10].name;
   document.getElementById("11seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[12].name;
+  selectedItem = advOrder[11].name;
   document.getElementById("12seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[13].name;
+  selectedItem = advOrder[12].name;
   document.getElementById("13seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[14].name;
+  selectedItem = advOrder[13].name;
   document.getElementById("14seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[15].name;
+  selectedItem = advOrder[14].name;
   document.getElementById("15seed").innerHTML = selectedItem;
 
-  selectedItem = advOrder[16].name;
+  selectedItem = advOrder[15].name;
   document.getElementById("16seed").innerHTML = selectedItem;
+
+  // let r2matchups = [];
+const docRef = doc(db, "bracket", "r2matchups");
+const r2matchups = await getDoc(docRef);
+const dataR2matchups = r2matchups.data();
+
+console.log(dataR2matchups);
+
+for (const field in dataR2matchups) {
+  if (field == "1v16w") {
+    // Access the value (which is a nested object) using the field as key
+    const matchup = dataR2matchups[field];
+    // if(matchup == undefined){
+    //   document.getElementById("1v16w").innerHTML = "not finished";  // NOT field['$name']
+    // }
+    document.getElementById("1v16w").innerHTML = matchup.name;  // NOT field['$name']
+  }
+  if(field == "8v9w") {
+    const matchup = dataR2matchups[field];
+    document.getElementById("8v9w").innerHTML = matchup.name;
+  }
+  if(field == "4v13w") {
+    const matchup = dataR2matchups[field];
+    document.getElementById("4v13w").innerHTML = matchup.name;
+  }
+  if(field == "5v12w") {
+    const matchup = dataR2matchups[field];
+    document.getElementById("5v12w").innerHTML = matchup.name;
+  }
+  if(field == "2v15w") {
+    const matchup = dataR2matchups[field];
+    document.getElementById("2v15w").innerHTML = matchup.name;
+  }
+  if(field == "7v10w") {
+    const matchup = dataR2matchups[field];
+    document.getElementById("7v10w").innerHTML = matchup.name;
+  }
+  if(field == "3v14w") {
+    const matchup = dataR2matchups[field];
+    document.getElementById("3v14w").innerHTML = matchup.name;
+  }
+  if(field == "6v11w") {
+    const matchup = dataR2matchups[field];
+    document.getElementById("6v11w").innerHTML = matchup.name;
+  }
+}
+
+const docRef3 = doc(db, "bracket", "r3matchups");
+const r3matchups = await getDoc(docRef3);
+const dataR3matchups = r3matchups.data();
+
+console.log("These are the round 3 matchups" + dataR3matchups);
+
+for (const field in dataR3matchups) {
+  if (field == "topleftw") {
+    // Access the value (which is a nested object) using the field as key
+    const matchup = dataR3matchups[field];
+    // if(matchup.name = null){
+    //   document.getElementById("ST1").innerHTML = "Not determined";
+    // }
+    document.getElementById("ST1").innerHTML = matchup.name;  // NOT field['$name']
+  }
+  if(field == "bottomleftw") {
+    const matchup = dataR3matchups[field];
+    document.getElementById("ST2").innerHTML = matchup.name;
+  }
+  if(field == "toprightw") {
+    const matchup = dataR3matchups[field];
+    document.getElementById("ST3").innerHTML = matchup.name;
+  }
+  if(field == "bottomrightw") {
+    const matchup = dataR3matchups[field];
+    document.getElementById("ST4").innerHTML = matchup.name;
+  }
+
+}
+
+
+const docRef4 = doc(db, "bracket", "r4matchups");
+const r4matchups = await getDoc(docRef4);
+const dataR4matchups = r4matchups.data();
+
+console.log("These are the round 4 matchups" + dataR4matchups);
+
+for (const field in dataR4matchups) {
+  if (field == "leftsidew") {
+    // Access the value (which is a nested object) using the field as key
+    const matchup = dataR4matchups[field];
+    // if(matchup.name = null){
+    //   document.getElementById("ST1").innerHTML = "Not determined";
+    // }
+    document.getElementById("CT1").innerHTML = matchup.name;  // NOT field['$name']
+  }
+  if (field == "rightsidew"){
+    const matchup = dataR4matchups[field];
+    document.getElementById("CT2").innerHTML = matchup.name;  // NOT field['$name']
+  }
+}
+
+const docRef5 = doc(db, "bracket", "r5matchup");
+const r5matchup = await getDoc(docRef5);
+const dataR5matchup = r5matchup.data();
+let championWinner = document.createElement("p");
+championWinner.innerHTML = dataR5matchup["totalwinner"].name;
+document.getElementById("Champion").appendChild(championWinner);
+console.log("This is the champion:" + championWinner);
 }
 
 // Call the function to print the list
@@ -174,3 +283,87 @@ export async function advanceTeam(round, team, nextLevel, nextTeam) {
       console.log("No such document to advance!");
   }
 }
+
+export async function clearBracket(){
+  const docRef1 = doc(db, "bracket", "r2matchups");
+  await updateDoc(docRef1, {
+  "1v16w": "",
+  "2v15w": "",
+  "3v14w": "",
+  "4v13w": "",
+  "5v12w": "",
+  "6v11w": "",
+  "7v10w": "",
+  "8v9w": ""
+});
+
+  const docRef2 = doc(db, "bracket", "r3matchups");
+  await updateDoc(docRef2, {
+    "bottomleftw": "",
+    "bottomrightw": "",
+    "topleftw": "",
+    "toprightw": ""
+  });
+
+  const docRef3 = doc(db, "bracket", "r4matchups");
+  await updateDoc(docRef3, {
+    "leftsidew": "",
+    "rightsidew": ""
+  });
+
+
+  const docRef4 = doc(db, "bracket", "r5matchup");
+  await updateDoc(docRef4, {
+    "totalwinner": "",
+  });
+
+  console.log("map cleared");
+  location.reload()
+}
+
+//makes the lines
+function connectCards(sourceId, targetId) {
+  const svg = document.querySelector('.bracket-lines');
+  const source = document.getElementById(sourceId);
+  const target = document.getElementById(targetId);
+  const sRect = source.getBoundingClientRect();
+  const tRect = target.getBoundingClientRect();
+  const containerRect = svg.getBoundingClientRect();
+
+  const x1 = sRect.right - containerRect.left;
+  const y1 = sRect.top + sRect.height / 2 - containerRect.top;
+  const x2 = tRect.left - containerRect.left;
+  const y2 = tRect.top + tRect.height / 2 - containerRect.top;
+
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("x1", x1);
+  line.setAttribute("y1", y1);
+  line.setAttribute("x2", x2);
+  line.setAttribute("y2", y2);
+  line.setAttribute("stroke", "black");
+  line.setAttribute("stroke-width", "2");
+
+  svg.appendChild(line);
+}
+
+// Example use
+connectCards('r2m1', 'r1m1');
+connectCards('r2m1', 'r1m2');
+connectCards('r2m2', 'r1m3');
+connectCards('r2m2', 'r1m4');
+connectCards('r1m5', 'r2m3');
+connectCards('r1m6', 'r2m3');
+connectCards('r1m7', 'r2m4');
+connectCards('r1m8', 'r2m4');
+connectCards('r1m5', 'r2m3');
+connectCards('r3m1', 'r2m1');
+connectCards('r3m1', 'r2m2');
+connectCards('r2m3', 'r3m2');
+connectCards('r2m4', 'r3m2');
+connectCards('r4m1', 'r3m1');
+connectCards('r3m2', 'r4m1');
+
+
+
+
+
