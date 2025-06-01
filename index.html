@@ -15,7 +15,7 @@
 <h1>Advisory Olympics</h1>
             <!-- navigation bar -->
             <nav class = "navbar">
-                <ul>
+                <ul id = "navBar">
                     <!--<li><a href = "standings.html">Standings</a></li> -->
                     <!-- <div class = "dropdownContainer"> -->
                     <li id="dropdown-container">
@@ -29,9 +29,10 @@
                     <li><a><b>Home</b></a></li>
 
                     <li id = "left" >
-                        <button onclick="login()">Log In with Google</button>
-                       <a href = "makeAdvisory.html">Make a New Advisory</a>
+                        <button id = "loginButton" onclick="login()">Log In with Google</button>
+
                     </li>
+                    <!-- <li id = "left"><a href = "makeAdvisory.html">Make a New Advisory</a></li> -->
 
 
                 </ul>
@@ -41,14 +42,14 @@
 
 
 <div class = "mainContainer">
-    <div class = "locations"> 
+    <div id = "locations" class = "locations"> 
         <h2>Game Locations</h2>
-        <div>
+        <!-- <div>
             <label for="weekInput">Enter Week Number:</label>
             <input type="number" id="weekInput" min="1">
             <button onclick="goToWeek()">Go</button>
-        </div>
-        <label for="weekDropdown">Select Week:</label>
+        </div> -->
+        <label id = "insertBefore" for="weekDropdown">Select Week:</label>
         <!--when an option is clicked, display the weekly matchups-->
         <select id="weekDropdown" onchange="displayWeekMatchups()">
             <option value="" selected>Select a week</option>
