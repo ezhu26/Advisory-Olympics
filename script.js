@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebas
 // TODO: import libraries for Cloud Firestore Database
 // https://firebase.google.com/docs/firestore
 import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-import { getAuth, signInWithRedirect, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+import { getAuth, signInWithRedirect, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 import {makeDropdown} from './makePage.js';
 
 
@@ -22,27 +22,20 @@ const auth = getAuth(app);
 
 
 export const login = async function(){
-signInWithRedirect(auth, provider)
-  .then((result) => {
+    var result = await signInWithPopup(auth, provider);
     console.log("logging in")
     // This gives you a Google Access Token. You can use it to access the Google API.
     const credential = GoogleAuthProvider.credentialFromResult(result);
     const token = credential.accessToken;
     // The signed-in user info.
     const user = result.user;
+    
     // IdP data available using getAdditionalUserInfo(result)
     // ...
-  }).catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // The email of the user's account used.
-    const email = error.customData.email;
-    // The AuthCredential type that was used.
-    const credential = GoogleAuthProvider.credentialFromError(error);
-    // ...
-  });
-
+    console.log(user.email);
+    if(user.email.includes("@stab.org")){
+      sessionStorage.setItem('adminLogin', true);
+    }
 }
 
 let scheduleWithDates = [];
@@ -261,8 +254,11 @@ async function getAdvisories() {
 
 
 //call the fetch function
+try{
 getAdvisories();
-
+} catch{
+  console.log("did not could load advisories from firebase");
+}
 
 
 async function fetchDataFromFirebase() {
@@ -297,40 +293,9 @@ async function fetchDataFromFirebase() {
   async function showItems() {
     //get the data from the array from firebase 
     const data = await fetchDataFromFirebase();
-  
-    //this bit of code is about calculating and then sorting the advisories based on points
-    //for each advisory in the array
-    data.forEach(advisory => {
-      //calculate a points value based on the record in the calculatePoints function
-        const points = calculatePoints(advisory.record); 
-        //assign the calculated points to the advisory
-        advisory.points = points
-      });
-      //within the array, sort the data based on points from most to least
-      data.sort((a, b) => b.points - a.points);
-  
-      //this next bit of code is about assigning a rank to each advisory based on their points relative to other advisories
-      //because the advisory array is sorted already, we can give the first team rank 1
-      let rankO = 1;
-      //this is used for seeing if the points of the last team is the same, to be able to assign teams the same rank
-      let lastPoints = null;
-    
-      //for each item in the array, if the points of this advisory is not equal to the points of the last advisory, the rank equals the amount of advisories that have been tested plus 1
-      const advisories = await getDocs(collection(db, "advisory-olympics"));
+          data.sort((a, b) => a.rank - b.rank);
 
-data.forEach(async (item, index) => {
-  const newRank = index + 1;
-  item.rank = newRank;
-  lastPoints = item.points;
-
-  // Find the matching document in Firestore
-  advisories.forEach(docSnap => {
-    if (docSnap.data().name === item.name) {
-      const docRef = doc(db, "advisory-olympics", docSnap.id);
-      updateDoc(docRef, { rank: newRank }).catch(err => console.error("Rank update failed:", err));
-    }
-  });
-});
+   
       //now, all of the attributes are correct, but we need to put them into the table
       //get the table 
       const tableBody = document.getElementById("body");
@@ -489,5 +454,54 @@ document.addEventListener("DOMContentLoaded", () => {
   container.addEventListener("mouseleave", () => {
     dropdown.classList.remove("show");
   });
+  // location.reload();
 });
+try{
 makeDropdown();
+} catch{
+  console.log("error function on makeDropdown()");
+}
+
+
+window.addEventListener("DOMContentLoaded", () => {
+  const showAdvisor = sessionStorage.getItem("adminLogin");
+
+  if (showAdvisor == "true") {
+    let newLi = document.createElement("li");
+    newLi.id = "left";
+    let advisorLink = document.createElement("a");
+    advisorLink.href = "makeAdvisory.html";
+    advisorLink.textContent = "Make a New Advisory";
+    newLi.appendChild(advisorLink);
+    document.getElementById("navBar").appendChild(newLi);
+
+    document.getElementById("loginButton").remove();
+
+    let containerDiv = document.createElement("div");
+
+
+    // Create label
+    let label = document.createElement("label");
+    label.setAttribute("for", "weekInput");
+    label.textContent = "Enter Week Number:";
+
+    // Create input
+    let input = document.createElement("input");
+    input.type = "number";
+    input.id = "weekInput";
+    input.min = "1";
+
+    // Create button
+    let button = document.createElement("button");
+    button.textContent = "Go";
+    button.onclick = goToWeek; // no parentheses, just the reference
+
+    // Append elements to container div
+    containerDiv.appendChild(label);
+    containerDiv.appendChild(input);
+    containerDiv.appendChild(button);
+
+    document.getElementById("locations").insertBefore(containerDiv, document.getElementById("insertBefore"));
+  }
+
+});
