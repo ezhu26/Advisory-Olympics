@@ -41,7 +41,6 @@ export async function buildAdvisoryPage(){
         // document.getElementById("advisorName").innerHTML = "please input";
         // }
         document.getElementById("email").innerHTML = docSnap.data().email;
-        document.getElementById("advisorBio").innerHTML = docSnap.data().advisorBio;
         var roster = docSnap.data().roster;
         var rosterList = document.getElementById("roster");
              //loops through each variable in the roster field
@@ -58,79 +57,64 @@ export async function buildAdvisoryPage(){
         document.getElementById("gameDesc").innerHTML = docSnap.data().gameDesc;
         document.getElementById("advisorName").innerHTML = docSnap.data().advisorName;
         document.getElementById("score").innerHTML = docSnap.data().record;
-
+        document.getElementById("location").innerHTML = docSnap.data().location;
 
 
         // var schedule = docSnap.data().schedule;
-        const schedule = await getSchedule();
-        // console.log(schedule);
-        // console.log("getSchedule called on")
-        // console.log(schedule.opponent)
-        let scheduleList = document.getElementById("schedule");
-        console.log(Array.isArray(schedule));
-        // scheduleList.id = "scheduleList";
-        // console.log(scheduleList);
+const schedule = await getSchedule();
 
-        
-            schedule.forEach((game) => {
-                // console.log(game.week)
-                // console.log(week.outcome);
-                // console.log(docSnap.data())
-                var newDiv = document.createElement("div");
-                // newDiv.innerHTML =  "HELP me";
-                // console.log(newDiv);
-                var newLi = document.createElement("li");
-                newDiv.id = game.id;
-                newDiv.className = "gameDiv";
-                if(game.home){
-                    newLi.innerHTML = `Week ${game.week}: Home ${game.opponent} (Date: ${game.date})`;
-                } else {
-                    newLi.innerHTML = `Week ${game.week}: Away ${game.opponent} (Date: ${game.date})`;
+const firstHalfList = document.getElementById("first-half");
+const secondHalfList = document.getElementById("second-half");
 
-                }
-                // console.log(`${week}: ${schedule[week].opponent} (Date: ${schedule[week].date})`);
-                // console.log(newLi.innerHTML);
-                console.log(newLi.innerHTML);
+if (!firstHalfList || !secondHalfList) {
+  console.error("Missing #first-half or #second-half UL in your HTML.");
+}
 
-               newDiv.appendChild(newLi);
-                scheduleList.appendChild(newDiv);
-                // console.log(newDiv);
-                
-                // console.log(scheduleList);
+const halfway = Math.ceil(schedule.length / 2);
 
-                if (!game.outcome || game.outcome == "not completed") {  // Covers "", null, and undefined
-                    let outcome = document.createElement("P");
-                    outcome.className = "outcome";
-                    outcome.innerHTML = "Game not completed";
-                    outcome.style.color = "grey";
-                    newDiv.appendChild(outcome);
-                } else if (game.outcome === "win") {
-                    let outcome = document.createElement("P");
-                    outcome.className = "outcome";
-                    outcome.innerHTML = "Win";
-                    outcome.style.color = "green";
-                    newDiv.appendChild(outcome);
-                } else if (game.outcome === "lose") {
-                    let outcome = document.createElement("P");
-                    outcome.className = "outcome";
-                    outcome.innerHTML = "Loss";
-                    outcome.style.color = "red";
-                    newDiv.appendChild(outcome);
-                } else if (game.outcome === "tie") {
-                    let outcome = document.createElement("P");
-                    outcome.className = "outcome";
-                    outcome.innerHTML = "Tie";
-                    outcome.style.color = "yellow";
-                    newDiv.appendChild(outcome);
-                }
-                scheduleList.appendChild(newDiv);
-        });
-        document.getElementById("history").innerHTML = docSnap.data().history;
+schedule.forEach((game, index) => {
+  // Create LI to contain everything
+const li = document.createElement("li");
+li.className = "gameDiv"; // Flex styling goes here
+
+const info = document.createElement("span");
+info.textContent = game.home
+  ? `Week ${game.week}: Home ${game.opponent}`
+  : `Week ${game.week}: Away ${game.opponent}`;
+
+const outcome = document.createElement("span");
+outcome.className = 'outcome outcome-${index}';
+
+switch (game.outcome) {
+  case "win":
+    outcome.textContent = "Win";
+    outcome.style.color = "green";
+    break;
+  case "lose":
+    outcome.textContent = "Loss";
+    outcome.style.color = "red";
+    break;
+  case "tie":
+    outcome.textContent = "Tie";
+    outcome.style.color = "goldenrod";
+    break;
+  default:
+    outcome.textContent = "Not completed";
+    outcome.style.color = "gray";
+}
+
+li.appendChild(info);
+li.appendChild(outcome);
+
+// Append to the right list
+(index < halfway ? firstHalfList : secondHalfList).appendChild(li);
+
+});
 
         //adds the string from firebase and sets it as the src for the advisor image
-        document.getElementById("advisorPic").src = docSnap.data().image;
-        console.log(scheduleList);
-        getSchedule();
+        // document.getElementById("advisorPic").src = docSnap.data().image;
+        // console.log(scheduleList);
+        // getSchedule();
 }
 
 //creates an advisory list and adds it to advisories.html
@@ -138,7 +122,7 @@ export async function makeDropdown(){
     console.log("starts advisoryList function");
     // gets the documents from this query(if a field matches a given criteria)
     const advisories = await getDocs(collection(db, "advisory-olympics"));    
-    console.log(advisories)
+    // console.log(advisories)
     //loops through each advisory    
     advisories.forEach((advisory) => {
         // console.log("advisory")
@@ -187,6 +171,25 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+window.addEventListener("DOMContentLoaded", () => {
+//   const showAdvisor = sessionStorage.getItem("adminLogin");
+
+//   if (showAdvisor == "true") {
+
+    // <li id = "left" ><button class = "advisorbutton" onclick="handleAdvisorClick()">Advisor</button></li>
+
+    let newLi = document.createElement("li");
+    newLi.id = "left";
+    let advisorButton = document.createElement("button");
+    advisorButton.onclick = handleAdvisorClick;
+    advisorButton.innerHTML = "Advisor"
+    newLi.appendChild(advisorButton);
+    document.getElementById("navBar").appendChild(newLi);
+//   }
+});
+
+
+
 // //When openDropdown is called it shows the contents of the dropdown
 // export function openDropdown() {
 //     console.log("function openDropdown")
@@ -197,86 +200,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-//makes whatever its called on editable
-export async function allowEdit (id){
 
-    let parentDiv = document.getElementById(id);
+//makes whatever its called on editable
+export async function allowEdit (){
+
+    // let parentDiv = document.getElementById("advisorSection");
     //children is a list of all of the children "P", "H1", etc. of the parent div
-    let children = parentDiv.children;
+    // let children = parentDiv.children;
 
     //Creates a button, sets the innerHTML, ad appends it to the parent div
     var editButton = document.createElement("button");
     editButton.id = "editButton";
     editButton.innerHTML = "edit";
-    document.getElementById(id).appendChild(editButton);
+    document.getElementById("advisorSection").appendChild(editButton);
+
 
     //changes any element that has a tag "P" and changes it to a text box
     editButton.onclick = function() {
 
-        // if(!document.getElementById("submitButton")){
-            console.log("creating submit button");
-            var submitButton = document.createElement("button");
-            submitButton.innerHTML = "submit";
-            submitButton.id = "submitButton";
+//sets the already existing information into the form
+            console.log("opening modal");
+            document.getElementById("advisorNameInput").value = document.getElementById("advisorName").textContent;
+            document.getElementById("emailInput").value = document.getElementById("email").textContent;
+            document.getElementById("locationInput").innerHTML = document.getElementById("location").textContent
+            document.getElementById("gameNameInput").innerHTML = document.getElementById("gameName").innerHTML;
+            document.getElementById("gameDescInput").innerHTML = document.getElementById("gameDesc").innerHTML;
 
-            editButton.replaceWith(submitButton);
-
-        //Checks if a text area already exists so it won't make another one
-        if(children.tagName !== "TEXTAREA"){
-            for (let child of children) {
-                if (child.tagName == "P"){
-            //any element with p as its tag will be se as oldElement
-            let oldElement = document.getElementById(child.id);
-            console.log("changing to text area");
-            //create a new element with textarea as its tag
-            let newElement = document.createElement("textarea");
-            newElement.id = oldElement.id;
-            //sets the content of the oldElement into the new one
-            newElement.innerHTML = oldElement.innerHTML;
-            //reaplces old element with new one
-            oldElement.replaceWith(newElement);
-            }
-        }
+            document.getElementById("editModal").style.display = "block";
     }
+}
+document.getElementById("editForm").addEventListener("submit", async (e) => {
+  e.preventDefault(); // Prevent page reload
 
-        
-//when the submit button is clicked, update fire base, reload the page, and remove the buttons
-    submitButton.onclick = async function(){
+  await saveInfo();   // Save form data to Firebase
 
-        //checks the id to see which section to update and updates the doc on firebase
-        if (id == "advisorSection"){
-            await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-                advisorBio: document.getElementById("advisorBio").value
-            });
-        } else if (id == "gameSection"){
-            await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-               gameDesc: document.getElementById("gameDesc").value
-            });
-        }
-            //reverts the text areas back into "p"'s
-            let parentDiv = document.getElementById(id);
-            //children is a list of all of the children "P", "H1", etc. of the parent div
-            let children = parentDiv.children;
-            for (let child of children) {
+  document.getElementById("editModal").style.display = "none"; // Close modal
+  location.reload();
+});
 
-                //checks if the element is a text area
-                if (child.tagName == "TEXTAREA"){
-            //any element with text area as its tag will be se as oldElement
-            let oldElement = document.getElementById(child.id);
-            //create a new element with p as its tag
-            let newElement = document.createElement("p");
-            //sets the content of the oldElement into the new one
-            newElement.innerHTML = oldElement.innerHTML;
+document.getElementById("closeModal").addEventListener("click", () => {
+  document.getElementById("editModal").style.display = "none";
+});
 
-            oldElement.replaceWith(newElement);
-                }
-            }
-            //removes the buttons
-            document.getElementById("submitButton").remove();
-            //reloads the page
-            location.reload()
-        }
-    }
+async function saveInfo(){
+    await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {
+        advisor: document.getElementById("advisorNameInput").value,
+        email: document.getElementById("emailInput").value,
+        location: document.getElementById("locationInput").innerHTML,
+        gameName: document.getElementById("gameNameInput").innerHTML,
+        gameDesc:document.getElementById("gameDescInput").innerHTML
+    });
+    console.log("all info saved into firebase");
 }
 
 //makes whatever its called on editable
@@ -497,16 +471,17 @@ export async function setScore(){
     // console.log(newScheduleList);
 
     //removes all of the elements that have a class name of "outcome"
-    document.querySelectorAll(".outcome").forEach(el => el.remove());
+    // document.querySelectorAll(".outcome").forEach(el => el.remove());
+    const outcomeList = document.querySelectorAll(".outcome");
     //makes a list of all the divs that have a class name "gameDiv"
     let gameDivList = document.querySelectorAll(".gameDiv");
     
     //runs through the gameDivList and the schedule list
-    for (let i = 0; i < gameDivList.length && i < schedule.length; i++){
+    for (let i = 0; i < gameDivList.length && i < schedule.length && i < outcomeList.length; i++){
 
         //create a select element 
         let selectOutcome = document.createElement("select");
-        selectOutcome.className = "dropdown";
+        selectOutcome.className = "selectOutcome";
         //makes the set one the outcome of the game
         selectOutcome.textContent = schedule[i].outcome;
 
@@ -538,7 +513,7 @@ export async function setScore(){
         selectOutcome.value = schedule[i].outcome || "not completed";
 
         //append the dropdown to the div 
-        gameDivList[i].appendChild(selectOutcome);
+        outcomeList[i].replaceWith(selectOutcome);
     }
 
     //creates a submit button
@@ -606,7 +581,7 @@ export function handleAdvisorClick() {
     // sessionStorage.setItem("advisorClicked", "true");
     console.log("Running advisor functions");
     allowEdit('advisorSection');
-    allowEdit('gameSection');
+    // allowEdit('gameSection');
     editRoster();
     setScore();
     editAdvisoryName('advisoryName');
@@ -630,10 +605,4 @@ export async function deleteAdvisory(){
     }
 }
 makeDropdown();
-
-
-
-
-
-
 
