@@ -87,7 +87,7 @@ const db = getFirestore(app);
 async function showItems() {
   //get the data from the array from firebase 
   const data = await fetchDataFromFirebase();
-
+  
   //this bit of code is about calculating and then sorting the advisories based on points
   //for each advisory in the array
   data.forEach(advisory => {
