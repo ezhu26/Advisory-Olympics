@@ -293,3 +293,11 @@ body{
         margin: 10px 0;
         color: #000000;
     }
+
+.advisory-link:link {
+  text-decoration: none;
+  color: black;
+}
+.advisory-link:hover {
+  text-decoration: underline;
+}
