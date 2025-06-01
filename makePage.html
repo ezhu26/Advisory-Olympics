@@ -16,7 +16,7 @@
             <h1 id = "advisoryName"></h1>
            <!-- navigation bar -->
            <nav class = "navbar">
-            <ul>
+            <ul id = "navBar">
                 <li><a href = "standings.html">Standings</a></li>
                 <li id = dropdown-container>
                     <button  id = "dropdown" >Advisories</button>
@@ -29,7 +29,7 @@
                 <li><a href = "index.html">Home</a></li>
 
                 <li id = "left" ><button onclick="login()">Log In with Google</button></li>
-                <li id = "left" ><button onclick="handleAdvisorClick()">Advisor</button></li>
+        <!-- <li id = "left" ><button class = "advisorbutton" onclick="handleAdvisorClick()">Advisor</button></li> -->
 
 
             </ul>
@@ -37,57 +37,98 @@
     </div>
     <!-- left side of the page -->
     <div class = "mainContainer">
-    <div class = "leftPanel">
-        <div class = "advisor" id = "advisorSection">
-            <h1>Advisor: </h1>
 
-            <h2 id = "advisorName"></h2>
-            <div class = "contact">
-                <h2>email:</h2>
-                <p id = "email"></p>
+        
+    <div class = "leftPanel">
+            <div class = "section schedule" id = "scheduleSection">
+            <h1>Schedule</h1>
+            <label for="score">Record:</label>
+                <span id="score"></span>
+            
+            <div class = "split-container" id ="schedule">
+                <ul id = "first-half">
+                </ul>
+                <ul id = "second-half">
+                </ul>
             </div>
+        </div>
+
+
+    </div>
+<!-- right side of the page -->
+    <div class = "rightPanel">
+
+                    <!-- <label for="score">Record:</label>
+                <span id="score"></span> -->
+        <div class = "section advisor" id = "advisorSection">
+            <h1>Advisory Information</h1>
+            <label for="advisorName" >Advisor: </label>
+                <span id = "advisorName"></span>
+            <div class = "contact">
+                <label for = "email">email:</label>
+                <span id = "email"></span>
+            </div>
+            <label for="location">Location:</label>
+            <span id = "location"></span>
             <p id = "advisorBio"></p>
             <div class = "buttons" id = "buttons"></div>
 
+        <!-- </div> -->
+
+        <!-- <div class = "section aboutGame" id = "gameSection"> -->
+            <h1>About Game</h1>
+            <h2 id = "gameName"></h2>
+            <p  id = "gameDesc"></p>
         </div>
 
-        <div class="roster" id="rosterContainer">
+        <div class="section roster" id="rosterContainer">
             <h1>Roster</h1>
                 <ul id = "roster">
 
                 </ul>
         </div>
     </div>
-<!-- right side of the page -->
-    <div class = "rightPanel">
-        <div class = "aboutGame" id = "gameSection">
-            <h1>About Game</h1>
-            <h2 id = "gameName"></h2>
-            <p  id = "gameDesc">
-            </p>
-        </div>
 
-        <div class = "schedule">
-            <h1>Schedule</h1>
-            <label for="score">Record:</label>
-            <p id = "score"></p>
-                <ul id ="schedule">
 
-                </ul>
-        </div>
 
-        <div class = "history">
-            <h1>History</h1>
-            <p id = "history">
-            </p>
-        </div>
-    </div>
+
+</div>
+
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" id="closeModal">&times;</span>
+    <h2>Edit Advisor Info</h2>
+    <form id="editForm">
+      <label for="advisorNameInput">Advisor Name:</label>
+      <input type="text" id="advisorNameInput" name="advisorName">
+
+      <label for="emailInput">Email:</label>
+      <input type="email" id="emailInput" name="email">
+
+      <label for="locationInput">Location:</label>
+      <textarea id="locationInput" name="location"></textarea>
+
+      <label for="gameNameInput">Game Name:</label>
+      <textarea id="gameNameInput" name="game"></textarea>
+
+
+
+        <label for="gameDescInput">Game Description:</label>
+      <textarea id="gameDescInput" name="gameDesc"></textarea>
+
+      <button type="submit">Save</button>
+    </form>
+  </div>
+</div>
+
+
+
 </div>
 
 
     <script type="module" src="makePage.js"></script>
     <script type="module">
-      import {buildAdvisoryPage, allowEdit, editRoster, setScore, handleAdvisorClick, deleteAdvisory} from './makePage.js';
+      import {buildAdvisoryPage, allowEdit, editRoster, setScore, deleteAdvisory} from './makePage.js';
       
       import{login} from "/script.js";
       window.setScore = setScore;
@@ -96,7 +137,7 @@
       window.allowEdit = allowEdit;
     //   window.openDropdown = openDropdown;
       window.editRoster = editRoster;
-      window.handleAdvisorClick = handleAdvisorClick;
+    //   window.handleAdvisorClick = handleAdvisorClick;
       window.deleteAdvisory = deleteAdvisory;
     //   when this page is loaded the buildAdvisoryPage() function is called
     // openDropdown();  
