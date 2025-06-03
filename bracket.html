@@ -5,140 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="bracket.css" rel="stylesheet" type="text/css" />
     
-
+<!-- importing from google fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <title>Standings</title>
 
 </head>
 
 
 <script type="module" src="bracket.js" ></script>
+<!-- <script type="module" src="script.js" ></script> -->
+
     <script type="module" >
-        import{getAdvOrder, advanceTeam, clearBracket} from "./bracket.js";
+        import{getAdvOrder, advanceTeam, clearBracket, login} from "./bracket.js";
         window.getAdvOrder = getAdvOrder;
         window.advanceTeam = advanceTeam;
         window.clearBracket = clearBracket;
+        window.login=login;
         getAdvOrder();
         console.log(advOrder[1].rank);
         // advanceTeam('r1matchups', 'seed1', 'r2matchups', 'QT1');
         </script>
 <body>
-    <header> 
-        Bracket
-        <button style = "float:right" onclick="location.href = 'index.html'">Home page</button>
-        <button style = "float:right" onclick="clearBracket()">Clear Bracket</button>
+    <div class="header">
+            <h1>Bracket</h1>
+           <!-- navigation bar -->
+           <nav class = "navbar">
+            <ul id = "navBar">
+                <li><a href = "standings.html">Standings</a></li>
+                <li id = dropdown-container>
+                    <button id = "dropdown">Advisories</button>
+                        <div id="myDropdown" class="dropdown-content">
+                        </div>
+                </li>
+                
+                <li><a href = "schedule.html">Schedule</a></li>
+                <li><a href = "index.html">Home</a></li>
 
-    </header>
+                <li id = "left" ><button onclick="login()">Log In with Google</button></li>
+        <!-- <li id = "left" ><button class = "advisorbutton" onclick="handleAdvisorClick()">Advisor</button></li> -->
+
+
+            </ul>
+        </nav>
+    </div>
 
         <center>
-        <label for="round">Select a round</label>
-        <select name="round" id="round">
-            <option id = "16">Round of 16</option>
-            <option id = "8">Round of 8</option>
-            <option id = "4">Final 4</option>
-            <option id = "2">Championship</option>
+        <div name="round" id="round">
+        </div>
         </center>
-        </select>
  
-    <button id = "print" >button</button>
     <div class="bracket-container">
   <svg class="bracket-lines"></svg>
     <div class = "bracket">
 
    
         <div class = "matchup-card r1m1" id = 'r1m1'>
-            <label id="1seed"></label> <label onclick="advanceTeam('r1matchups', 'seed1', 'r2matchups', '1v16w')" class="advance"> ></label>
-            vs
-            <label id = "16seed"> </label><label onclick="advanceTeam('r1matchups', 'seed16', 'r2matchups', '1v16w')" class="advance">></label>
+            <label id="1seed"></label> <label class = "advance" onclick="advanceTeam('r1matchups', 'seed1', 'r2matchups', '1v16w')" class="advance"> ></label>
+            <p>vs</p>
+            <label id = "16seed"> </label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed16', 'r2matchups', '1v16w')" class="advance">></label>
         </div>
         <div class = "matchup-card r1m2" id = 'r1m2'>
-            <label id="8seed"></label><label onclick="advanceTeam('r1matchups', 'seed8', 'r2matchups', '8v9w')" class="advance">></label>
-            vs
-            <label id = "9seed"></label><label onclick="advanceTeam('r1matchups', 'seed9', 'r2matchups', '8v9w')" class="advance">></label>
+            <label id="8seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed8', 'r2matchups', '8v9w')" class="advance">></label>
+            <p>vs</p>
+            <label id = "9seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed9', 'r2matchups', '8v9w')" class="advance">></label>
         </div>
         <div class = "matchup-card r1m3" id = 'r1m3'>
-            <label id="4seed"></label><label onclick="advanceTeam('r1matchups', 'seed4', 'r2matchups', '4v13w')" class="advance">></label>
-            vs
-            <label id = "13seed"></label><label onclick="advanceTeam('r1matchups', 'seed13', 'r2matchups', '4v13w')" class="advance">></label>
+            <label id="4seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed4', 'r2matchups', '4v13w')" class="advance">></label>
+            <p>vs</p>
+            <label id = "13seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed13', 'r2matchups', '4v13w')" class="advance">></label>
         </div>
         <div class = "matchup-card r1m4" id = 'r1m4'>
-            <label id="5seed"></label><label onclick="advanceTeam('r1matchups', 'seed5', 'r2matchups', '5v12w')" class="advance">></label>
-            vs
-            <label id = "12seed"></label><label onclick="advanceTeam('r1matchups', 'seed12', 'r2matchups', '5v12w')" class="advance">></label>
+            <label id="5seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed5', 'r2matchups', '5v12w')" class="advance">></label>
+            <p>vs</p>
+            <label id = "12seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed12', 'r2matchups', '5v12w')" class="advance">></label>
         </div>
         
 
         <div class = ""></div>
         <div class = "matchup-card r1m5" id = 'r1m5'>
-            <label id="2seed"></label><label onclick="advanceTeam('r1matchups', 'seed2', 'r2matchups', '2v15w')" class="advance"><</label>
-            vs
-            <label id = "15seed"></label><label onclick="advanceTeam('r1matchups', 'seed15', 'r2matchups', '2v15w')" class="advance"><</label>
+            <label id="2seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed2', 'r2matchups', '2v15w')" class="advance"><</label>
+            <p>vs</p>
+            <label id = "15seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed15', 'r2matchups', '2v15w')" class="advance"><</label>
         </div>
         <div class = "matchup-card r1m6" id = 'r1m6'>
-            <label id="7seed"></label><label onclick="advanceTeam('r1matchups', 'seed7', 'r2matchups', '7v10w')" class="advance"><</label>
-            vs
-            <label id = "10seed"></label><label onclick="advanceTeam('r1matchups', 'seed10', 'r2matchups', '7v10w')" class="advance"><</label>
+            <label id="7seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed7', 'r2matchups', '7v10w')" class="advance"><</label>
+            <p>vs</p>
+            <label id = "10seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed10', 'r2matchups', '7v10w')" class="advance"><</label>
         </div>
         <div class = "matchup-card r1m7" id = 'r1m7'>
-            <label id="3seed"></label><label onclick="advanceTeam('r1matchups', 'seed3', 'r2matchups', '3v14w')" class="advance"><</label>
-            vs
-            <label id = "14seed"></label><label onclick="advanceTeam('r1matchups', 'seed14', 'r2matchups', '3v14w')" class="advance"><</label>
+            <label id="3seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed3', 'r2matchups', '3v14w')" class="advance"><</label>
+            <p>vs</p>
+            <label id = "14seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed14', 'r2matchups', '3v14w')" class="advance"><</label>
         </div>
         <div class = "matchup-card r1m8" id = 'r1m8'>
-            <label id="6seed"></label><label onclick="advanceTeam('r1matchups', 'seed6', 'r2matchups', '6v11w')" class="advance"><</label>
-            vs
-            <label id = "11seed"></label><label onclick="advanceTeam('r1matchups', 'seed11', 'r2matchups', '6v11w')" class="advance"> < </label>
+            <label id="6seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed6', 'r2matchups', '6v11w')" class="advance"><</label>
+            <p>vs</p>
+            <label id = "11seed"></label><label class = "advance" onclick="advanceTeam('r1matchups', 'seed11', 'r2matchups', '6v11w')" class="advance"> < </label>
         </div>
         
         
         <div class = "matchup-card r2m1" id = 'r2m1'>
-            <label id="1v16w">Quarterfinals Team 1</label> <label onclick="advanceTeam('r2matchups', '1v16w', 'r3matchups', 'topleftw')" class="advance"> ></label>
-            vs
-            <label id = "8v9w">Quarterfinals Team 2</label><label onclick="advanceTeam('r2matchups', '8v9w', 'r3matchups', 'topleftw')" class="advance"> ></label>
+            <label id="1v16w">Quarterfinals Team 1</label> <label class = "advance" onclick="advanceTeam('r2matchups', '1v16w', 'r3matchups', 'topleftw')" class="advance"> ></label>
+            <p>vs</p>
+            <label id = "8v9w">Quarterfinals Team 2</label><label class = "advance" onclick="advanceTeam('r2matchups', '8v9w', 'r3matchups', 'topleftw')" class="advance"> ></label>
         </div>
         <div class = "matchup-card r2m2" id = 'r2m2'>
-            <label id="4v13w">Quarterfinals Team 3</label> <label onclick="advanceTeam('r2matchups', '4v13w', 'r3matchups', 'bottomleftw')" class="advance"> ></label>
-            vs
-            <label id = "5v12w">Quarterfinals Team 4</label><label onclick="advanceTeam('r2matchups', '5v12w', 'r3matchups', 'bottomleftw')" class="advance"> ></label>
+            <label id="4v13w">Quarterfinals Team 3</label> <label class = "advance" onclick="advanceTeam('r2matchups', '4v13w', 'r3matchups', 'bottomleftw')" class="advance"> ></label>
+            <p>vs</p>
+            <label id = "5v12w">Quarterfinals Team 4</label><label class = "advance" onclick="advanceTeam('r2matchups', '5v12w', 'r3matchups', 'bottomleftw')" class="advance"> ></label>
         </div>
         <div class = "matchup-card r2m3" id = 'r2m3'>
-            <label id="2v15w">Quarterfinals Team 5</label><label onclick="advanceTeam('r2matchups', '2v15w', 'r3matchups', 'toprightw')" class="advance"> <</label>
-            vs
-            <label id = "7v10w">Quarterfinals Team 6</label><label onclick="advanceTeam('r2matchups', '7v10w', 'r3matchups', 'toprightw')" class="advance"> <</label>
+            <label id="2v15w">Quarterfinals Team 5</label><label class = "advance" onclick="advanceTeam('r2matchups', '2v15w', 'r3matchups', 'toprightw')" class="advance"> <</label>
+            <p>vs</p>
+            <label id = "7v10w">Quarterfinals Team 6</label><label class = "advance" onclick="advanceTeam('r2matchups', '7v10w', 'r3matchups', 'toprightw')" class="advance"> <</label>
         </div>
         <div class = "matchup-card r2m4" id = 'r2m4'>
-            <label id="3v14w">Quarterfinals Team 7</label><label onclick="advanceTeam('r2matchups', '3v14w', 'r3matchups', 'bottomrightw')" class="advance"> <</label>
-            vs
-            <label id = "6v11w">Quarterfinals Team 8</label><label onclick="advanceTeam('r2matchups', '6v11w', 'r3matchups', 'bottomrightw')" class="advance"> <</label>
+            <label id="3v14w">Quarterfinals Team 7</label><label class = "advance" onclick="advanceTeam('r2matchups', '3v14w', 'r3matchups', 'bottomrightw')" class="advance"> <</label>
+            <p>vs</p>
+            <label id = "6v11w">Quarterfinals Team 8</label><label class = "advance" onclick="advanceTeam('r2matchups', '6v11w', 'r3matchups', 'bottomrightw')" class="advance"> <</label>
         </div>
 
 
         <div class = "matchup-card r3m1" id = 'r3m1'>
-            <label id="ST1">Semifinals Team 1</label> <label onclick="advanceTeam('r3matchups', 'topleftw', 'r4matchups', 'leftsidew')" class="advance"> ></label>
-            vs
-            <label id = "ST2">Semifinals Team 2</label><label onclick="advanceTeam('r3matchups', 'bottomleftw', 'r4matchups', 'leftsidew')" class="advance"> ></label>
+            <label id="topleftw">Semifinals Team 1</label> <label class = "advance" onclick="advanceTeam('r3matchups', 'topleftw', 'r4matchups', 'leftsidew')" class="advance"> ></label>
+            <p>vs</p>
+            <label id = "bottomleftw">Semifinals Team 2</label><label class = "advance" onclick="advanceTeam('r3matchups', 'bottomleftw', 'r4matchups', 'leftsidew')" class="advance"> ></label>
         </div>
         <div class = "matchup-card r3m2" id = 'r3m2'>
-            <label id="ST3">Semifinals Team 3</label> <label onclick="advanceTeam('r3matchups', 'toprightw', 'r4matchups', 'rightsidew')" class="advance"> <</label>
-            vs
-            <label id = "ST4">Semifinals Team 4</label><label onclick="advanceTeam('r3matchups', 'bottomrightw', 'r4matchups', 'rightsidew')" class="advance"> <</label>
+            <label id="toprightw">Semifinals Team 3</label> <label class = "advance" onclick="advanceTeam('r3matchups', 'toprightw', 'r4matchups', 'rightsidew')" class="advance"> <</label>
+            <p>vs</p>
+            <label id = "bottomrightw">Semifinals Team 4</label><label class = "advance" onclick="advanceTeam('r3matchups', 'bottomrightw', 'r4matchups', 'rightsidew')" class="advance"> <</label>
         </div>
 
         <div class = "matchup-card r4m1" id = 'r4m1'>
-            <label id="CT1">Championship Team 1</label> <label onclick="advanceTeam('r4matchups', 'leftsidew', 'r5matchup', 'totalwinner')" class="advance"> ></label>
-            vs
-            <label id = "CT2"> Championship Team 2</label><label onclick="advanceTeam('r4matchups', 'rightsidew', 'r5matchup', 'totalwinner')" class="advance"> ></label>
+            <label id="leftsidew">Championship Team 1</label> <label class = "advance" onclick="advanceTeam('r4matchups', 'leftsidew', 'r5matchup', 'totalwinner')" class="advance"> ></label>
+            <p>vs</p>
+            <label id = "rightsidew"> Championship Team 2</label><label class = "advance" onclick="advanceTeam('r4matchups', 'rightsidew', 'r5matchup', 'totalwinner')" class="advance"> ></label>
         </div>
         
         
         <div class = "matchup-card Champion" id = 'Champion'>
-            <label id="6seed">Champion</label> 
+            <header id = "winner">Champion</header>
+            <label id="totalWinner"></label>
+
         </div>
     
 
     </div>
     
     <script>
-
         
 
         // export async function getAdvOrder() {
