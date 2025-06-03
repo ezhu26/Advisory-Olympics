@@ -1,5 +1,6 @@
 body{
     margin: 0px;
+    align-items: center;
 }
 
 .advance{
@@ -17,7 +18,7 @@ body{
     font-weight: 700;
     src: url("https://applesocial.s3.amazonaws.com/assets/styles/fonts/sanfrancisco/sanfranciscodisplay-bold-webfont.woff");
   }
-
+/* 
 
 header{
     font-family: "San Francisco Bold"; 
@@ -25,9 +26,88 @@ header{
     background-color: #7A3333;
     padding: 7vh;
     width: 100vw;
-    /* margin-left: 1vw;
-    margin-right: 1vw; */
     color: white;
+} */
+.header {
+    background-color: rgba(97,39,52,255);
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    margin: 0px;
+    padding-top: 1vw;
+}
+
+.header h1{
+  font-family: "Anton", sans-serif;
+  font-size: 4.7vw;
+  font-weight: 400;
+  font-style: normal;
+    /* font-style: bold; */
+    color: rgb(248, 248, 244);
+    letter-spacing: 2px;
+}
+
+h1{
+    font-size: 2vw;
+}
+
+/* line for the navigation bar */
+.navbar ul{
+    list-style-type: none;
+    background-color:rgba(97,39,52,255);
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+
+}
+
+/* text per each individual block */
+.navbar a{
+    color: rgb(248, 248, 244);
+    text-decoration: none;
+    padding: 15px;
+    display: block;
+    text-align: center;
+    font-size: 2vw;
+    transition: 0.2s;
+}
+
+.navbar a:hover{
+    background-color: rgb(248, 248, 244);
+    color:rgba(97,39,52,255);
+}
+
+/* each block if moved to the right of the page */
+.navbar li{
+    float: right;
+}
+button{
+  background-color: rgba(97,39,52,255);
+  color: rgb(248, 248, 244);
+  padding: 15px;
+  display: block;
+  text-align: center;
+  font-size: 2vw;
+  border: none;
+}
+button:hover{
+  background-color: rgb(248, 248, 244);
+  color:rgba(97,39,52,255);
+  cursor:pointer
+}
+
+/* Float "left" li to the left */
+#left {
+  float: left;
+}
+
+/* Float all other list items to the right */
+.navbar ul > li:not(#left) {
+  float: right;
+}
+
+.navbar a:hover{
+  background-color: rgb(248, 248, 244);
+  color:rgba(97,39,52,255);
 }
 
 .card{
@@ -43,6 +123,9 @@ header{
 }
 
 .bracket-container {
+margin-top: 20px;
+margin-left: 10px;
+margin-right: 10px;
   position: relative;
 }
 
@@ -100,6 +183,15 @@ label {
   font-size: 1vw;
   font-weight: 500;
   padding: 0px;
+}
+
+.advance {
+    display: none;
+}
+
+.matchup-card p{
+    font-size: 1.5vw;
+    padding: 0px;
 }
 
 /* .bracket {
