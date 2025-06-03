@@ -3,7 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebas
 // TODO: import libraries for Cloud Firestore Database
 // https://firebase.google.com/docs/firestore
 import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-import { getAuth, signInWithRedirect, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyA48UmI50QVSpCJF6voYVudbChpVkFkU6g",
@@ -87,6 +87,18 @@ export function printList() {
   listContainer.appendChild(ul);
 }
 
+window.addEventListener("DOMContentLoaded", () => {
+  const showAdvisor = sessionStorage.getItem("adminLogin");
+console.log(showAdvisor);
+  if (showAdvisor == "true") {
+
+    // <li id = "left" ><button class = "advisorbutton" onclick="handleAdvisorClick()">Advisor</button></li>
+
+    const buttons = document.querySelectorAll("advance");
+    buttons.style.display = "block";
+  }
+});
+
 export async function setTeams(){
   //sort list by rank (in wrong order)
   var selectedItem = advOrder[0].name;
@@ -152,11 +164,9 @@ for (const field in dataR2matchups) {
   if (field == "1v16w") {
     // Access the value (which is a nested object) using the field as key
     const matchup = dataR2matchups[field];
-    // if(matchup == undefined){
-    //   document.getElementById("1v16w").innerHTML = "not finished";  // NOT field['$name']
-    // }
     document.getElementById("1v16w").innerHTML = matchup.name;  // NOT field['$name']
-  }
+
+  } 
   if(field == "8v9w") {
     const matchup = dataR2matchups[field];
     document.getElementById("8v9w").innerHTML = matchup.name;
@@ -200,19 +210,19 @@ for (const field in dataR3matchups) {
     // if(matchup.name = null){
     //   document.getElementById("ST1").innerHTML = "Not determined";
     // }
-    document.getElementById("ST1").innerHTML = matchup.name;  // NOT field['$name']
+    document.getElementById("topleftw").innerHTML = matchup.name;  // NOT field['$name']
   }
   if(field == "bottomleftw") {
     const matchup = dataR3matchups[field];
-    document.getElementById("ST2").innerHTML = matchup.name;
+    document.getElementById("bottomleftw").innerHTML = matchup.name;
   }
   if(field == "toprightw") {
     const matchup = dataR3matchups[field];
-    document.getElementById("ST3").innerHTML = matchup.name;
+    document.getElementById("toprightw").innerHTML = matchup.name;
   }
   if(field == "bottomrightw") {
     const matchup = dataR3matchups[field];
-    document.getElementById("ST4").innerHTML = matchup.name;
+    document.getElementById("bottomrightw").innerHTML = matchup.name;
   }
 
 }
@@ -231,21 +241,20 @@ for (const field in dataR4matchups) {
     // if(matchup.name = null){
     //   document.getElementById("ST1").innerHTML = "Not determined";
     // }
-    document.getElementById("CT1").innerHTML = matchup.name;  // NOT field['$name']
+    document.getElementById("leftsidew").innerHTML = matchup.name;  // NOT field['$name']
   }
   if (field == "rightsidew"){
     const matchup = dataR4matchups[field];
-    document.getElementById("CT2").innerHTML = matchup.name;  // NOT field['$name']
+    document.getElementById("rightsidew").innerHTML = matchup.name;  // NOT field['$name']
   }
 }
 
 const docRef5 = doc(db, "bracket", "r5matchup");
 const r5matchup = await getDoc(docRef5);
 const dataR5matchup = r5matchup.data();
-let championWinner = document.createElement("p");
-championWinner.innerHTML = dataR5matchup["totalwinner"].name;
-document.getElementById("Champion").appendChild(championWinner);
-console.log("This is the champion:" + championWinner);
+// let championWinner = document.createElement("p");
+document.getElementById("totalWinner").innerHTML = dataR5matchup[totalwinner].name;
+
 }
 
 // Call the function to print the list
@@ -364,6 +373,21 @@ connectCards('r4m1', 'r3m1');
 connectCards('r3m2', 'r4m1');
 
 
-
+export const login = async function(){
+  var result = await signInWithPopup(auth, provider);
+  console.log("logging in")
+  // This gives you a Google Access Token. You can use it to access the Google API.
+  const credential = GoogleAuthProvider.credentialFromResult(result);
+  const token = credential.accessToken;
+  // The signed-in user info.
+  const user = result.user;
+  
+  // IdP data available using getAdditionalUserInfo(result)
+  // ...
+  console.log(user.email);
+  if(user.email.includes("@stab.org")){
+    sessionStorage.setItem('adminLogin', true);
+  }
+}
 
 
