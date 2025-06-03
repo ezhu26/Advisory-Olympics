@@ -82,13 +82,15 @@
 </div>
 
     <script type ="module">
-        import{login} from "./script.js";
+        import{login, showItems} from "./script.js";
         // import {showItems} from './standings.js';
         // import {makeDropdown} from './makePage.js';
         // import {openDropdown, advisoryList} from './makePage.js';
 
 
         window.login = login;
+        window.showItems=showItems;
+        showItems();
 
     </script>
 </body>
