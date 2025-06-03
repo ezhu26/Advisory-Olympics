@@ -33,7 +33,7 @@ export const login = async function(){
     // IdP data available using getAdditionalUserInfo(result)
     // ...
     console.log(user.email);
-    if(user.email.includes("@stab.org")){
+    if(user.email.includes("@gmail.com")){
       sessionStorage.setItem('adminLogin', true);
     }
 }
@@ -290,7 +290,7 @@ async function fetchDataFromFirebase() {
     });
     showItems();
 };
-  async function showItems() {
+ export async function showItems() {
     //get the data from the array from firebase 
     const data = await fetchDataFromFirebase();
           data.sort((a, b) => a.rank - b.rank);
@@ -316,7 +316,8 @@ async function fetchDataFromFirebase() {
         //add this row to the table
       tableBody.appendChild(row);
     });  
-    // ✅ THEN attach click handlers (outside the forEach!)
+    // THEN attach click handlers (outside the forEach!)
+  
   document.querySelectorAll(".advisory-link").forEach(link => {
   link.addEventListener("click", async function(e) {
     e.preventDefault();
@@ -324,7 +325,7 @@ async function fetchDataFromFirebase() {
     const advisoryName = this.getAttribute("data-id"); // assuming this is the name
     console.log("Looking up ID for:" + advisoryName);
 
-    const newID = await findMatchAdvisory(advisoryName); // ✅ Await here
+    const newID = await findMatchAdvisory(advisoryName); //  Await here
     console.log("Found ID:" + newID);
 
     if (newID) {
@@ -341,7 +342,7 @@ async function fetchDataFromFirebase() {
   }
   
   //this function updates the team record when the button is pressed
-  async function updateTeamRecord() {
+ export async function updateTeamRecord() {
     //get the team name from the first text box
     const teamName = document.getElementById('teamName').value;
     //get the new record from the second text box
@@ -428,7 +429,7 @@ async function findMatchAdvisory(advisoryName) {
   for (const doc of snapshot.docs) {
     if (doc.data().name == advisoryName) {
       console.log(doc.data().name);
-      return doc.id;  // ✅ This is how you get the document ID
+      return doc.id;  // This is how you get the document ID
     }
   }
 
