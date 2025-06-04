@@ -3,7 +3,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebas
 // TODO: import libraries for Cloud Firestore Database
 // https://firebase.google.com/docs/firestore
 import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, updateDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+import { getAuth, signInWithPopup, signInWithRedirect,  GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+import {makeDropdown} from './makePage.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyA48UmI50QVSpCJF6voYVudbChpVkFkU6g",
@@ -87,17 +88,7 @@ export function printList() {
   listContainer.appendChild(ul);
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  const showAdvisor = sessionStorage.getItem("adminLogin");
-console.log(showAdvisor);
-  if (showAdvisor == "true") {
 
-    // <li id = "left" ><button class = "advisorbutton" onclick="handleAdvisorClick()">Advisor</button></li>
-
-    const buttons = document.querySelectorAll("advance");
-    buttons.style.display = "block";
-  }
-});
 
 export async function setTeams(){
   //sort list by rank (in wrong order)
@@ -164,36 +155,36 @@ for (const field in dataR2matchups) {
   if (field == "1v16w") {
     // Access the value (which is a nested object) using the field as key
     const matchup = dataR2matchups[field];
-    document.getElementById("1v16w").innerHTML = matchup.name;  // NOT field['$name']
+    document.getElementById("1v16w").innerHTML = matchup?.name || "TBD";  // NOT field['$name']
 
   } 
   if(field == "8v9w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("8v9w").innerHTML = matchup.name;
+    document.getElementById("8v9w").innerHTML = matchup?.name || "TBD";
   }
   if(field == "4v13w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("4v13w").innerHTML = matchup.name;
+    document.getElementById("4v13w").innerHTML = matchup?.name || "TBD";
   }
   if(field == "5v12w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("5v12w").innerHTML = matchup.name;
+    document.getElementById("5v12w").innerHTML = matchup?.name || "TBD";
   }
   if(field == "2v15w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("2v15w").innerHTML = matchup.name;
+    document.getElementById("2v15w").innerHTML = matchup?.name || "TBD";
   }
   if(field == "7v10w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("7v10w").innerHTML = matchup.name;
+    document.getElementById("7v10w").innerHTML = matchup?.name || "TBD";
   }
   if(field == "3v14w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("3v14w").innerHTML = matchup.name;
+    document.getElementById("3v14w").innerHTML = matchup?.name || "TBD";
   }
   if(field == "6v11w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("6v11w").innerHTML = matchup.name;
+    document.getElementById("6v11w").innerHTML = matchup?.name || "TBD";
   }
 }
 
@@ -210,19 +201,19 @@ for (const field in dataR3matchups) {
     // if(matchup.name = null){
     //   document.getElementById("ST1").innerHTML = "Not determined";
     // }
-    document.getElementById("topleftw").innerHTML = matchup.name;  // NOT field['$name']
+    document.getElementById("topleftw").innerHTML = matchup?.name || "TBD";
   }
   if(field == "bottomleftw") {
     const matchup = dataR3matchups[field];
-    document.getElementById("bottomleftw").innerHTML = matchup.name;
+    document.getElementById("bottomleftw").innerHTML = matchup?.name || "TBD";
   }
   if(field == "toprightw") {
     const matchup = dataR3matchups[field];
-    document.getElementById("toprightw").innerHTML = matchup.name;
+    document.getElementById("toprightw").innerHTML = matchup?.name || "TBD";
   }
   if(field == "bottomrightw") {
     const matchup = dataR3matchups[field];
-    document.getElementById("bottomrightw").innerHTML = matchup.name;
+    document.getElementById("bottomrightw").innerHTML = matchup?.name || "TBD";
   }
 
 }
@@ -241,11 +232,11 @@ for (const field in dataR4matchups) {
     // if(matchup.name = null){
     //   document.getElementById("ST1").innerHTML = "Not determined";
     // }
-    document.getElementById("leftsidew").innerHTML = matchup.name;  // NOT field['$name']
+    document.getElementById("leftsidew").innerHTML = matchup?.name || "TBD";  // NOT field['$name']
   }
   if (field == "rightsidew"){
     const matchup = dataR4matchups[field];
-    document.getElementById("rightsidew").innerHTML = matchup.name;  // NOT field['$name']
+    document.getElementById("rightsidew").innerHTML = matchup?.name || "TBD";  // NOT field['$name']
   }
 }
 
@@ -253,7 +244,7 @@ const docRef5 = doc(db, "bracket", "r5matchup");
 const r5matchup = await getDoc(docRef5);
 const dataR5matchup = r5matchup.data();
 // let championWinner = document.createElement("p");
-document.getElementById("totalWinner").innerHTML = dataR5matchup[totalwinner].name;
+document.getElementById("totalWinner").innerHTML = dataR5matchup["totalwinner"]?.name || "TBD";
 
 }
 
@@ -367,7 +358,7 @@ connectCards('r1m8', 'r2m4');
 connectCards('r1m5', 'r2m3');
 connectCards('r3m1', 'r2m1');
 connectCards('r3m1', 'r2m2');
-connectCards('r2m3', 'r3m2');
+connectCards('r2m3', 'r3m2'); 
 connectCards('r2m4', 'r3m2');
 connectCards('r4m1', 'r3m1');
 connectCards('r3m2', 'r4m1');
@@ -385,9 +376,66 @@ export const login = async function(){
   // IdP data available using getAdditionalUserInfo(result)
   // ...
   console.log(user.email);
-  if(user.email.includes("@stab.org")){
-    sessionStorage.setItem('adminLogin', true);
+  if(user.email.includes("@gmail.com")){
+    // sessionStorage.setItem('adminLogin', true);
+    makeButtons();
   }
 }
 
+function makeButtons(){
+  console.log("makeButtons function is running");
+  const buttons = document.querySelectorAll(".advance");
+  buttons.forEach(button => {
+    button.style.display = "block";
+  });
+
+  let newLi = document.createElement("li");
+  newLi.id = "left";
+  let clearButton = document.createElement("button");
+  clearButton.innerHTML = "Clear Bracket";
+  clearButton.onclick = function(){
+    clearBracket();
+  };
+  newLi.appendChild(clearButton);
+  document.getElementById("navBar").appendChild(newLi);
+  console.log("clear bracket button made");
+}
+// window.addEventListener("DOMContentLoaded", () => {
+//   const showAdvisor = sessionStorage.getItem("adminLogin");
+// console.log(showAdvisor);
+//   if (showAdvisor == "true") {
+
+//     // <li id = "left" ><button class = "advisorbutton" onclick="handleAdvisorClick()">Advisor</button></li>
+
+//     const buttons = document.querySelectorAll(".advance");
+//     buttons.style.display = "block";
+//   }
+// });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById("dropdown");
+  const dropdown = document.getElementById("myDropdown");
+  const container = document.getElementById("dropdown-container");
+  // Show dropdown on hover
+  button.addEventListener("mouseover", () => {
+    console.log("user hover");
+    dropdown.classList.add("show");
+  });
+
+  // Keep it open when hovering over dropdown
+  dropdown.addEventListener("mouseover", () => {
+    dropdown.classList.add("show");
+  });
+
+  // Hide when mouse leaves the whole container
+  container.addEventListener("mouseleave", () => {
+    dropdown.classList.remove("show");
+  });
+  // location.reload();
+});
+try{
+makeDropdown();
+} catch{
+  console.log("error function on makeDropdown()");
+}
 
