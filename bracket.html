@@ -9,6 +9,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display:ital@0;1&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
     <title>Standings</title>
 
 </head>
@@ -31,24 +37,29 @@
     <div class="header">
             <h1>Bracket</h1>
            <!-- navigation bar -->
-           <nav class = "navbar">
-            <ul id = "navBar">
-                <li><a href = "standings.html">Standings</a></li>
-                <li id = dropdown-container>
-                    <button id = "dropdown">Advisories</button>
-                        <div id="myDropdown" class="dropdown-content">
-                        </div>
-                </li>
-                
-                <li><a href = "schedule.html">Schedule</a></li>
-                <li><a href = "index.html">Home</a></li>
+            <nav class = "navbar">
+                <ul id = "navBar">
+                    <!--<li><a href = "standings.html">Standings</a></li> -->
+                    <!-- <div class = "dropdownContainer"> -->
+                    <li id="dropdown-container">
+                        <button  id = "dropdown" >Advisories</button>
+                            <div id="myDropdown" class="dropdown-content">
+                            </div>
+                    </li>
+                <!-- </div> -->
+                    <li><a href = "bracket.html" ><b>Bracket</b> </a></li>
+                    <li><a href = "schedule.html">Schedule</a></li>
+                    <li><a href = "index.html">Home</a></li>
 
-                <li id = "left" ><button onclick="login()">Log In with Google</button></li>
-        <!-- <li id = "left" ><button class = "advisorbutton" onclick="handleAdvisorClick()">Advisor</button></li> -->
+                    <li id = "left" >
+                        <button id = "loginButton" onclick="login()">Log In with Google</button>
+
+                    </li>
+                    <!-- <li id = "left"><a href = "makeAdvisory.html">Make a New Advisory</a></li> -->
 
 
-            </ul>
-        </nav>
+                </ul>
+            </nav>
     </div>
 
         <center>
