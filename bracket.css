@@ -51,35 +51,60 @@ h1{
 }
 
 /* line for the navigation bar */
-.navbar ul{
-    list-style-type: none;
-    background-color:rgba(97,39,52,255);
-    padding: 0px;
-    margin: 0px;
-    overflow: hidden;
+ /* line for the navigation bar */
+  .navbar ul{
+    /* display: none; */
+      list-style-type: none;
+      background-color:rgba(97,39,52,255);
+      padding: 0px;
+      margin: 0px;
+      overflow: hidden;
+  }
 
-}
-
-/* text per each individual block */
-.navbar a{
-    color: rgb(248, 248, 244);
-    text-decoration: none;
-    padding: 15px;
-    display: block;
-    text-align: center;
-    font-size: 2vw;
-    transition: 0.2s;
-}
-
-.navbar a:hover{
-    background-color: rgb(248, 248, 244);
-    color:rgba(97,39,52,255);
-}
-
-/* each block if moved to the right of the page */
-.navbar li{
+  .navbar li{
     float: right;
+      font-family: "Lato", serif;
+  font-weight: 400;
+  font-style: normal;
 }
+  
+  /* text per each individual block */
+  .navbar a{
+      color: rgb(248, 248, 244);
+      text-decoration: none;
+      padding: 15px;
+      display: block;
+      text-align: center;
+      font-size: 2vw;
+      transition: 0.2s;
+  }
+  button{
+  background-color: rgba(97,39,52,255);
+  color: rgb(248, 248, 244);
+  padding: 15px;
+  display: block;
+  text-align: center;
+  font-size: 2vw;
+  border: none;
+    font-family: "Lato", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+  
+  /* Float "left" li to the left */
+  #left {
+      float: left;
+  }
+  
+  /* Float all other list items to the right */
+  .navbar ul > li:not(#left) {
+      float: right;
+  }
+  
+  .navbar a:hover{
+      background-color: rgb(248, 248, 244);
+      color:rgba(97,39,52,255);
+  }
 button{
   background-color: rgba(97,39,52,255);
   color: rgb(248, 248, 244);
@@ -95,20 +120,46 @@ button:hover{
   cursor:pointer
 }
 
-/* Float "left" li to the left */
-#left {
-  float: left;
-}
+.dropdown {
+      position: absolute;
+      display: inline-block;
+    }
+    
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+       top: 600px; /* Distance from top */
+      right: 0px; /* Distance from left */
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    
+ 
+      .dropdown-content {
+        top: 95px;
+        right: 30px;
+        background-color: rgba(97,39,52,255);
+        align-items: center;
+      }
+    
+    
+    /* Links inside the dropdown */
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+    
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {background-color: #ddd;}
+    
+    /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+    .show {display:block;}
 
-/* Float all other list items to the right */
-.navbar ul > li:not(#left) {
-  float: right;
-}
-
-.navbar a:hover{
-  background-color: rgb(248, 248, 244);
-  color:rgba(97,39,52,255);
-}
 
 .card{
     background-color: lightgray;
