@@ -4,15 +4,7 @@ body{
     margin: 0;
     padding: 0;
   }
-  h1{
-    background-color: rgba(97,39,52,255);
-    font-size: 4vw;
-    font-family: "DM Serif Display", serif;
-    font-weight: 500;
-    font-style: bold;
-    color: rgb(248, 248, 244);
-    letter-spacing: 2px;
-  }
+  
   .header{
       background-color: rgba(97,39,52,255);
       /* height: 160px; */
@@ -23,14 +15,28 @@ body{
       padding-top: 10px;
   }
   button{
-      background-color: rgba(97,39,52,255);
-      color: rgb(248, 248, 244);
-      padding: 15px;
-      display: block;
-      text-align: center;
-      font-size: 2vw;
-      border: none;
-  }
+  background-color: rgba(97,39,52,255);
+  color: rgb(248, 248, 244);
+  padding: 15px;
+  display: block;
+  text-align: center;
+  font-size: 2vw;
+  border: none;
+    font-family: "Lato", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+  .header h1{
+  font-family: "Anton", sans-serif;
+  font-size: 4.7vw;
+  font-weight: 400;
+  font-style: normal;
+    /* font-style: bold; */
+    color: rgb(248, 248, 244);
+    letter-spacing: 2px;
+}
+
   button:hover{
       background-color: rgb(248, 248, 244);
       color:rgba(97,39,52,255);
@@ -60,6 +66,13 @@ body{
       font-size: 2vw;
       transition: 0.2s;
   }
+
+    .navbar li{
+    float: right;
+      font-family: "Lato", serif;
+  font-weight: 400;
+  font-style: normal;
+}
   
   /* Float "left" li to the left */
   #left {
@@ -75,50 +88,62 @@ body{
       background-color: rgb(248, 248, 244);
       color:rgba(97,39,52,255);
   }
+.mainContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch; /* Ensure panels have equal height */
+  margin: 10px;
+}
   
-  .mainContainer {
-      display: flex;
-      justify-content: space-between;
-      align-items: stretch; 
-      margin: 10px;
-    }
-  
-  .locations, .standings {
+  .locations, .standings, .history {
       align-items: center; /* Align items vertically in the center */
       /* gap: 10px; Optional: space between elements  */
       background-color: rgb(247, 247, 247); 
       padding: 10px; 
       border-radius: 10px;
-      width: 100%;
+      width: 96%;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-       
    }
   
   .locations {
     flex-wrap: wrap;
-    width: 46%;
+    /* width: 46%; */
     align-items: center; 
     gap: 10px;
-    margin-left: 30px;
+    margin-left: 10px;
     margin-right: 0px;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     padding: 10px;
     /* background-color: rgb(232, 232, 232); */
   
   }
-  
+    .history {
+      flex-wrap: wrap;
+      /* width: 96%; */
+      /* align-items: center; */
+      /* gap: 10px;  */
+      margin-right: 10px;
+      /* margin-left:0px; */
+      /* margin-top: 10px; */
+      /* margin-bottom: 10px; */
+
+    }
+
   .standings {
       flex-wrap: wrap;
-      width: 46%;
+      /* width: 46%; */
       align-items: center;
       gap: 10px; 
-      margin-right: 30px;
+      margin-right: 10px;
       margin-left:0px;
       margin-top: 10px;
+      /* margin-bottom: 10px; */
       border-radius: 10px;
       padding: 10px;    
       /* background-color: rgb(219, 219, 219); */
       overflow: auto;
+        /* overflow: visible; Let content expand it */
+      height: auto; /* Allow the height to grow with content */
     }
   
   
@@ -142,27 +167,9 @@ body{
   tr:nth-child(even) {
       background-color: #dddddd;
     }
-  
-  
-    /* Dropdown Button */
-  /* .dropbtn {
-      background-color: #3498DB;
-      color: white;
-      padding: 16px;
-      font-size: 16px;
-      border: none;
-      cursor: pointer;
-    } */
-    
-    /* Dropdown button on hover & focus */
-    /* .dropbtn:hover, .dropbtn:focus {
-      background-color: #2980B9;
-    } */
-    
-    /* The container <div> - needed to position the dropdown content */
-  
-    .advisory{
-      width: 100%;
+
+    h2{
+      font-size: 2vw;;
     }
   
     .dropdown {
@@ -174,8 +181,8 @@ body{
     .dropdown-content {
       display: none;
       position: absolute;
-      top: 205px; /* Distance from top */
-      right: 50px; /* Distance from left */
+      top: 380px; /* Distance from top */
+      right: 0px; /* Distance from left */
       background-color: #f1f1f1;
       min-width: 160px;
       box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -260,7 +267,7 @@ body{
     
     
     .team {
-        font-size: 1.5vw;
+        font-size: 1.1vw;
         font-weight: bold;
         margin: 5px 0;
         color: #333;
@@ -294,10 +301,55 @@ body{
         color: #000000;
     }
 
+    .location {
+      font-size: 0.9vw;
+    }
+
 .advisory-link:link {
   text-decoration: none;
   color: black;
 }
 .advisory-link:hover {
   text-decoration: underline;
+}
+
+button4{
+  border-radius: 2px;
+  background-color: #800000;
+  margin-left: 15px;
+  color: whitesmoke;
+  padding: 10px;
+
+}
+
+button4:hover{
+  cursor: pointer;
+}
+
+.left{
+    flex-wrap: wrap;
+    width: 48%;
+    align-items: center; 
+    gap: 10px;
+    margin-left: 30px;
+    margin-right: 0px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.right{
+      flex-wrap: wrap;
+    width: 48%;
+    align-items: center;
+    gap: 10px; 
+    margin-right: 30px;
+    margin-left:0px;
+    margin-top: 10px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.champion-list li {
+  color: rgb(0, 0, 0);
+  font-size: 1.3vw;
 }
