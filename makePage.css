@@ -20,12 +20,13 @@ body{
 }
 
 .header h1{
-    font-size: 4vw;
-    font-family: "DM Serif Display", serif;
-    font-weight: 500;
-    font-style: bold;
+  font-family: "Anton", sans-serif;
+  font-size: 4.7vw;
+  font-weight: 400;
+  font-style: normal;
+    /* font-style: bold; */
     color: rgb(248, 248, 244);
-    /* letter-spacing: 2px; */
+    letter-spacing: 2px;
 }
 
 /* line for the navigation bar */
@@ -47,6 +48,7 @@ body{
     text-align: center;
     font-size: 2vw;
     transition: 0.2s;
+    
 }
 
 .navbar a:hover{
@@ -57,6 +59,9 @@ body{
 /* each block if moved to the right of the page */
 .navbar li{
     float: right;
+      font-family: "Lato", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 button{
@@ -67,6 +72,9 @@ button{
   text-align: center;
   font-size: 2vw;
   border: none;
+    font-family: "Lato", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 button:hover{
   background-color: rgb(248, 248, 244);
@@ -138,7 +146,7 @@ button:hover{
   
   .advisor h1 {
     margin: 0; 
-    font-size: 5vw;
+    font-size: 3vw;
   }
   .advisor h2 {
     margin: 0; 
@@ -149,12 +157,6 @@ button:hover{
     font-size: 3vw;
     margin:0;
 }
-  
-.advisor .advisorImage {
-    height: 8vw; /* Keep image proportions */
-    width: 8vw;
-    border-radius: 50%; /* make image circular */
-  }
 
   /* line containing the email */
 .contact{
@@ -182,20 +184,24 @@ button:hover{
   }
 
 .section h1 {
-  font-size: 3vw;
+  font-size: 2vw;
 }
 
 .section h2{
-  font-size: 2vw;
+  font-size: 1.5vw;
 }
 
 label, span {
-  font-size: 2vw;
+  font-size: 1vw;
 }
 
 .section li{
 font-size: 3vw;
 padding: 0.4vw;
+}
+
+.section p {
+  font-size:1vw;
 }
 
 .outcome {
@@ -298,12 +304,14 @@ padding: 0.4vw;
   display: inline-block;
 }
 
+
+
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
   display: none;
   position: absolute;
-  top: 225px; /* Distance from top */
-  right: 50px; /* Distance from left */
+  top: 390px; /* Distance from top */
+  right:0px; /* Distance from left */
   background-color: #f1f1f1;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -420,5 +428,7 @@ button3{
   border-radius: 8px;
   cursor: pointer;
 }
+
+
 
 
