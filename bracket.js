@@ -92,59 +92,13 @@ export function printList() {
 
 export async function setTeams(){
   //sort list by rank (in wrong order)
-  var selectedItem = advOrder[0].name;
-  if(advOrder[0].name != ""){
-    document.getElementById("1seed").innerHTML = selectedItem;
-  } else {
-    document.getElementById("1seed").innerHTML = "Seed 1";
-  }
+ advOrder.forEach((advisory, index) => {
+  const seedNumber = index + 1;
+  const documentID = seedNumber + "seed";
+  document.getElementById(documentID).innerHTML = advisory.name + "  (" + seedNumber + ")";
 
-  selectedItem = advOrder[1].name;
-  document.getElementById("2seed").innerHTML = selectedItem;
+});
 
-  selectedItem = advOrder[2].name;
-  document.getElementById("3seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[3].name;
-  document.getElementById("4seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[4].name;
-  document.getElementById("5seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[5].name;
-  document.getElementById("6seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[6].name;
-  document.getElementById("7seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[7].name;
-  document.getElementById("8seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[8].name;
-  document.getElementById("9seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[9].name;
-  document.getElementById("10seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[10].name;
-  document.getElementById("11seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[11].name;
-  document.getElementById("12seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[12].name;
-  document.getElementById("13seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[13].name;
-  document.getElementById("14seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[14].name;
-  document.getElementById("15seed").innerHTML = selectedItem;
-
-  selectedItem = advOrder[15].name;
-  document.getElementById("16seed").innerHTML = selectedItem;
-
-  // let r2matchups = [];
 const docRef = doc(db, "bracket", "r2matchups");
 const r2matchups = await getDoc(docRef);
 const dataR2matchups = r2matchups.data();
@@ -155,36 +109,66 @@ for (const field in dataR2matchups) {
   if (field == "1v16w") {
     // Access the value (which is a nested object) using the field as key
     const matchup = dataR2matchups[field];
-    document.getElementById("1v16w").innerHTML = matchup?.name || "TBD";  // NOT field['$name']
+    console.log(matchup);
+    //document.getElementById("1v16w").innerHTML = matchup?.name && matchup?.rank 
+  //? `${matchup.name} (Rank ${matchup.rank})` 
+  // : "TBD";
+    console.log(matchup.rank);
+    console.log(matchup.name);
+    document.getElementById("1v16w").innerHTML = 
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
 
   } 
   if(field == "8v9w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("8v9w").innerHTML = matchup?.name || "TBD";
+    document.getElementById("8v9w").innerHTML = 
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
   if(field == "4v13w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("4v13w").innerHTML = matchup?.name || "TBD";
+    document.getElementById("4v13w").innerHTML =
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
   if(field == "5v12w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("5v12w").innerHTML = matchup?.name || "TBD";
+    document.getElementById("5v12w").innerHTML = 
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
   if(field == "2v15w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("2v15w").innerHTML = matchup?.name || "TBD";
+    document.getElementById("2v15w").innerHTML =
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
   if(field == "7v10w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("7v10w").innerHTML = matchup?.name || "TBD";
+    document.getElementById("7v10w").innerHTML =
+      matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
   if(field == "3v14w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("3v14w").innerHTML = matchup?.name || "TBD";
+    document.getElementById("3v14w").innerHTML =
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
   if(field == "6v11w") {
     const matchup = dataR2matchups[field];
-    document.getElementById("6v11w").innerHTML = matchup?.name || "TBD";
+    document.getElementById("6v11w").innerHTML = 
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
 }
 
@@ -201,19 +185,31 @@ for (const field in dataR3matchups) {
     // if(matchup.name = null){
     //   document.getElementById("ST1").innerHTML = "Not determined";
     // }
-    document.getElementById("topleftw").innerHTML = matchup?.name || "TBD";
+    document.getElementById("topleftw").innerHTML =
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
   if(field == "bottomleftw") {
     const matchup = dataR3matchups[field];
-    document.getElementById("bottomleftw").innerHTML = matchup?.name || "TBD";
+    document.getElementById("bottomleftw").innerHTML =
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
   if(field == "toprightw") {
     const matchup = dataR3matchups[field];
-    document.getElementById("toprightw").innerHTML = matchup?.name || "TBD";
+    document.getElementById("toprightw").innerHTML = 
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
   if(field == "bottomrightw") {
     const matchup = dataR3matchups[field];
-    document.getElementById("bottomrightw").innerHTML = matchup?.name || "TBD";
+    document.getElementById("bottomrightw").innerHTML = 
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
 
 }
@@ -232,11 +228,17 @@ for (const field in dataR4matchups) {
     // if(matchup.name = null){
     //   document.getElementById("ST1").innerHTML = "Not determined";
     // }
-    document.getElementById("leftsidew").innerHTML = matchup?.name || "TBD";  // NOT field['$name']
+    document.getElementById("leftsidew").innerHTML = 
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD";   // NOT field['$name']
   }
   if (field == "rightsidew"){
     const matchup = dataR4matchups[field];
-    document.getElementById("rightsidew").innerHTML = matchup?.name || "TBD";  // NOT field['$name']
+    document.getElementById("rightsidew").innerHTML =
+    matchup?.name && matchup?.rank 
+    ?`${matchup.name} (${matchup.rank})`
+    : "TBD"; 
   }
 }
 
@@ -244,7 +246,7 @@ const docRef5 = doc(db, "bracket", "r5matchup");
 const r5matchup = await getDoc(docRef5);
 const dataR5matchup = r5matchup.data();
 // let championWinner = document.createElement("p");
-document.getElementById("totalWinner").innerHTML = dataR5matchup["totalwinner"]?.name || "TBD";
+document.getElementById("totalwinner").innerHTML = dataR5matchup["totalwinner"]?.name || "TBD";
 
 }
 
@@ -273,12 +275,15 @@ export async function advanceTeam(round, team, nextLevel, nextTeam) {
       const teamToAdvance = docSnap.data()[`${team}`];
       console.log("Advancing team:");
       console.log(teamToAdvance);
+      // const index = advOrder.indexOf("teamToAdvance") + 1
+      // console.log(index);
+      // const teamAndIndex = teamToAdvance.name + "  (" + index + ")";
 
       await updateDoc(docRef2, {
         [`${nextTeam}`]: teamToAdvance
       });
-
-      document.getElementById(nextTeam).innerHTML = teamToAdvance.name;
+      console.log(docSnap.data()[`${team}`].name + docSnap.data()[`${team}`].rank);
+      document.getElementById(nextTeam).innerHTML =  docSnap.data()[`${team}`].name + "  (" +docSnap.data()[`${team}`].rank +")";
   } else {
       console.log("No such document to advance!");
   }
