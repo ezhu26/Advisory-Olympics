@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebas
 // TODO: import libraries for Cloud Firestore Database
 // https://firebase.google.com/docs/firestore
 import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, updateDoc, arrayUnion, arrayRemove, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-import{updateTeamRecord} from "./standings.js";
+// import{updateTeamRecord} from "./script.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyA48UmI50QVSpCJF6voYVudbChpVkFkU6g",
@@ -19,14 +19,16 @@ const db = getFirestore(app);
 
 //allows it to import it to html
 export async function buildAdvisoryPage(){
+    const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
+     const docSnap = await getDoc(docRef);
+
     // console.log("running build advisory function");
     //look in the adcisory-olympics data base where it looks to see if the advisor name
     // is equal to session storage advisor name
     // console.log(sessionStorage.getItem("displayAdvisory"));
-    const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
     //gets the documents from this query(if a field matches a given criteria)
     //waits until the q variable is equal to a document in the database
-    const docSnap = await getDoc(docRef);
+   
     // console.log(docSnap.id);
     //loops through each doc in the querySnapshot
         // doc.data() is never undefined for query doc snapshots
@@ -57,6 +59,7 @@ export async function buildAdvisoryPage(){
         document.getElementById("gameDesc").innerHTML = docSnap.data().gameDesc;
         document.getElementById("advisorName").innerHTML = docSnap.data().advisorName;
         document.getElementById("score").innerHTML = docSnap.data().record;
+        document.getElementById("points").innerHTML = docSnap.data().points;
         document.getElementById("location").innerHTML = docSnap.data().location;
 
 
@@ -171,11 +174,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-window.addEventListener("DOMContentLoaded", () => {
-//   const showAdvisor = sessionStorage.getItem("adminLogin");
+window.addEventListener("DOMContentLoaded", async () => {
+  const showAdvisor = sessionStorage.getItem("adminLogin");
+    console.log(showAdvisor);
+  if (showAdvisor == "true") {
 
-//   if (showAdvisor == "true") {
-
+    const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
+     const docSnap = await getDoc(docRef);
     // <li id = "left" ><button class = "advisorbutton" onclick="handleAdvisorClick()">Advisor</button></li>
 
     let newLi = document.createElement("li");
@@ -185,7 +190,9 @@ window.addEventListener("DOMContentLoaded", () => {
     advisorButton.innerHTML = "Advisor"
     newLi.appendChild(advisorButton);
     document.getElementById("navBar").appendChild(newLi);
-//   }
+
+
+  }
 });
 
 
@@ -221,14 +228,17 @@ export async function allowEdit (){
 //sets the already existing information into the form
             console.log("opening modal");
             document.getElementById("advisorNameInput").value = document.getElementById("advisorName").textContent;
+            document.getElementById("advisoryNameInput").value = document.getElementById("advisoryName").textContent;
             document.getElementById("emailInput").value = document.getElementById("email").textContent;
-            document.getElementById("locationInput").innerHTML = document.getElementById("location").textContent
-            document.getElementById("gameNameInput").innerHTML = document.getElementById("gameName").innerHTML;
-            document.getElementById("gameDescInput").innerHTML = document.getElementById("gameDesc").innerHTML;
+            document.getElementById("locationInput").value = document.getElementById("location").textContent
+            document.getElementById("gameNameInput").value = document.getElementById("gameName").innerHTML;
+            document.getElementById("gameDescInput").value = document.getElementById("gameDesc").innerHTML;
 
             document.getElementById("editModal").style.display = "block";
     }
 }
+
+try{
 document.getElementById("editForm").addEventListener("submit", async (e) => {
   e.preventDefault(); // Prevent page reload
 
@@ -241,14 +251,19 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
 document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("editModal").style.display = "none";
 });
+} catch{
+    console.log("Not able to close modal")
+}
 
 async function saveInfo(){
+    console.log(sessionStorage.getItem("displayAdvisory"));
     await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {
-        advisor: document.getElementById("advisorNameInput").value,
+        advisorName: document.getElementById("advisorNameInput").value,
+        name: document.getElementById("advisoryNameInput").value,
         email: document.getElementById("emailInput").value,
-        location: document.getElementById("locationInput").innerHTML,
-        gameName: document.getElementById("gameNameInput").innerHTML,
-        gameDesc:document.getElementById("gameDescInput").innerHTML
+        location: document.getElementById("locationInput").value,
+        gameName: document.getElementById("gameNameInput").value,
+        gameDesc:document.getElementById("gameDescInput").value
     });
     console.log("all info saved into firebase");
 }
@@ -455,6 +470,17 @@ export async function editRoster(){
 
 //being able to put in the outcome of the game and get a school
 export async function setScore(){
+
+    const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
+    //gets the documents from this query(if a field matches a given criteria)
+    //waits until the q variable is equal to a document in the database
+    const docSnap = await getDoc(docRef);
+
+    let newPoints = document.createElement("TEXTAREA");
+    newPoints.id = "newPoints";
+    newPoints.innerHTML = docSnap.data().points
+    document.getElementById("points").replaceWith(newPoints);
+
     //a list of the games in order by week
     const schedule = await getSchedule();
 
@@ -462,20 +488,21 @@ export async function setScore(){
     //references the subcollection
     const scheduleSnapShot = await getDocs(collectionRef);
 
-    const docRef = doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory"));
-    //gets the documents from this query(if a field matches a given criteria)
-    //waits until the q variable is equal to a document in the database
-    const docSnap = await getDoc(docRef);
+
     let scheduleList = document.getElementById("schedule");
-    // let newScheduleList = Array.from(scheduleList.children); // converts to a real array
+    console.log(schedule + "this is the schedule")
+    // let newScheduleList = Array.from(scheduleList.children);
+     // converts to a real array
     // console.log(newScheduleList);
 
     //removes all of the elements that have a class name of "outcome"
     // document.querySelectorAll(".outcome").forEach(el => el.remove());
     const outcomeList = document.querySelectorAll(".outcome");
+    console.log(outcomeList.length + "this is the outcome list");
+
     //makes a list of all the divs that have a class name "gameDiv"
     let gameDivList = document.querySelectorAll(".gameDiv");
-    
+        console.log(gameDivList.length + "this is the gameDiv list");
     //runs through the gameDivList and the schedule list
     for (let i = 0; i < gameDivList.length && i < schedule.length && i < outcomeList.length; i++){
 
@@ -516,6 +543,7 @@ export async function setScore(){
         outcomeList[i].replaceWith(selectOutcome);
     }
 
+    //find out what's wrong with this
     //creates a submit button
     let submitButton = document.createElement("button");
     submitButton.id = "submitButton";
@@ -525,7 +553,8 @@ export async function setScore(){
     let newOutcomeList = [];
     submitButton.onclick = async function(){
         //a list of all the dropdown values
-        let dropdowns = document.querySelectorAll(".dropdown");
+        let dropdowns = document.querySelectorAll(".selectOutcome");
+        console.log(dropdowns);
         for (let i = 0; i < gameDivList.length && i < schedule.length && i < dropdowns.length; i++){
             newOutcomeList.push(dropdowns[i].value);
             //updates the outcome of the firebase
@@ -533,17 +562,21 @@ export async function setScore(){
             await updateDoc(subDocRef, {
                 outcome: dropdowns[i].value // or "lose", "tie", etc.
             });
-        }
 
+        }
         //calculates the new score based on the values in the new outcome list
         let newScore = makeScore(newOutcomeList);
+        console.log(newScore);
+        console.log(document.getElementById("newPoints").value)
 
         //updates that string into firebase
         await updateDoc(doc(db, "advisory-olympics", sessionStorage.getItem("displayAdvisory")), {    
-                record: newScore
+                record: newScore,
+                points: document.getElementById("newPoints").value
             });
+            console.log("record updated");
         //refreshes the screen
-        updateTeamRecord();
+        // updateTeamRecord();
         // calculatePoints(newScore);
         location.reload();
     }
@@ -552,6 +585,7 @@ export async function setScore(){
 
 //calculates the new score based on the new outcomes
 function makeScore(outcomeList){
+    console.log("function makeScore Running");
     let wins = 0;
     let losses = 0;
     let ties = 0;
@@ -567,6 +601,7 @@ function makeScore(outcomeList){
     }
     //puts the numbers into the correct string format
     let newScore = wins + "-" + losses + "-" + ties;
+    console.log(newScore);
     return newScore;
 }
 
