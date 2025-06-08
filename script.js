@@ -35,6 +35,42 @@ export const login = async function(){
     console.log(user.email);
     if(user.email.includes("@gmail.com")){
       sessionStorage.setItem('adminLogin', true);
+      let newLi = document.createElement("li");
+    newLi.id = "left";
+    let advisorLink = document.createElement("a");
+    advisorLink.href = "makeAdvisory.html";
+    advisorLink.textContent = "Make a New Advisory";
+    newLi.appendChild(advisorLink);
+    document.getElementById("navBar").appendChild(newLi);
+
+    document.getElementById("loginButton").remove();
+
+    let containerDiv = document.createElement("div");
+
+
+    // Create label
+    let label = document.createElement("label");
+    label.setAttribute("for", "weekInput");
+    label.textContent = "Set Displayed Week for Home Page:";
+
+    // Create input
+    let input = document.createElement("input");
+    input.type = "number";
+    input.id = "weekInput";
+    input.min = "1";
+
+    // Create button
+    let button = document.createElement("button4");
+    button.textContent = "Update Current Week";
+    button.onclick = goToWeek; // no parentheses, just the reference
+
+    // Append elements to container div
+    containerDiv.appendChild(label);
+    containerDiv.appendChild(input);
+    containerDiv.appendChild(button);
+
+    document.getElementById("locations").insertBefore(containerDiv, document.getElementById("insertBefore"));
+    editChampions();
     }
 }
 
@@ -173,7 +209,7 @@ async function loadCurrentWeek() {
 
 window.goToWeek = goToWeek;
 //this function displays the current week matchups through the dropdown menu
-function displayWeekMatchups() {
+async function displayWeekMatchups() {
   //access the dropdown from the html
   const weekDropdown = document.getElementById("weekDropdown");
   //depending on what week is selected in the dropdown, make that the selected week
@@ -194,20 +230,27 @@ function displayWeekMatchups() {
       matchupContainer.className = "matchup-container";
       console.log("checkpoint 11");
       //add each matchup as a card
-      matchups.forEach(matchup => {
+          for (const matchup of matchups){
           if (matchup.toLowerCase().indexOf("bye") === -1){
           console.log("checkpoint 12");
           //create a new card for each matchup
           const card = document.createElement("div");
           //add each card to a class called matchup-card
           card.className = "matchup-card";
+
+          console.log(matchup);
           //create "teams" that are split with a versus sign
           const teams = matchup.split(" vs ");
+          const homeAdvisoryData = await findMatchAdvisory(teams[0]);
+                    // location = location.data().location;
+          console.log(homeAdvisoryData);
           //in each card, add the home team, a "vs.", and the away team
           card.innerHTML = `
               <div class="team home-team">${teams[0]}</div>
               <div class="versus">vs</div>
               <div class="team away-team">${teams[1]}</div>
+              <br><br>
+              <div class="team location">Location: ${homeAdvisoryData.location}</div>
           `;
           //add the card to the overall matchup container
           matchupContainer.appendChild(card);
@@ -216,15 +259,19 @@ function displayWeekMatchups() {
               //add each card to a class called matchup-card
               card.className = "matchup-card";
               //split the bye by the words is on a 
-              const teams = matchup.split(" is on a ");
+
+              const parts = matchup.split("vs");
+              const teamName = parts[1].trim();
+
+console.log(teamName);
               card.innerHTML = `
-                  <div class="team home-team">${teams[0]}</div>
+                  <div class="team home-team">${teamName}</div>
                   <div class="is-on-a">is on a<div/>
                   <div class="team bye">Bye</div>
                   `;
                   matchupContainer.appendChild(card);
           }
-      });
+      }
       //add the container to the display
       matchupDisplay.appendChild(matchupContainer);
   } else {
@@ -326,10 +373,10 @@ async function fetchDataFromFirebase() {
     console.log("Looking up ID for:" + advisoryName);
 
     const newID = await findMatchAdvisory(advisoryName); //  Await here
-    console.log("Found ID:" + newID);
+    console.log("Found ID:" + newID.id);
 
     if (newID) {
-      sessionStorage.setItem("displayAdvisory", newID);
+      sessionStorage.setItem("displayAdvisory", newID.id);
       console.log("Session storage set");
       window.location.href = "makePage.html";
     } else {
@@ -427,14 +474,18 @@ async function findMatchAdvisory(advisoryName) {
   const snapshot = await getDocs(collection(db, "advisory-olympics"));
   
   for (const doc of snapshot.docs) {
-    if (doc.data().name == advisoryName) {
-      console.log(doc.data().name);
-      return doc.id;  // This is how you get the document ID
+    if (doc.data().name === advisoryName) {
+      const dataWithId = {
+        id: doc.id,
+        ...doc.data()
+      };
+      return dataWithId;
     }
   }
 
   return null; // If no match is found
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const button = document.getElementById("dropdown");
@@ -506,3 +557,13 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
+function editChampions(){
+  console.log("editChampions function is running");
+  const editButton = document.createElement("button");
+  editButton.innerHTML = "Edit"
+  document.getElementById("history").appendChild(editButton);
+  editButton.onclick = function(){
+    
+  }
+}
