@@ -181,7 +181,7 @@ body{
     .dropdown-content {
       display: none;
       position: absolute;
-      top: 150px; /* Distance from top */
+      top: 50px; /* Distance from top */
       right: 0px; /* Distance from left */
       background-color: #f1f1f1;
       min-width: 160px;
